@@ -1,0 +1,1075 @@
+ARM GAS  /tmp/ccwwHi94.s 			page 1
+
+
+   1              		.syntax unified
+   2              		.cpu cortex-m7
+   3              		.eabi_attribute 28, 1
+   4              		.fpu fpv5-d16
+   5              		.eabi_attribute 20, 1
+   6              		.eabi_attribute 21, 1
+   7              		.eabi_attribute 23, 3
+   8              		.eabi_attribute 24, 1
+   9              		.eabi_attribute 25, 1
+  10              		.eabi_attribute 26, 1
+  11              		.eabi_attribute 30, 1
+  12              		.eabi_attribute 34, 1
+  13              		.eabi_attribute 18, 4
+  14              		.thumb
+  15              		.file	"cureManager.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.section	.text.InitDrugCureList,"ax",%progbits
+  20              		.align	2
+  21              		.global	InitDrugCureList
+  22              		.thumb
+  23              		.thumb_func
+  25              	InitDrugCureList:
+  26              	.LFB140:
+  27              		.file 1 "Src/cureManager.c"
+   1:Src/cureManager.c **** /*
+   2:Src/cureManager.c ****  * cureManager.c
+   3:Src/cureManager.c ****  *
+   4:Src/cureManager.c ****  *  Created on: 10 août 2018
+   5:Src/cureManager.c ****  *      Author: breschc
+   6:Src/cureManager.c ****  */
+   7:Src/cureManager.c **** #include "cureManager.h"
+   8:Src/cureManager.c **** 
+   9:Src/cureManager.c **** void InitDrugCureList(DrugCureList *drugCureList)
+  10:Src/cureManager.c **** {
+  28              		.loc 1 10 0
+  29              		.cfi_startproc
+  30              		@ args = 0, pretend = 0, frame = 0
+  31              		@ frame_needed = 0, uses_anonymous_args = 0
+  32              		@ link register save eliminated.
+  33              	.LVL0:
+  11:Src/cureManager.c **** 	*drugCureList = 0x00;
+  34              		.loc 1 11 0
+  35 0000 0023     		movs	r3, #0
+  36 0002 0360     		str	r3, [r0]
+  37 0004 7047     		bx	lr
+  38              		.cfi_endproc
+  39              	.LFE140:
+  41 0006 00BF     		.section	.text.AddCureDrug,"ax",%progbits
+  42              		.align	2
+  43              		.global	AddCureDrug
+  44              		.thumb
+  45              		.thumb_func
+  47              	AddCureDrug:
+  48              	.LFB141:
+  12:Src/cureManager.c **** }
+ARM GAS  /tmp/ccwwHi94.s 			page 2
+
+
+  13:Src/cureManager.c **** 
+  14:Src/cureManager.c **** /*Add a drug in the Library*/
+  15:Src/cureManager.c **** int AddCureDrug(DrugCureList *drugCureList, const char *name, const unsigned long hours,
+  16:Src/cureManager.c **** 		const unsigned long minutes, const unsigned long volume)
+  17:Src/cureManager.c **** {
+  49              		.loc 1 17 0
+  50              		.cfi_startproc
+  51              		@ args = 4, pretend = 0, frame = 8
+  52              		@ frame_needed = 0, uses_anonymous_args = 0
+  53              	.LVL1:
+  54 0000 2DE9F043 		push	{r4, r5, r6, r7, r8, r9, lr}
+  55              	.LCFI0:
+  56              		.cfi_def_cfa_offset 28
+  57              		.cfi_offset 4, -28
+  58              		.cfi_offset 5, -24
+  59              		.cfi_offset 6, -20
+  60              		.cfi_offset 7, -16
+  61              		.cfi_offset 8, -12
+  62              		.cfi_offset 9, -8
+  63              		.cfi_offset 14, -4
+  64 0004 83B0     		sub	sp, sp, #12
+  65              	.LCFI1:
+  66              		.cfi_def_cfa_offset 40
+  67 0006 0646     		mov	r6, r0
+  68 0008 0F46     		mov	r7, r1
+  69 000a 9146     		mov	r9, r2
+  70 000c 9846     		mov	r8, r3
+  18:Src/cureManager.c **** 	int cureHandleTable[2] = {0,0};
+  71              		.loc 1 18 0
+  72 000e 0023     		movs	r3, #0
+  73              	.LVL2:
+  74 0010 0093     		str	r3, [sp]
+  75 0012 0193     		str	r3, [sp, #4]
+  19:Src/cureManager.c **** 
+  20:Src/cureManager.c **** 	DrugCure *x = (DrugCure *) malloc (sizeof(DrugCure));
+  76              		.loc 1 20 0
+  77 0014 2020     		movs	r0, #32
+  78              	.LVL3:
+  79 0016 FFF7FEFF 		bl	malloc
+  80              	.LVL4:
+  21:Src/cureManager.c **** 	DrugCure *z = *drugCureList;
+  81              		.loc 1 21 0
+  82 001a 3468     		ldr	r4, [r6]
+  83              	.LVL5:
+  22:Src/cureManager.c **** 
+  23:Src/cureManager.c **** 
+  24:Src/cureManager.c **** 	if(x == 0x00)
+  84              		.loc 1 24 0
+  85 001c 0546     		mov	r5, r0
+  86 001e 10B9     		cbnz	r0, .L3
+  25:Src/cureManager.c **** 	{
+  26:Src/cureManager.c **** 		perror("malloc error");
+  87              		.loc 1 26 0
+  88 0020 2148     		ldr	r0, .L14
+  89              	.LVL6:
+  90 0022 FFF7FEFF 		bl	perror
+  91              	.LVL7:
+ARM GAS  /tmp/ccwwHi94.s 			page 3
+
+
+  92              	.L3:
+  27:Src/cureManager.c **** 	}
+  28:Src/cureManager.c **** 
+  29:Src/cureManager.c **** 	x->name = (char *) malloc((strlen(name) + 1) * sizeof(char));
+  93              		.loc 1 29 0
+  94 0026 3846     		mov	r0, r7
+  95 0028 FFF7FEFF 		bl	strlen
+  96              	.LVL8:
+  97 002c 0130     		adds	r0, r0, #1
+  98 002e FFF7FEFF 		bl	malloc
+  99              	.LVL9:
+ 100 0032 2860     		str	r0, [r5]
+  30:Src/cureManager.c **** 	if(x->name == 0x00)
+ 101              		.loc 1 30 0
+ 102 0034 10B9     		cbnz	r0, .L4
+  31:Src/cureManager.c **** 	{
+  32:Src/cureManager.c **** 		perror("malloc error");
+ 103              		.loc 1 32 0
+ 104 0036 1C48     		ldr	r0, .L14
+ 105 0038 FFF7FEFF 		bl	perror
+ 106              	.LVL10:
+ 107              	.L4:
+  33:Src/cureManager.c **** 	}
+  34:Src/cureManager.c **** 
+  35:Src/cureManager.c **** 	x->hours = hours;
+ 108              		.loc 1 35 0
+ 109 003c C5F80890 		str	r9, [r5, #8]
+  36:Src/cureManager.c **** 	x->minutes = minutes;
+ 110              		.loc 1 36 0
+ 111 0040 C5F80480 		str	r8, [r5, #4]
+  37:Src/cureManager.c **** 	x->volume = volume;
+ 112              		.loc 1 37 0
+ 113 0044 0A9B     		ldr	r3, [sp, #40]
+ 114 0046 EB60     		str	r3, [r5, #12]
+  38:Src/cureManager.c **** 	x->xSemaphore = xSemaphoreCreateMutex();
+ 115              		.loc 1 38 0
+ 116 0048 0120     		movs	r0, #1
+ 117 004a FFF7FEFF 		bl	xQueueCreateMutex
+ 118              	.LVL11:
+ 119 004e A861     		str	r0, [r5, #24]
+  39:Src/cureManager.c **** 
+  40:Src/cureManager.c **** 	strcpy(x->name, name);
+ 120              		.loc 1 40 0
+ 121 0050 2868     		ldr	r0, [r5]
+ 122 0052 3946     		mov	r1, r7
+ 123 0054 FFF7FEFF 		bl	strcpy
+ 124              	.LVL12:
+  41:Src/cureManager.c **** 
+  42:Src/cureManager.c **** 	if(z == 0x00)
+ 125              		.loc 1 42 0
+ 126 0058 7CB9     		cbnz	r4, .L6
+  43:Src/cureManager.c **** 	{
+  44:Src/cureManager.c **** 		x->taskFunc = vCureTaskCodeA;
+ 127              		.loc 1 44 0
+ 128 005a 144B     		ldr	r3, .L14+4
+ 129 005c 2B61     		str	r3, [r5, #16]
+ 130 005e 0CE0     		b	.L6
+ARM GAS  /tmp/ccwwHi94.s 			page 4
+
+
+ 131              	.L9:
+  45:Src/cureManager.c **** 	}
+  46:Src/cureManager.c **** 
+  47:Src/cureManager.c **** 	while(z != 0x00)
+  48:Src/cureManager.c **** 	{
+  49:Src/cureManager.c **** 		if(z->taskFunc == vCureTaskCodeA)
+ 132              		.loc 1 49 0
+ 133 0060 2369     		ldr	r3, [r4, #16]
+ 134 0062 124A     		ldr	r2, .L14+4
+ 135 0064 9342     		cmp	r3, r2
+ 136 0066 02D1     		bne	.L7
+  50:Src/cureManager.c **** 		{
+  51:Src/cureManager.c **** 			cureHandleTable[0] = 1;
+ 137              		.loc 1 51 0
+ 138 0068 0123     		movs	r3, #1
+ 139 006a 0093     		str	r3, [sp]
+ 140 006c 04E0     		b	.L8
+ 141              	.L7:
+  52:Src/cureManager.c **** 		}
+  53:Src/cureManager.c **** 		else if(z->taskFunc == vCureTaskCodeB)
+ 142              		.loc 1 53 0
+ 143 006e 104A     		ldr	r2, .L14+8
+ 144 0070 9342     		cmp	r3, r2
+ 145 0072 01D1     		bne	.L8
+  54:Src/cureManager.c **** 		{
+  55:Src/cureManager.c **** 			cureHandleTable[1] = 1;
+ 146              		.loc 1 55 0
+ 147 0074 0123     		movs	r3, #1
+ 148 0076 0193     		str	r3, [sp, #4]
+ 149              	.L8:
+  56:Src/cureManager.c **** 		}
+  57:Src/cureManager.c **** 
+  58:Src/cureManager.c **** 		z = z->next;
+ 150              		.loc 1 58 0
+ 151 0078 E469     		ldr	r4, [r4, #28]
+ 152              	.LVL13:
+ 153              	.L6:
+  47:Src/cureManager.c **** 	{
+ 154              		.loc 1 47 0
+ 155 007a 002C     		cmp	r4, #0
+ 156 007c F0D1     		bne	.L9
+  59:Src/cureManager.c **** 	}
+  60:Src/cureManager.c **** 
+  61:Src/cureManager.c **** 	if(cureHandleTable[0] == 0)
+ 157              		.loc 1 61 0
+ 158 007e 009B     		ldr	r3, [sp]
+ 159 0080 13B9     		cbnz	r3, .L10
+  62:Src/cureManager.c **** 	{
+  63:Src/cureManager.c **** 		x->taskFunc = vCureTaskCodeA;
+ 160              		.loc 1 63 0
+ 161 0082 0A4B     		ldr	r3, .L14+4
+ 162 0084 2B61     		str	r3, [r5, #16]
+ 163 0086 07E0     		b	.L11
+ 164              	.L10:
+  64:Src/cureManager.c **** 	}
+  65:Src/cureManager.c **** 
+  66:Src/cureManager.c **** 	else if(cureHandleTable[1] == 0)
+ARM GAS  /tmp/ccwwHi94.s 			page 5
+
+
+ 165              		.loc 1 66 0
+ 166 0088 019B     		ldr	r3, [sp, #4]
+ 167 008a 13B9     		cbnz	r3, .L12
+  67:Src/cureManager.c **** 	{
+  68:Src/cureManager.c **** 		x->taskFunc = vCureTaskCodeB;
+ 168              		.loc 1 68 0
+ 169 008c 084B     		ldr	r3, .L14+8
+ 170 008e 2B61     		str	r3, [r5, #16]
+ 171 0090 02E0     		b	.L11
+ 172              	.L12:
+  69:Src/cureManager.c **** 	}
+  70:Src/cureManager.c **** 
+  71:Src/cureManager.c **** 	else
+  72:Src/cureManager.c **** 	{
+  73:Src/cureManager.c **** 		exit(0);
+ 173              		.loc 1 73 0
+ 174 0092 0020     		movs	r0, #0
+ 175 0094 FFF7FEFF 		bl	exit
+ 176              	.LVL14:
+ 177              	.L11:
+  74:Src/cureManager.c **** 	}
+  75:Src/cureManager.c **** 
+  76:Src/cureManager.c **** 	x->next = *drugCureList;
+ 178              		.loc 1 76 0
+ 179 0098 3368     		ldr	r3, [r6]
+ 180 009a EB61     		str	r3, [r5, #28]
+  77:Src/cureManager.c **** 	*drugCureList = x;
+ 181              		.loc 1 77 0
+ 182 009c 3560     		str	r5, [r6]
+  78:Src/cureManager.c **** 
+  79:Src/cureManager.c **** 	return 1;
+  80:Src/cureManager.c **** }
+ 183              		.loc 1 80 0
+ 184 009e 0120     		movs	r0, #1
+ 185 00a0 03B0     		add	sp, sp, #12
+ 186              	.LCFI2:
+ 187              		.cfi_def_cfa_offset 28
+ 188              		@ sp needed
+ 189 00a2 BDE8F083 		pop	{r4, r5, r6, r7, r8, r9, pc}
+ 190              	.LVL15:
+ 191              	.L15:
+ 192 00a6 00BF     		.align	2
+ 193              	.L14:
+ 194 00a8 00000000 		.word	.LC0
+ 195 00ac 00000000 		.word	vCureTaskCodeA
+ 196 00b0 00000000 		.word	vCureTaskCodeB
+ 197              		.cfi_endproc
+ 198              	.LFE141:
+ 200              		.section	.text.ModifyCure,"ax",%progbits
+ 201              		.align	2
+ 202              		.global	ModifyCure
+ 203              		.thumb
+ 204              		.thumb_func
+ 206              	ModifyCure:
+ 207              	.LFB142:
+  81:Src/cureManager.c **** 
+  82:Src/cureManager.c **** int ModifyCure(DrugCureList *drugCureList, const char *name,
+ARM GAS  /tmp/ccwwHi94.s 			page 6
+
+
+  83:Src/cureManager.c **** 		const unsigned long hours, const unsigned long minutes, const unsigned long volume)
+  84:Src/cureManager.c **** {
+ 208              		.loc 1 84 0
+ 209              		.cfi_startproc
+ 210              		@ args = 4, pretend = 0, frame = 0
+ 211              		@ frame_needed = 0, uses_anonymous_args = 0
+ 212              	.LVL16:
+ 213 0000 F8B5     		push	{r3, r4, r5, r6, r7, lr}
+ 214              	.LCFI3:
+ 215              		.cfi_def_cfa_offset 24
+ 216              		.cfi_offset 3, -24
+ 217              		.cfi_offset 4, -20
+ 218              		.cfi_offset 5, -16
+ 219              		.cfi_offset 6, -12
+ 220              		.cfi_offset 7, -8
+ 221              		.cfi_offset 14, -4
+ 222 0002 0D46     		mov	r5, r1
+ 223 0004 1746     		mov	r7, r2
+ 224 0006 1E46     		mov	r6, r3
+  85:Src/cureManager.c **** 
+  86:Src/cureManager.c **** 	DrugCure *x = *drugCureList;
+ 225              		.loc 1 86 0
+ 226 0008 0468     		ldr	r4, [r0]
+ 227              	.LVL17:
+  87:Src/cureManager.c **** 	//char * prev;
+  88:Src/cureManager.c **** 
+  89:Src/cureManager.c **** 	while(x != 0x00)
+ 228              		.loc 1 89 0
+ 229 000a 13E0     		b	.L18
+ 230              	.LVL18:
+ 231              	.L20:
+  90:Src/cureManager.c **** 	{
+  91:Src/cureManager.c **** 		if( xSemaphoreTake( x->xSemaphore, ( TickType_t ) 10 ) == pdTRUE )
+ 232              		.loc 1 91 0
+ 233 000c A069     		ldr	r0, [r4, #24]
+ 234 000e 0021     		movs	r1, #0
+ 235 0010 0A22     		movs	r2, #10
+ 236 0012 0B46     		mov	r3, r1
+ 237 0014 FFF7FEFF 		bl	xQueueGenericReceive
+ 238              	.LVL19:
+ 239 0018 0128     		cmp	r0, #1
+ 240 001a 0BD1     		bne	.L18
+  92:Src/cureManager.c **** 		{
+  93:Src/cureManager.c **** 			if (strcmp(x->name, name) == 0)
+ 241              		.loc 1 93 0
+ 242 001c 2068     		ldr	r0, [r4]
+ 243 001e 2946     		mov	r1, r5
+ 244 0020 FFF7FEFF 		bl	strcmp
+ 245              	.LVL20:
+ 246 0024 40B1     		cbz	r0, .L19
+  94:Src/cureManager.c **** 				break;
+  95:Src/cureManager.c **** 			/* Next element */
+  96:Src/cureManager.c **** 			xSemaphoreGive(x->xSemaphore);
+ 247              		.loc 1 96 0
+ 248 0026 A069     		ldr	r0, [r4, #24]
+ 249 0028 0021     		movs	r1, #0
+ 250 002a 0A46     		mov	r2, r1
+ARM GAS  /tmp/ccwwHi94.s 			page 7
+
+
+ 251 002c 0B46     		mov	r3, r1
+ 252 002e FFF7FEFF 		bl	xQueueGenericSend
+ 253              	.LVL21:
+  97:Src/cureManager.c **** 			x = x->next;
+ 254              		.loc 1 97 0
+ 255 0032 E469     		ldr	r4, [r4, #28]
+ 256              	.LVL22:
+ 257              	.L18:
+  89:Src/cureManager.c **** 	{
+ 258              		.loc 1 89 0
+ 259 0034 002C     		cmp	r4, #0
+ 260 0036 E9D1     		bne	.L20
+ 261              	.L19:
+  98:Src/cureManager.c **** 		}
+  99:Src/cureManager.c **** 	}
+ 100:Src/cureManager.c **** 
+ 101:Src/cureManager.c **** 	if(x != 0x00)
+ 262              		.loc 1 101 0
+ 263 0038 A4B1     		cbz	r4, .L21
+ 102:Src/cureManager.c **** 	{
+ 103:Src/cureManager.c **** 
+ 104:Src/cureManager.c **** 		vTaskSuspend(x->xHandle);
+ 264              		.loc 1 104 0
+ 265 003a 6069     		ldr	r0, [r4, #20]
+ 266 003c FFF7FEFF 		bl	vTaskSuspend
+ 267              	.LVL23:
+ 105:Src/cureManager.c **** 
+ 106:Src/cureManager.c **** 		x->hours = hours;
+ 268              		.loc 1 106 0
+ 269 0040 A760     		str	r7, [r4, #8]
+ 107:Src/cureManager.c **** 		x->minutes = minutes;
+ 270              		.loc 1 107 0
+ 271 0042 6660     		str	r6, [r4, #4]
+ 108:Src/cureManager.c **** 		x->volume = volume;
+ 272              		.loc 1 108 0
+ 273 0044 069B     		ldr	r3, [sp, #24]
+ 274 0046 E360     		str	r3, [r4, #12]
+ 109:Src/cureManager.c **** 		//prev = x->name;
+ 110:Src/cureManager.c **** 
+ 111:Src/cureManager.c **** 		HAL_Delay(5000);
+ 275              		.loc 1 111 0
+ 276 0048 41F28830 		movw	r0, #5000
+ 277 004c FFF7FEFF 		bl	HAL_Delay
+ 278              	.LVL24:
+ 112:Src/cureManager.c **** 
+ 113:Src/cureManager.c **** 		/*x->name = (char *) malloc((strlen(name) + 1) * sizeof(char));
+ 114:Src/cureManager.c **** 
+ 115:Src/cureManager.c **** 		if(x->name == 0x00){
+ 116:Src/cureManager.c **** 			perror("malloc error");
+ 117:Src/cureManager.c **** 		}
+ 118:Src/cureManager.c **** 
+ 119:Src/cureManager.c **** 		strcpy(x->name, name);
+ 120:Src/cureManager.c **** 
+ 121:Src/cureManager.c **** 		free(prev);*/
+ 122:Src/cureManager.c **** 
+ 123:Src/cureManager.c **** 		vTaskResume(x->xHandle);
+ 279              		.loc 1 123 0
+ARM GAS  /tmp/ccwwHi94.s 			page 8
+
+
+ 280 0050 6069     		ldr	r0, [r4, #20]
+ 281 0052 FFF7FEFF 		bl	vTaskResume
+ 282              	.LVL25:
+ 124:Src/cureManager.c **** 		xSemaphoreGive(x->xSemaphore);
+ 283              		.loc 1 124 0
+ 284 0056 A069     		ldr	r0, [r4, #24]
+ 285 0058 0021     		movs	r1, #0
+ 286 005a 0A46     		mov	r2, r1
+ 287 005c 0B46     		mov	r3, r1
+ 288 005e FFF7FEFF 		bl	xQueueGenericSend
+ 289              	.LVL26:
+ 290 0062 02E0     		b	.L22
+ 291              	.L21:
+ 125:Src/cureManager.c **** 		//LaunchCure(drugCureList, name);
+ 126:Src/cureManager.c **** 
+ 127:Src/cureManager.c **** 	}
+ 128:Src/cureManager.c **** 	else
+ 129:Src/cureManager.c **** 	{
+ 130:Src/cureManager.c **** 		puts("Not Found!\n");
+ 292              		.loc 1 130 0
+ 293 0064 0248     		ldr	r0, .L24
+ 294 0066 FFF7FEFF 		bl	puts
+ 295              	.LVL27:
+ 296              	.L22:
+ 131:Src/cureManager.c **** 	}
+ 132:Src/cureManager.c **** 
+ 133:Src/cureManager.c **** 	return 1;
+ 134:Src/cureManager.c **** }
+ 297              		.loc 1 134 0
+ 298 006a 0120     		movs	r0, #1
+ 299 006c F8BD     		pop	{r3, r4, r5, r6, r7, pc}
+ 300              	.LVL28:
+ 301              	.L25:
+ 302 006e 00BF     		.align	2
+ 303              	.L24:
+ 304 0070 10000000 		.word	.LC1
+ 305              		.cfi_endproc
+ 306              	.LFE142:
+ 308              		.section	.text.RemoveCure,"ax",%progbits
+ 309              		.align	2
+ 310              		.global	RemoveCure
+ 311              		.thumb
+ 312              		.thumb_func
+ 314              	RemoveCure:
+ 315              	.LFB143:
+ 135:Src/cureManager.c **** 
+ 136:Src/cureManager.c **** int RemoveCure(DrugCureList *drugCureList, const char *name)
+ 137:Src/cureManager.c **** {
+ 316              		.loc 1 137 0
+ 317              		.cfi_startproc
+ 318              		@ args = 0, pretend = 0, frame = 0
+ 319              		@ frame_needed = 0, uses_anonymous_args = 0
+ 320              	.LVL29:
+ 321 0000 F8B5     		push	{r3, r4, r5, r6, r7, lr}
+ 322              	.LCFI4:
+ 323              		.cfi_def_cfa_offset 24
+ 324              		.cfi_offset 3, -24
+ARM GAS  /tmp/ccwwHi94.s 			page 9
+
+
+ 325              		.cfi_offset 4, -20
+ 326              		.cfi_offset 5, -16
+ 327              		.cfi_offset 6, -12
+ 328              		.cfi_offset 7, -8
+ 329              		.cfi_offset 14, -4
+ 330 0002 0646     		mov	r6, r0
+ 331 0004 0F46     		mov	r7, r1
+ 332              	.LVL30:
+ 138:Src/cureManager.c **** 
+ 139:Src/cureManager.c **** 	DrugCure *prev = 0x00;
+ 140:Src/cureManager.c **** 	DrugCure *x = *drugCureList;
+ 333              		.loc 1 140 0
+ 334 0006 0468     		ldr	r4, [r0]
+ 335              	.LVL31:
+ 139:Src/cureManager.c **** 	DrugCure *x = *drugCureList;
+ 336              		.loc 1 139 0
+ 337 0008 0025     		movs	r5, #0
+ 141:Src/cureManager.c **** 
+ 142:Src/cureManager.c **** 	while(x != 0x00)
+ 338              		.loc 1 142 0
+ 339 000a 14E0     		b	.L28
+ 340              	.LVL32:
+ 341              	.L30:
+ 143:Src/cureManager.c **** 	{
+ 144:Src/cureManager.c **** 		if( xSemaphoreTake( x->xSemaphore, ( TickType_t ) 10 ) == pdTRUE )
+ 342              		.loc 1 144 0
+ 343 000c A069     		ldr	r0, [r4, #24]
+ 344 000e 0021     		movs	r1, #0
+ 345 0010 0A22     		movs	r2, #10
+ 346 0012 0B46     		mov	r3, r1
+ 347 0014 FFF7FEFF 		bl	xQueueGenericReceive
+ 348              	.LVL33:
+ 349 0018 0128     		cmp	r0, #1
+ 350 001a 0CD1     		bne	.L28
+ 145:Src/cureManager.c **** 		{
+ 146:Src/cureManager.c **** 			if (strcmp(x->name, name) == 0)
+ 351              		.loc 1 146 0
+ 352 001c 2068     		ldr	r0, [r4]
+ 353 001e 3946     		mov	r1, r7
+ 354 0020 FFF7FEFF 		bl	strcmp
+ 355              	.LVL34:
+ 356 0024 48B1     		cbz	r0, .L29
+ 357              	.LVL35:
+ 147:Src/cureManager.c **** 			            break;
+ 148:Src/cureManager.c **** 			        /* Next element */
+ 149:Src/cureManager.c **** 			        prev = x;
+ 150:Src/cureManager.c **** 			        xSemaphoreGive( x->xSemaphore);
+ 358              		.loc 1 150 0
+ 359 0026 A069     		ldr	r0, [r4, #24]
+ 360 0028 0021     		movs	r1, #0
+ 361 002a 0A46     		mov	r2, r1
+ 362 002c 0B46     		mov	r3, r1
+ 363 002e FFF7FEFF 		bl	xQueueGenericSend
+ 364              	.LVL36:
+ 149:Src/cureManager.c **** 			        xSemaphoreGive( x->xSemaphore);
+ 365              		.loc 1 149 0
+ 366 0032 2546     		mov	r5, r4
+ARM GAS  /tmp/ccwwHi94.s 			page 10
+
+
+ 151:Src/cureManager.c **** 			        x = x->next;
+ 367              		.loc 1 151 0
+ 368 0034 E469     		ldr	r4, [r4, #28]
+ 369              	.LVL37:
+ 370              	.L28:
+ 142:Src/cureManager.c **** 	{
+ 371              		.loc 1 142 0
+ 372 0036 002C     		cmp	r4, #0
+ 373 0038 E8D1     		bne	.L30
+ 374              	.L29:
+ 152:Src/cureManager.c **** 		 }
+ 153:Src/cureManager.c **** 	}
+ 154:Src/cureManager.c **** 
+ 155:Src/cureManager.c **** 	if(x != 0x00)
+ 375              		.loc 1 155 0
+ 376 003a 8CB1     		cbz	r4, .L31
+ 156:Src/cureManager.c **** 	{
+ 157:Src/cureManager.c **** 		/*Top of the list*/
+ 158:Src/cureManager.c **** 		if(prev==0x00)
+ 377              		.loc 1 158 0
+ 378 003c 15B9     		cbnz	r5, .L32
+ 159:Src/cureManager.c **** 		{
+ 160:Src/cureManager.c **** 			*drugCureList = x->next;
+ 379              		.loc 1 160 0
+ 380 003e E369     		ldr	r3, [r4, #28]
+ 381 0040 3360     		str	r3, [r6]
+ 382 0042 01E0     		b	.L33
+ 383              	.L32:
+ 161:Src/cureManager.c **** 		}
+ 162:Src/cureManager.c **** 		else
+ 163:Src/cureManager.c **** 		{
+ 164:Src/cureManager.c **** 			prev->next = x->next;
+ 384              		.loc 1 164 0
+ 385 0044 E369     		ldr	r3, [r4, #28]
+ 386 0046 EB61     		str	r3, [r5, #28]
+ 387              	.L33:
+ 165:Src/cureManager.c **** 		}
+ 166:Src/cureManager.c **** 
+ 167:Src/cureManager.c **** 
+ 168:Src/cureManager.c **** 		vTaskDelete(x->xHandle);
+ 388              		.loc 1 168 0
+ 389 0048 6069     		ldr	r0, [r4, #20]
+ 390 004a FFF7FEFF 		bl	vTaskDelete
+ 391              	.LVL38:
+ 169:Src/cureManager.c **** 		vSemaphoreDelete(x->xSemaphore);
+ 392              		.loc 1 169 0
+ 393 004e A069     		ldr	r0, [r4, #24]
+ 394 0050 FFF7FEFF 		bl	vQueueDelete
+ 395              	.LVL39:
+ 170:Src/cureManager.c **** 		free(x->name);
+ 396              		.loc 1 170 0
+ 397 0054 2068     		ldr	r0, [r4]
+ 398 0056 FFF7FEFF 		bl	free
+ 399              	.LVL40:
+ 171:Src/cureManager.c **** 		free(x);
+ 400              		.loc 1 171 0
+ 401 005a 2046     		mov	r0, r4
+ARM GAS  /tmp/ccwwHi94.s 			page 11
+
+
+ 402 005c FFF7FEFF 		bl	free
+ 403              	.LVL41:
+ 404              	.L31:
+ 172:Src/cureManager.c **** 
+ 173:Src/cureManager.c **** 	}
+ 174:Src/cureManager.c **** 	else
+ 175:Src/cureManager.c **** 	{
+ 176:Src/cureManager.c **** 		//ERROR CASE
+ 177:Src/cureManager.c **** 	}
+ 178:Src/cureManager.c **** 
+ 179:Src/cureManager.c **** 	return 1;
+ 180:Src/cureManager.c **** }
+ 405              		.loc 1 180 0
+ 406 0060 0120     		movs	r0, #1
+ 407 0062 F8BD     		pop	{r3, r4, r5, r6, r7, pc}
+ 408              		.cfi_endproc
+ 409              	.LFE143:
+ 411              		.section	.text.DestroyCureList,"ax",%progbits
+ 412              		.align	2
+ 413              		.global	DestroyCureList
+ 414              		.thumb
+ 415              		.thumb_func
+ 417              	DestroyCureList:
+ 418              	.LFB144:
+ 181:Src/cureManager.c **** 
+ 182:Src/cureManager.c **** /*Destroy the entire DrugLibrary*/
+ 183:Src/cureManager.c **** void DestroyCureList(DrugCureList *lst)
+ 184:Src/cureManager.c **** {
+ 419              		.loc 1 184 0
+ 420              		.cfi_startproc
+ 421              		@ args = 0, pretend = 0, frame = 0
+ 422              		@ frame_needed = 0, uses_anonymous_args = 0
+ 423              	.LVL42:
+ 424 0000 38B5     		push	{r3, r4, r5, lr}
+ 425              	.LCFI5:
+ 426              		.cfi_def_cfa_offset 16
+ 427              		.cfi_offset 3, -16
+ 428              		.cfi_offset 4, -12
+ 429              		.cfi_offset 5, -8
+ 430              		.cfi_offset 14, -4
+ 431 0002 0546     		mov	r5, r0
+ 185:Src/cureManager.c ****     while (*lst != 0x00)
+ 432              		.loc 1 185 0
+ 433 0004 15E0     		b	.L37
+ 434              	.LVL43:
+ 435              	.L38:
+ 436              	.LBB2:
+ 186:Src/cureManager.c ****     {
+ 187:Src/cureManager.c ****         DrugCure *x = *lst;
+ 188:Src/cureManager.c ****         if( xSemaphoreTake( x->xSemaphore, ( TickType_t ) 10 ) == pdTRUE )
+ 437              		.loc 1 188 0
+ 438 0006 A069     		ldr	r0, [r4, #24]
+ 439 0008 0021     		movs	r1, #0
+ 440 000a 0A22     		movs	r2, #10
+ 441 000c 0B46     		mov	r3, r1
+ 442 000e FFF7FEFF 		bl	xQueueGenericReceive
+ 443              	.LVL44:
+ARM GAS  /tmp/ccwwHi94.s 			page 12
+
+
+ 444 0012 0128     		cmp	r0, #1
+ 445 0014 0DD1     		bne	.L37
+ 189:Src/cureManager.c ****         {
+ 190:Src/cureManager.c ****         	 *lst = x->next;
+ 446              		.loc 1 190 0
+ 447 0016 E369     		ldr	r3, [r4, #28]
+ 448 0018 2B60     		str	r3, [r5]
+ 191:Src/cureManager.c **** 
+ 192:Src/cureManager.c ****         	 vTaskDelete(x->xHandle);
+ 449              		.loc 1 192 0
+ 450 001a 6069     		ldr	r0, [r4, #20]
+ 451 001c FFF7FEFF 		bl	vTaskDelete
+ 452              	.LVL45:
+ 193:Src/cureManager.c ****              vSemaphoreDelete( x->xSemaphore );
+ 453              		.loc 1 193 0
+ 454 0020 A069     		ldr	r0, [r4, #24]
+ 455 0022 FFF7FEFF 		bl	vQueueDelete
+ 456              	.LVL46:
+ 194:Src/cureManager.c ****              free(x->name);
+ 457              		.loc 1 194 0
+ 458 0026 2068     		ldr	r0, [r4]
+ 459 0028 FFF7FEFF 		bl	free
+ 460              	.LVL47:
+ 195:Src/cureManager.c ****              free(x);
+ 461              		.loc 1 195 0
+ 462 002c 2046     		mov	r0, r4
+ 463 002e FFF7FEFF 		bl	free
+ 464              	.LVL48:
+ 465              	.L37:
+ 466              	.LBE2:
+ 185:Src/cureManager.c ****     {
+ 467              		.loc 1 185 0
+ 468 0032 2C68     		ldr	r4, [r5]
+ 469 0034 002C     		cmp	r4, #0
+ 470 0036 E6D1     		bne	.L38
+ 196:Src/cureManager.c ****          }
+ 197:Src/cureManager.c ****     }
+ 198:Src/cureManager.c ****     return;
+ 199:Src/cureManager.c **** }
+ 471              		.loc 1 199 0
+ 472 0038 38BD     		pop	{r3, r4, r5, pc}
+ 473              		.cfi_endproc
+ 474              	.LFE144:
+ 476 003a 00BF     		.section	.text.CheckName,"ax",%progbits
+ 477              		.align	2
+ 478              		.global	CheckName
+ 479              		.thumb
+ 480              		.thumb_func
+ 482              	CheckName:
+ 483              	.LFB145:
+ 200:Src/cureManager.c **** 
+ 201:Src/cureManager.c **** /*Check that the name is in the library*/
+ 202:Src/cureManager.c **** int CheckName(DrugCureList *drugCureList, char *name)
+ 203:Src/cureManager.c **** {
+ 484              		.loc 1 203 0
+ 485              		.cfi_startproc
+ 486              		@ args = 0, pretend = 0, frame = 0
+ARM GAS  /tmp/ccwwHi94.s 			page 13
+
+
+ 487              		@ frame_needed = 0, uses_anonymous_args = 0
+ 488              	.LVL49:
+ 489 0000 38B5     		push	{r3, r4, r5, lr}
+ 490              	.LCFI6:
+ 491              		.cfi_def_cfa_offset 16
+ 492              		.cfi_offset 3, -16
+ 493              		.cfi_offset 4, -12
+ 494              		.cfi_offset 5, -8
+ 495              		.cfi_offset 14, -4
+ 496 0002 0D46     		mov	r5, r1
+ 204:Src/cureManager.c **** 
+ 205:Src/cureManager.c **** 	DrugCure *x = *drugCureList;
+ 497              		.loc 1 205 0
+ 498 0004 0468     		ldr	r4, [r0]
+ 499              	.LVL50:
+ 206:Src/cureManager.c **** 
+ 207:Src/cureManager.c **** 	while(x != NULL)
+ 500              		.loc 1 207 0
+ 501 0006 13E0     		b	.L42
+ 502              	.LVL51:
+ 503              	.L44:
+ 208:Src/cureManager.c **** 	{
+ 209:Src/cureManager.c **** 		if( xSemaphoreTake( x->xSemaphore, ( TickType_t ) 10 ) == pdTRUE )
+ 504              		.loc 1 209 0
+ 505 0008 A069     		ldr	r0, [r4, #24]
+ 506 000a 0021     		movs	r1, #0
+ 507 000c 0A22     		movs	r2, #10
+ 508 000e 0B46     		mov	r3, r1
+ 509 0010 FFF7FEFF 		bl	xQueueGenericReceive
+ 510              	.LVL52:
+ 511 0014 0128     		cmp	r0, #1
+ 512 0016 0BD1     		bne	.L42
+ 210:Src/cureManager.c **** 		{
+ 211:Src/cureManager.c **** 			if (strcmp(x->name, name) == 0)
+ 513              		.loc 1 211 0
+ 514 0018 2068     		ldr	r0, [r4]
+ 515 001a 2946     		mov	r1, r5
+ 516 001c FFF7FEFF 		bl	strcmp
+ 517              	.LVL53:
+ 518 0020 40B1     		cbz	r0, .L43
+ 212:Src/cureManager.c **** 		           break;
+ 213:Src/cureManager.c **** 		    /* Next element */
+ 214:Src/cureManager.c **** 			xSemaphoreGive(x->xSemaphore);
+ 519              		.loc 1 214 0
+ 520 0022 A069     		ldr	r0, [r4, #24]
+ 521 0024 0021     		movs	r1, #0
+ 522 0026 0A46     		mov	r2, r1
+ 523 0028 0B46     		mov	r3, r1
+ 524 002a FFF7FEFF 		bl	xQueueGenericSend
+ 525              	.LVL54:
+ 215:Src/cureManager.c **** 			x = x->next;
+ 526              		.loc 1 215 0
+ 527 002e E469     		ldr	r4, [r4, #28]
+ 528              	.LVL55:
+ 529              	.L42:
+ 207:Src/cureManager.c **** 	{
+ 530              		.loc 1 207 0
+ARM GAS  /tmp/ccwwHi94.s 			page 14
+
+
+ 531 0030 002C     		cmp	r4, #0
+ 532 0032 E9D1     		bne	.L44
+ 533              	.L43:
+ 216:Src/cureManager.c **** 		}
+ 217:Src/cureManager.c **** 	}
+ 218:Src/cureManager.c **** 
+ 219:Src/cureManager.c **** 	if(x != NULL)
+ 534              		.loc 1 219 0
+ 535 0034 3CB1     		cbz	r4, .L46
+ 220:Src/cureManager.c **** 	{
+ 221:Src/cureManager.c **** 		xSemaphoreGive(x->xSemaphore);
+ 536              		.loc 1 221 0
+ 537 0036 A069     		ldr	r0, [r4, #24]
+ 538 0038 0021     		movs	r1, #0
+ 539 003a 0A46     		mov	r2, r1
+ 540 003c 0B46     		mov	r3, r1
+ 541 003e FFF7FEFF 		bl	xQueueGenericSend
+ 542              	.LVL56:
+ 222:Src/cureManager.c **** 		return 1;
+ 543              		.loc 1 222 0
+ 544 0042 0120     		movs	r0, #1
+ 545 0044 38BD     		pop	{r3, r4, r5, pc}
+ 546              	.LVL57:
+ 547              	.L46:
+ 223:Src/cureManager.c **** 	}
+ 224:Src/cureManager.c **** 	else
+ 225:Src/cureManager.c **** 	{
+ 226:Src/cureManager.c **** 		return 0;
+ 548              		.loc 1 226 0
+ 549 0046 0020     		movs	r0, #0
+ 227:Src/cureManager.c **** 	}
+ 228:Src/cureManager.c **** }
+ 550              		.loc 1 228 0
+ 551 0048 38BD     		pop	{r3, r4, r5, pc}
+ 552              		.cfi_endproc
+ 553              	.LFE145:
+ 555 004a 00BF     		.section	.text.LaunchCure,"ax",%progbits
+ 556              		.align	2
+ 557              		.global	LaunchCure
+ 558              		.thumb
+ 559              		.thumb_func
+ 561              	LaunchCure:
+ 562              	.LFB146:
+ 229:Src/cureManager.c **** 
+ 230:Src/cureManager.c **** void LaunchCure(DrugCureList *drugCureList, char *name)
+ 231:Src/cureManager.c **** {
+ 563              		.loc 1 231 0
+ 564              		.cfi_startproc
+ 565              		@ args = 0, pretend = 0, frame = 0
+ 566              		@ frame_needed = 0, uses_anonymous_args = 0
+ 567              	.LVL58:
+ 568 0000 70B5     		push	{r4, r5, r6, lr}
+ 569              	.LCFI7:
+ 570              		.cfi_def_cfa_offset 16
+ 571              		.cfi_offset 4, -16
+ 572              		.cfi_offset 5, -12
+ 573              		.cfi_offset 6, -8
+ARM GAS  /tmp/ccwwHi94.s 			page 15
+
+
+ 574              		.cfi_offset 14, -4
+ 575 0002 82B0     		sub	sp, sp, #8
+ 576              	.LCFI8:
+ 577              		.cfi_def_cfa_offset 24
+ 578 0004 0646     		mov	r6, r0
+ 579 0006 0D46     		mov	r5, r1
+ 232:Src/cureManager.c **** 	DrugCure *x = *drugCureList;
+ 580              		.loc 1 232 0
+ 581 0008 0468     		ldr	r4, [r0]
+ 582              	.LVL59:
+ 233:Src/cureManager.c **** 	BaseType_t xReturned;
+ 234:Src/cureManager.c **** 
+ 235:Src/cureManager.c **** 		while(x != NULL)
+ 583              		.loc 1 235 0
+ 584 000a 13E0     		b	.L50
+ 585              	.LVL60:
+ 586              	.L52:
+ 236:Src/cureManager.c **** 		{
+ 237:Src/cureManager.c **** 			if( xSemaphoreTake( x->xSemaphore, ( TickType_t ) 10 ) == pdTRUE )
+ 587              		.loc 1 237 0
+ 588 000c A069     		ldr	r0, [r4, #24]
+ 589 000e 0021     		movs	r1, #0
+ 590 0010 0A22     		movs	r2, #10
+ 591 0012 0B46     		mov	r3, r1
+ 592 0014 FFF7FEFF 		bl	xQueueGenericReceive
+ 593              	.LVL61:
+ 594 0018 0128     		cmp	r0, #1
+ 595 001a 0BD1     		bne	.L50
+ 238:Src/cureManager.c **** 					{
+ 239:Src/cureManager.c **** 						if (strcmp(x->name, name) == 0)
+ 596              		.loc 1 239 0
+ 597 001c 2068     		ldr	r0, [r4]
+ 598 001e 2946     		mov	r1, r5
+ 599 0020 FFF7FEFF 		bl	strcmp
+ 600              	.LVL62:
+ 601 0024 40B1     		cbz	r0, .L51
+ 240:Src/cureManager.c **** 						            break;
+ 241:Src/cureManager.c **** 						/* Next element */
+ 242:Src/cureManager.c **** 						x = x->next;
+ 602              		.loc 1 242 0
+ 603 0026 E469     		ldr	r4, [r4, #28]
+ 604              	.LVL63:
+ 243:Src/cureManager.c **** 						xSemaphoreGive( x->xSemaphore);
+ 605              		.loc 1 243 0
+ 606 0028 A069     		ldr	r0, [r4, #24]
+ 607 002a 0021     		movs	r1, #0
+ 608 002c 0A46     		mov	r2, r1
+ 609 002e 0B46     		mov	r3, r1
+ 610 0030 FFF7FEFF 		bl	xQueueGenericSend
+ 611              	.LVL64:
+ 612              	.L50:
+ 235:Src/cureManager.c **** 		{
+ 613              		.loc 1 235 0
+ 614 0034 002C     		cmp	r4, #0
+ 615 0036 E9D1     		bne	.L52
+ 616              	.L51:
+ 244:Src/cureManager.c **** 					 }
+ARM GAS  /tmp/ccwwHi94.s 			page 16
+
+
+ 245:Src/cureManager.c **** 		}
+ 246:Src/cureManager.c **** 
+ 247:Src/cureManager.c **** 		if(x != NULL)
+ 617              		.loc 1 247 0
+ 618 0038 DCB1     		cbz	r4, .L53
+ 248:Src/cureManager.c **** 		{
+ 249:Src/cureManager.c **** 			xReturned = xTaskCreate(	  x->taskFunc,     		  /* Function that implements the task. */
+ 619              		.loc 1 249 0
+ 620 003a 2069     		ldr	r0, [r4, #16]
+ 250:Src/cureManager.c **** 			                  	  	  	  name,          		  /* Text name for the task. */
+ 251:Src/cureManager.c **** 										  STACK_SIZE,  			  /* Stack size in words, not bytes. */
+ 252:Src/cureManager.c **** 										  ( void * ) x,    		  /* Parameter passed into the task. */
+ 253:Src/cureManager.c **** 										  tskIDLE_PRIORITY,		  /* Priority at which the task is created. */
+ 254:Src/cureManager.c **** 										  &(x->xHandle));         /* Used to pass out the created task's handle. */
+ 621              		.loc 1 254 0
+ 622 003c 04F11403 		add	r3, r4, #20
+ 249:Src/cureManager.c **** 			                  	  	  	  name,          		  /* Text name for the task. */
+ 623              		.loc 1 249 0
+ 624 0040 0022     		movs	r2, #0
+ 625 0042 0092     		str	r2, [sp]
+ 626 0044 0193     		str	r3, [sp, #4]
+ 627 0046 2946     		mov	r1, r5
+ 628 0048 8022     		movs	r2, #128
+ 629 004a 2346     		mov	r3, r4
+ 630 004c FFF7FEFF 		bl	xTaskCreate
+ 631              	.LVL65:
+ 255:Src/cureManager.c **** 
+ 256:Src/cureManager.c **** 			if(xReturned == errCOULD_NOT_ALLOCATE_REQUIRED_MEMORY)
+ 632              		.loc 1 256 0
+ 633 0050 B0F1FF3F 		cmp	r0, #-1
+ 634 0054 06D1     		bne	.L54
+ 257:Src/cureManager.c **** 			{
+ 258:Src/cureManager.c **** 				perror("thread create");
+ 635              		.loc 1 258 0
+ 636 0056 0948     		ldr	r0, .L57
+ 637              	.LVL66:
+ 638 0058 FFF7FEFF 		bl	perror
+ 639              	.LVL67:
+ 259:Src/cureManager.c **** 				RemoveCure(drugCureList, name);
+ 640              		.loc 1 259 0
+ 641 005c 3046     		mov	r0, r6
+ 642 005e 2946     		mov	r1, r5
+ 643 0060 FFF7FEFF 		bl	RemoveCure
+ 644              	.LVL68:
+ 645              	.L54:
+ 260:Src/cureManager.c **** 			}
+ 261:Src/cureManager.c **** 			xSemaphoreGive( x->xSemaphore);
+ 646              		.loc 1 261 0
+ 647 0064 A069     		ldr	r0, [r4, #24]
+ 648 0066 0021     		movs	r1, #0
+ 649 0068 0A46     		mov	r2, r1
+ 650 006a 0B46     		mov	r3, r1
+ 651 006c FFF7FEFF 		bl	xQueueGenericSend
+ 652              	.LVL69:
+ 653 0070 02E0     		b	.L48
+ 654              	.L53:
+ 262:Src/cureManager.c **** 
+ARM GAS  /tmp/ccwwHi94.s 			page 17
+
+
+ 263:Src/cureManager.c **** 		}
+ 264:Src/cureManager.c **** 		else
+ 265:Src/cureManager.c **** 		{
+ 266:Src/cureManager.c **** 			perror("Launcher Issue");
+ 655              		.loc 1 266 0
+ 656 0072 0348     		ldr	r0, .L57+4
+ 657 0074 FFF7FEFF 		bl	perror
+ 658              	.LVL70:
+ 659              	.L48:
+ 267:Src/cureManager.c **** 		}
+ 268:Src/cureManager.c **** }
+ 660              		.loc 1 268 0
+ 661 0078 02B0     		add	sp, sp, #8
+ 662              	.LCFI9:
+ 663              		.cfi_def_cfa_offset 16
+ 664              		@ sp needed
+ 665 007a 70BD     		pop	{r4, r5, r6, pc}
+ 666              	.LVL71:
+ 667              	.L58:
+ 668              		.align	2
+ 669              	.L57:
+ 670 007c 1C000000 		.word	.LC2
+ 671 0080 2C000000 		.word	.LC3
+ 672              		.cfi_endproc
+ 673              	.LFE146:
+ 675              		.section	.rodata.str1.4,"aMS",%progbits,1
+ 676              		.align	2
+ 677              	.LC0:
+ 678 0000 6D616C6C 		.ascii	"malloc error\000"
+ 678      6F632065 
+ 678      72726F72 
+ 678      00
+ 679 000d 000000   		.space	3
+ 680              	.LC1:
+ 681 0010 4E6F7420 		.ascii	"Not Found!\012\000"
+ 681      466F756E 
+ 681      64210A00 
+ 682              	.LC2:
+ 683 001c 74687265 		.ascii	"thread create\000"
+ 683      61642063 
+ 683      72656174 
+ 683      6500
+ 684 002a 0000     		.space	2
+ 685              	.LC3:
+ 686 002c 4C61756E 		.ascii	"Launcher Issue\000"
+ 686      63686572 
+ 686      20497373 
+ 686      756500
+ 687              		.text
+ 688              	.Letext0:
+ 689              		.file 2 "/home/reglisse/opt/gcc-arm-none-eabi-4_9-2015q3/arm-none-eabi/include/machine/_default_ty
+ 690              		.file 3 "/home/reglisse/opt/gcc-arm-none-eabi-4_9-2015q3/arm-none-eabi/include/sys/_stdint.h"
+ 691              		.file 4 "/home/reglisse/opt/gcc-arm-none-eabi-4_9-2015q3/lib/gcc/arm-none-eabi/4.9.3/include/stdde
+ 692              		.file 5 "Middlewares/Third_Party/FreeRTOS/Source/include/projdefs.h"
+ 693              		.file 6 "Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h"
+ 694              		.file 7 "Middlewares/Third_Party/FreeRTOS/Source/include/task.h"
+ 695              		.file 8 "Middlewares/Third_Party/FreeRTOS/Source/include/queue.h"
+ARM GAS  /tmp/ccwwHi94.s 			page 18
+
+
+ 696              		.file 9 "Middlewares/Third_Party/FreeRTOS/Source/include/semphr.h"
+ 697              		.file 10 "Inc/cureManager.h"
+ 698              		.file 11 "/home/reglisse/opt/gcc-arm-none-eabi-4_9-2015q3/arm-none-eabi/include/stdlib.h"
+ 699              		.file 12 "/home/reglisse/opt/gcc-arm-none-eabi-4_9-2015q3/arm-none-eabi/include/string.h"
+ 700              		.file 13 "/home/reglisse/opt/gcc-arm-none-eabi-4_9-2015q3/arm-none-eabi/include/stdio.h"
+ 701              		.file 14 "Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal.h"
+ 702              		.file 15 "Drivers/CMSIS/Include/core_cm7.h"
+ARM GAS  /tmp/ccwwHi94.s 			page 19
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 cureManager.c
+     /tmp/ccwwHi94.s:20     .text.InitDrugCureList:00000000 $t
+     /tmp/ccwwHi94.s:25     .text.InitDrugCureList:00000000 InitDrugCureList
+     /tmp/ccwwHi94.s:42     .text.AddCureDrug:00000000 $t
+     /tmp/ccwwHi94.s:47     .text.AddCureDrug:00000000 AddCureDrug
+     /tmp/ccwwHi94.s:194    .text.AddCureDrug:000000a8 $d
+     /tmp/ccwwHi94.s:201    .text.ModifyCure:00000000 $t
+     /tmp/ccwwHi94.s:206    .text.ModifyCure:00000000 ModifyCure
+     /tmp/ccwwHi94.s:304    .text.ModifyCure:00000070 $d
+     /tmp/ccwwHi94.s:309    .text.RemoveCure:00000000 $t
+     /tmp/ccwwHi94.s:314    .text.RemoveCure:00000000 RemoveCure
+     /tmp/ccwwHi94.s:412    .text.DestroyCureList:00000000 $t
+     /tmp/ccwwHi94.s:417    .text.DestroyCureList:00000000 DestroyCureList
+     /tmp/ccwwHi94.s:477    .text.CheckName:00000000 $t
+     /tmp/ccwwHi94.s:482    .text.CheckName:00000000 CheckName
+     /tmp/ccwwHi94.s:556    .text.LaunchCure:00000000 $t
+     /tmp/ccwwHi94.s:561    .text.LaunchCure:00000000 LaunchCure
+     /tmp/ccwwHi94.s:670    .text.LaunchCure:0000007c $d
+     /tmp/ccwwHi94.s:676    .rodata.str1.4:00000000 $d
+                     .debug_frame:00000010 $d
+
+UNDEFINED SYMBOLS
+malloc
+perror
+strlen
+xQueueCreateMutex
+strcpy
+exit
+vCureTaskCodeA
+vCureTaskCodeB
+xQueueGenericReceive
+strcmp
+xQueueGenericSend
+vTaskSuspend
+HAL_Delay
+vTaskResume
+puts
+vTaskDelete
+vQueueDelete
+free
+xTaskCreate

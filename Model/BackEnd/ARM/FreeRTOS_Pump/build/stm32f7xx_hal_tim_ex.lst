@@ -1,0 +1,32 @@
+ARM GAS  /tmp/ccfheccu.s 			page 1
+
+
+   1              		.syntax unified
+   2              		.cpu cortex-m7
+   3              		.eabi_attribute 28, 1
+   4              		.fpu fpv5-d16
+   5              		.eabi_attribute 20, 1
+   6              		.eabi_attribute 21, 1
+   7              		.eabi_attribute 23, 3
+   8              		.eabi_attribute 24, 1
+   9              		.eabi_attribute 25, 1
+  10              		.eabi_attribute 26, 1
+  11              		.eabi_attribute 30, 1
+  12              		.eabi_attribute 34, 1
+  13              		.eabi_attribute 18, 4
+  14              		.thumb
+  15              		.file	"stm32f7xx_hal_tim_ex.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              	.Letext0:
+  20              		.file 1 "/home/reglisse/opt/gcc-arm-none-eabi-4_9-2015q3/arm-none-eabi/include/machine/_default_ty
+  21              		.file 2 "/home/reglisse/opt/gcc-arm-none-eabi-4_9-2015q3/arm-none-eabi/include/sys/_stdint.h"
+  22              		.file 3 "Drivers/CMSIS/Include/core_cm7.h"
+ARM GAS  /tmp/ccfheccu.s 			page 2
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 stm32f7xx_hal_tim_ex.c
+
+NO UNDEFINED SYMBOLS

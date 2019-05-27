@@ -1,0 +1,2633 @@
+ARM GAS  /tmp/ccOLls8W.s 			page 1
+
+
+   1              		.syntax unified
+   2              		.cpu cortex-m7
+   3              		.eabi_attribute 28, 1
+   4              		.fpu fpv5-d16
+   5              		.eabi_attribute 20, 1
+   6              		.eabi_attribute 21, 1
+   7              		.eabi_attribute 23, 3
+   8              		.eabi_attribute 24, 1
+   9              		.eabi_attribute 25, 1
+  10              		.eabi_attribute 26, 1
+  11              		.eabi_attribute 30, 1
+  12              		.eabi_attribute 34, 1
+  13              		.eabi_attribute 18, 4
+  14              		.thumb
+  15              		.file	"main.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.section	.text.vMainTaskCode,"ax",%progbits
+  20              		.align	2
+  21              		.thumb
+  22              		.thumb_func
+  24              	vMainTaskCode:
+  25              	.LFB141:
+  26              		.file 1 "Src/main.c"
+   1:Src/main.c    **** 
+   2:Src/main.c    **** /**
+   3:Src/main.c    ****   ******************************************************************************
+   4:Src/main.c    ****   * @file           : main.c
+   5:Src/main.c    ****   * @brief          : Main program body
+   6:Src/main.c    ****   ******************************************************************************
+   7:Src/main.c    ****   * This notice applies to any and all portions of this file
+   8:Src/main.c    ****   * that are not between comment pairs USER CODE BEGIN and
+   9:Src/main.c    ****   * USER CODE END. Other portions of this file, whether 
+  10:Src/main.c    ****   * inserted by the user or by software development tools
+  11:Src/main.c    ****   * are owned by their respective copyright owners.
+  12:Src/main.c    ****   *
+  13:Src/main.c    ****   * Copyright (c) 2018 STMicroelectronics International N.V. 
+  14:Src/main.c    ****   * All rights reserved.
+  15:Src/main.c    ****   *
+  16:Src/main.c    ****   * Redistribution and use in source and binary forms, with or without 
+  17:Src/main.c    ****   * modification, are permitted, provided that the following conditions are met:
+  18:Src/main.c    ****   *
+  19:Src/main.c    ****   * 1. Redistribution of source code must retain the above copyright notice, 
+  20:Src/main.c    ****   *    this list of conditions and the following disclaimer.
+  21:Src/main.c    ****   * 2. Redistributions in binary form must reproduce the above copyright notice,
+  22:Src/main.c    ****   *    this list of conditions and the following disclaimer in the documentation
+  23:Src/main.c    ****   *    and/or other materials provided with the distribution.
+  24:Src/main.c    ****   * 3. Neither the name of STMicroelectronics nor the names of other 
+  25:Src/main.c    ****   *    contributors to this software may be used to endorse or promote products 
+  26:Src/main.c    ****   *    derived from this software without specific written permission.
+  27:Src/main.c    ****   * 4. This software, including modifications and/or derivative works of this 
+  28:Src/main.c    ****   *    software, must execute solely and exclusively on microcontroller or
+  29:Src/main.c    ****   *    microprocessor devices manufactured by or for STMicroelectronics.
+  30:Src/main.c    ****   * 5. Redistribution and use of this software other than as permitted under 
+  31:Src/main.c    ****   *    this license is void and will automatically terminate your rights under 
+  32:Src/main.c    ****   *    this license. 
+ARM GAS  /tmp/ccOLls8W.s 			page 2
+
+
+  33:Src/main.c    ****   *
+  34:Src/main.c    ****   * THIS SOFTWARE IS PROVIDED BY STMICROELECTRONICS AND CONTRIBUTORS "AS IS" 
+  35:Src/main.c    ****   * AND ANY EXPRESS, IMPLIED OR STATUTORY WARRANTIES, INCLUDING, BUT NOT 
+  36:Src/main.c    ****   * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A 
+  37:Src/main.c    ****   * PARTICULAR PURPOSE AND NON-INFRINGEMENT OF THIRD PARTY INTELLECTUAL PROPERTY
+  38:Src/main.c    ****   * RIGHTS ARE DISCLAIMED TO THE FULLEST EXTENT PERMITTED BY LAW. IN NO EVENT 
+  39:Src/main.c    ****   * SHALL STMICROELECTRONICS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+  40:Src/main.c    ****   * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+  41:Src/main.c    ****   * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, 
+  42:Src/main.c    ****   * OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF 
+  43:Src/main.c    ****   * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING 
+  44:Src/main.c    ****   * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+  45:Src/main.c    ****   * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  46:Src/main.c    ****   *
+  47:Src/main.c    ****   ******************************************************************************
+  48:Src/main.c    ****   */
+  49:Src/main.c    **** /* Includes ------------------------------------------------------------------*/
+  50:Src/main.c    **** #include "main.h"
+  51:Src/main.c    **** 
+  52:Src/main.c    **** /* Private function prototypes -----------------------------------------------*/
+  53:Src/main.c    **** void SystemClock_Config(void);
+  54:Src/main.c    **** static void MX_GPIO_Init(void);
+  55:Src/main.c    **** static void MX_USART3_UART_Init(void);
+  56:Src/main.c    **** 
+  57:Src/main.c    **** 
+  58:Src/main.c    **** static void idle(void);
+  59:Src/main.c    **** static void vMainTaskCode( void * pvParameters );
+  60:Src/main.c    **** /* Private function prototypes -----------------------------------------------*/
+  61:Src/main.c    **** 
+  62:Src/main.c    **** 
+  63:Src/main.c    **** /* Private variables ---------------------------------------------------------*/
+  64:Src/main.c    **** static void (* state_fn)(void) = idle;
+  65:Src/main.c    **** static char recv[36];
+  66:Src/main.c    **** 
+  67:Src/main.c    **** UART_HandleTypeDef huart3;
+  68:Src/main.c    **** DrugCureList drugCureList;
+  69:Src/main.c    **** 
+  70:Src/main.c    **** /**
+  71:Src/main.c    ****   * @brief  The application entry point.
+  72:Src/main.c    ****   *
+  73:Src/main.c    ****   * @retval None
+  74:Src/main.c    ****   */
+  75:Src/main.c    **** 
+  76:Src/main.c    **** int main(void)
+  77:Src/main.c    **** {
+  78:Src/main.c    ****   /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
+  79:Src/main.c    ****   HAL_Init();
+  80:Src/main.c    **** 
+  81:Src/main.c    ****   /* Configure the system clock */
+  82:Src/main.c    ****   SystemClock_Config();
+  83:Src/main.c    **** 
+  84:Src/main.c    ****   /* USER CODE END SysInit */
+  85:Src/main.c    ****   InitDrugCureList(&drugCureList);
+  86:Src/main.c    **** 
+  87:Src/main.c    ****   /* Initialize all configured peripherals */
+  88:Src/main.c    ****   MX_GPIO_Init();
+  89:Src/main.c    ****   MX_USART3_UART_Init();
+ARM GAS  /tmp/ccOLls8W.s 			page 3
+
+
+  90:Src/main.c    **** 
+  91:Src/main.c    ****   /* Create the task, storing the handle. */
+  92:Src/main.c    ****   BaseType_t xReturned;
+  93:Src/main.c    ****   TaskHandle_t xMainHandle = NULL;
+  94:Src/main.c    ****   xReturned = xTaskCreate(
+  95:Src/main.c    ****                       	  vMainTaskCode,       	/* Function that implements the task. */
+  96:Src/main.c    **** 						  "MainTask",          	/* Text name for the task. */
+  97:Src/main.c    **** 						  STACK_SIZE,      		/* Stack size in words, not bytes. */
+  98:Src/main.c    **** 						  ( void * ) 1,    		/* Parameter passed into the task. */
+  99:Src/main.c    **** 						  tskIDLE_PRIORITY,		/* Priority at which the task is created. */
+ 100:Src/main.c    **** 						  &xMainHandle );       /* Used to pass out the created task's handle. */
+ 101:Src/main.c    **** 
+ 102:Src/main.c    ****   /* Start FreeRTOS scheduler */
+ 103:Src/main.c    ****   vTaskStartScheduler();
+ 104:Src/main.c    ****   
+ 105:Src/main.c    ****   if (xReturned == errCOULD_NOT_ALLOCATE_REQUIRED_MEMORY)
+ 106:Src/main.c    ****   {
+ 107:Src/main.c    **** 	  perror("thread create");
+ 108:Src/main.c    ****   }
+ 109:Src/main.c    **** 
+ 110:Src/main.c    ****   /* We should never get here as control is now taken by the scheduler */
+ 111:Src/main.c    ****   for(;;)
+ 112:Src/main.c    ****   {
+ 113:Src/main.c    ****   }
+ 114:Src/main.c    **** 
+ 115:Src/main.c    **** }
+ 116:Src/main.c    **** 
+ 117:Src/main.c    **** /* Main Task */
+ 118:Src/main.c    **** static void vMainTaskCode( void * pvParameters )
+ 119:Src/main.c    **** {
+  27              		.loc 1 119 0
+  28              		.cfi_startproc
+  29              		@ args = 0, pretend = 0, frame = 0
+  30              		@ frame_needed = 0, uses_anonymous_args = 0
+  31              	.LVL0:
+  32 0000 08B5     		push	{r3, lr}
+  33              	.LCFI0:
+  34              		.cfi_def_cfa_offset 8
+  35              		.cfi_offset 3, -8
+  36              		.cfi_offset 14, -4
+ 120:Src/main.c    ****     /* The parameter value is expected to be 1 as 1 is passed in the
+ 121:Src/main.c    ****     pvParameters value in the call to xTaskCreate() below. */
+ 122:Src/main.c    ****     configASSERT( ( ( uint32_t ) pvParameters ) == 1 );
+  37              		.loc 1 122 0
+  38 0002 0128     		cmp	r0, #1
+  39 0004 0AD0     		beq	.L2
+  40              	.LBB4:
+  41              	.LBB5:
+  42              		.file 2 "Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h"
+   1:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h **** /*
+   2:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h ****     FreeRTOS V9.0.0 - Copyright (C) 2016 Real Time Engineers Ltd.
+   3:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h ****     All rights reserved
+   4:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h **** 
+   5:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h ****     VISIT http://www.FreeRTOS.org TO ENSURE YOU ARE USING THE LATEST VERSION.
+   6:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h **** 
+   7:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h ****     This file is part of the FreeRTOS distribution.
+   8:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h **** 
+ARM GAS  /tmp/ccOLls8W.s 			page 4
+
+
+   9:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h ****     FreeRTOS is free software; you can redistribute it and/or modify it under
+  10:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h ****     the terms of the GNU General Public License (version 2) as published by the
+  11:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h ****     Free Software Foundation >>>> AND MODIFIED BY <<<< the FreeRTOS exception.
+  12:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h **** 
+  13:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h ****     ***************************************************************************
+  14:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h ****     >>!   NOTE: The modification to the GPL is included to allow you to     !<<
+  15:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h ****     >>!   distribute a combined work that includes FreeRTOS without being   !<<
+  16:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h ****     >>!   obliged to provide the source code for proprietary components     !<<
+  17:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h ****     >>!   outside of the FreeRTOS kernel.                                   !<<
+  18:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h ****     ***************************************************************************
+  19:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h **** 
+  20:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h ****     FreeRTOS is distributed in the hope that it will be useful, but WITHOUT ANY
+  21:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h ****     WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+  22:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h ****     FOR A PARTICULAR PURPOSE.  Full license text is available on the following
+  23:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h ****     link: http://www.freertos.org/a00114.html
+  24:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h **** 
+  25:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h ****     ***************************************************************************
+  26:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h ****      *                                                                       *
+  27:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h ****      *    FreeRTOS provides completely free yet professionally developed,    *
+  28:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h ****      *    robust, strictly quality controlled, supported, and cross          *
+  29:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h ****      *    platform software that is more than just the market leader, it     *
+  30:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h ****      *    is the industry's de facto standard.                               *
+  31:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h ****      *                                                                       *
+  32:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h ****      *    Help yourself get started quickly while simultaneously helping     *
+  33:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h ****      *    to support the FreeRTOS project by purchasing a FreeRTOS           *
+  34:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h ****      *    tutorial book, reference manual, or both:                          *
+  35:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h ****      *    http://www.FreeRTOS.org/Documentation                              *
+  36:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h ****      *                                                                       *
+  37:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h ****     ***************************************************************************
+  38:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h **** 
+  39:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h ****     http://www.FreeRTOS.org/FAQHelp.html - Having a problem?  Start by reading
+  40:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h ****     the FAQ page "My application does not run, what could be wrong?".  Have you
+  41:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h ****     defined configASSERT()?
+  42:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h **** 
+  43:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h ****     http://www.FreeRTOS.org/support - In return for receiving this top quality
+  44:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h ****     embedded software for free we request you assist our global community by
+  45:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h ****     participating in the support forum.
+  46:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h **** 
+  47:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h ****     http://www.FreeRTOS.org/training - Investing in training allows your team to
+  48:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h ****     be as productive as possible as early as possible.  Now you can receive
+  49:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h ****     FreeRTOS training directly from Richard Barry, CEO of Real Time Engineers
+  50:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h ****     Ltd, and the world's leading authority on the world's leading RTOS.
+  51:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h **** 
+  52:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h ****     http://www.FreeRTOS.org/plus - A selection of FreeRTOS ecosystem products,
+  53:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h ****     including FreeRTOS+Trace - an indispensable productivity tool, a DOS
+  54:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h ****     compatible FAT file system, and our tiny thread aware UDP/IP stack.
+  55:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h **** 
+  56:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h ****     http://www.FreeRTOS.org/labs - Where new FreeRTOS products go to incubate.
+  57:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h ****     Come and try FreeRTOS+TCP, our new open source TCP/IP stack for FreeRTOS.
+  58:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h **** 
+  59:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h ****     http://www.OpenRTOS.com - Real Time Engineers ltd. license FreeRTOS to High
+  60:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h ****     Integrity Systems ltd. to sell under the OpenRTOS brand.  Low cost OpenRTOS
+  61:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h ****     licenses offer ticketed support, indemnification and commercial middleware.
+  62:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h **** 
+  63:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h ****     http://www.SafeRTOS.com - High Integrity Systems also provide a safety
+  64:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h ****     engineered and independently SIL3 certified version for use in safety and
+  65:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h ****     mission critical applications that require provable dependability.
+ARM GAS  /tmp/ccOLls8W.s 			page 5
+
+
+  66:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h **** 
+  67:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h ****     1 tab == 4 spaces!
+  68:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h **** */
+  69:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h **** 
+  70:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h **** 
+  71:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h **** #ifndef PORTMACRO_H
+  72:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h **** #define PORTMACRO_H
+  73:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h **** 
+  74:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h **** #ifdef __cplusplus
+  75:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h **** extern "C" {
+  76:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h **** #endif
+  77:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h **** 
+  78:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h **** /*-----------------------------------------------------------
+  79:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h ****  * Port specific definitions.
+  80:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h ****  *
+  81:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h ****  * The settings in this file configure FreeRTOS correctly for the
+  82:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h ****  * given hardware and compiler.
+  83:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h ****  *
+  84:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h ****  * These settings should not be altered.
+  85:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h ****  *-----------------------------------------------------------
+  86:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h ****  */
+  87:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h **** 
+  88:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h **** /* Type definitions. */
+  89:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h **** #define portCHAR		char
+  90:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h **** #define portFLOAT		float
+  91:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h **** #define portDOUBLE		double
+  92:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h **** #define portLONG		long
+  93:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h **** #define portSHORT		short
+  94:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h **** #define portSTACK_TYPE	uint32_t
+  95:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h **** #define portBASE_TYPE	long
+  96:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h **** 
+  97:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h **** typedef portSTACK_TYPE StackType_t;
+  98:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h **** typedef long BaseType_t;
+  99:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h **** typedef unsigned long UBaseType_t;
+ 100:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h **** 
+ 101:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h **** #if( configUSE_16_BIT_TICKS == 1 )
+ 102:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h **** 	typedef uint16_t TickType_t;
+ 103:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h **** 	#define portMAX_DELAY ( TickType_t ) 0xffff
+ 104:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h **** #else
+ 105:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h **** 	typedef uint32_t TickType_t;
+ 106:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h **** 	#define portMAX_DELAY ( TickType_t ) 0xffffffffUL
+ 107:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h **** 
+ 108:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h **** 	/* 32-bit tick type on a 32-bit architecture, so reads of the tick count do
+ 109:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h **** 	not need to be guarded with a critical section. */
+ 110:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h **** 	#define portTICK_TYPE_IS_ATOMIC 1
+ 111:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h **** #endif
+ 112:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h **** /*-----------------------------------------------------------*/
+ 113:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h **** 
+ 114:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h **** /* Architecture specifics. */
+ 115:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h **** #define portSTACK_GROWTH			( -1 )
+ 116:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h **** #define portTICK_PERIOD_MS			( ( TickType_t ) 1000 / configTICK_RATE_HZ )
+ 117:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h **** #define portBYTE_ALIGNMENT			8
+ 118:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h **** /*-----------------------------------------------------------*/
+ 119:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h **** 
+ 120:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h **** /* Scheduler utilities. */
+ 121:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h **** #define portYIELD() 															\
+ 122:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h **** {																				\
+ARM GAS  /tmp/ccOLls8W.s 			page 6
+
+
+ 123:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h **** 	/* Set a PendSV to request a context switch. */								\
+ 124:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h **** 	portNVIC_INT_CTRL_REG = portNVIC_PENDSVSET_BIT;								\
+ 125:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h **** 																				\
+ 126:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h **** 	/* Barriers are normally not required but do ensure the code is completely	\
+ 127:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h **** 	within the specified behaviour for the architecture. */						\
+ 128:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h **** 	__asm volatile( "dsb" );													\
+ 129:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h **** 	__asm volatile( "isb" );													\
+ 130:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h **** }
+ 131:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h **** 
+ 132:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h **** #define portNVIC_INT_CTRL_REG		( * ( ( volatile uint32_t * ) 0xe000ed04 ) )
+ 133:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h **** #define portNVIC_PENDSVSET_BIT		( 1UL << 28UL )
+ 134:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h **** #define portEND_SWITCHING_ISR( xSwitchRequired ) if( xSwitchRequired != pdFALSE ) portYIELD()
+ 135:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h **** #define portYIELD_FROM_ISR( x ) portEND_SWITCHING_ISR( x )
+ 136:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h **** /*-----------------------------------------------------------*/
+ 137:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h **** 
+ 138:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h **** /* Critical section management. */
+ 139:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h **** extern void vPortEnterCritical( void );
+ 140:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h **** extern void vPortExitCritical( void );
+ 141:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h **** #define portSET_INTERRUPT_MASK_FROM_ISR()		ulPortRaiseBASEPRI()
+ 142:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h **** #define portCLEAR_INTERRUPT_MASK_FROM_ISR(x)	vPortSetBASEPRI(x)
+ 143:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h **** #define portDISABLE_INTERRUPTS()				vPortRaiseBASEPRI()
+ 144:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h **** #define portENABLE_INTERRUPTS()					vPortSetBASEPRI(0)
+ 145:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h **** #define portENTER_CRITICAL()					vPortEnterCritical()
+ 146:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h **** #define portEXIT_CRITICAL()						vPortExitCritical()
+ 147:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h **** 
+ 148:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h **** /*-----------------------------------------------------------*/
+ 149:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h **** 
+ 150:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h **** /* Task function macros as described on the FreeRTOS.org WEB site.  These are
+ 151:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h **** not necessary for to use this port.  They are defined so the common demo files
+ 152:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h **** (which build with all the ports) will build. */
+ 153:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h **** #define portTASK_FUNCTION_PROTO( vFunction, pvParameters ) void vFunction( void *pvParameters )
+ 154:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h **** #define portTASK_FUNCTION( vFunction, pvParameters ) void vFunction( void *pvParameters )
+ 155:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h **** /*-----------------------------------------------------------*/
+ 156:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h **** 
+ 157:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h **** /* Tickless idle/low power functionality. */
+ 158:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h **** #ifndef portSUPPRESS_TICKS_AND_SLEEP
+ 159:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h **** 	extern void vPortSuppressTicksAndSleep( TickType_t xExpectedIdleTime );
+ 160:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h **** 	#define portSUPPRESS_TICKS_AND_SLEEP( xExpectedIdleTime ) vPortSuppressTicksAndSleep( xExpectedIdl
+ 161:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h **** #endif
+ 162:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h **** /*-----------------------------------------------------------*/
+ 163:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h **** 
+ 164:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h **** /* Architecture specific optimisations. */
+ 165:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h **** #ifndef configUSE_PORT_OPTIMISED_TASK_SELECTION
+ 166:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h **** 	#define configUSE_PORT_OPTIMISED_TASK_SELECTION 1
+ 167:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h **** #endif
+ 168:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h **** 
+ 169:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h **** #if configUSE_PORT_OPTIMISED_TASK_SELECTION == 1
+ 170:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h **** 
+ 171:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h **** 	/* Generic helper function. */
+ 172:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h **** 	__attribute__( ( always_inline ) ) static inline uint8_t ucPortCountLeadingZeros( uint32_t ulBitma
+ 173:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h **** 	{
+ 174:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h **** 	uint8_t ucReturn;
+ 175:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h **** 
+ 176:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h **** 		__asm volatile ( "clz %0, %1" : "=r" ( ucReturn ) : "r" ( ulBitmap ) );
+ 177:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h **** 		return ucReturn;
+ 178:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h **** 	}
+ 179:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h **** 
+ARM GAS  /tmp/ccOLls8W.s 			page 7
+
+
+ 180:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h **** 	/* Check the configuration. */
+ 181:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h **** 	#if( configMAX_PRIORITIES > 32 )
+ 182:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h **** 		#error configUSE_PORT_OPTIMISED_TASK_SELECTION can only be set to 1 when configMAX_PRIORITIES is 
+ 183:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h **** 	#endif
+ 184:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h **** 
+ 185:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h **** 	/* Store/clear the ready priorities in a bit map. */
+ 186:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h **** 	#define portRECORD_READY_PRIORITY( uxPriority, uxReadyPriorities ) ( uxReadyPriorities ) |= ( 1UL 
+ 187:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h **** 	#define portRESET_READY_PRIORITY( uxPriority, uxReadyPriorities ) ( uxReadyPriorities ) &= ~( 1UL 
+ 188:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h **** 
+ 189:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h **** 	/*-----------------------------------------------------------*/
+ 190:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h **** 
+ 191:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h **** 	#define portGET_HIGHEST_PRIORITY( uxTopPriority, uxReadyPriorities ) uxTopPriority = ( 31UL - ( ui
+ 192:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h **** 
+ 193:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h **** #endif /* configUSE_PORT_OPTIMISED_TASK_SELECTION */
+ 194:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h **** 
+ 195:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h **** /*-----------------------------------------------------------*/
+ 196:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h **** 
+ 197:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h **** #ifdef configASSERT
+ 198:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h **** 	void vPortValidateInterruptPriority( void );
+ 199:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h **** 	#define portASSERT_IF_INTERRUPT_PRIORITY_INVALID() 	vPortValidateInterruptPriority()
+ 200:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h **** #endif
+ 201:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h **** 
+ 202:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h **** /* portNOP() is not required by this port. */
+ 203:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h **** #define portNOP()
+ 204:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h **** 
+ 205:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h **** #define portINLINE	__inline
+ 206:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h **** 
+ 207:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h **** #ifndef portFORCE_INLINE
+ 208:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h **** 	#define portFORCE_INLINE inline __attribute__(( always_inline))
+ 209:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h **** #endif
+ 210:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h **** 
+ 211:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h **** portFORCE_INLINE static BaseType_t xPortIsInsideInterrupt( void )
+ 212:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h **** {
+ 213:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h **** uint32_t ulCurrentInterrupt;
+ 214:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h **** BaseType_t xReturn;
+ 215:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h **** 
+ 216:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h **** 	/* Obtain the number of the currently executing interrupt. */
+ 217:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h **** 	__asm volatile( "mrs %0, ipsr" : "=r"( ulCurrentInterrupt ) );
+ 218:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h **** 
+ 219:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h **** 	if( ulCurrentInterrupt == 0 )
+ 220:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h **** 	{
+ 221:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h **** 		xReturn = pdFALSE;
+ 222:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h **** 	}
+ 223:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h **** 	else
+ 224:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h **** 	{
+ 225:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h **** 		xReturn = pdTRUE;
+ 226:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h **** 	}
+ 227:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h **** 
+ 228:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h **** 	return xReturn;
+ 229:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h **** }
+ 230:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h **** 
+ 231:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h **** /*-----------------------------------------------------------*/
+ 232:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h **** 
+ 233:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h **** portFORCE_INLINE static void vPortRaiseBASEPRI( void )
+ 234:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h **** {
+ 235:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h **** uint32_t ulNewBASEPRI;
+ 236:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h **** 
+ARM GAS  /tmp/ccOLls8W.s 			page 8
+
+
+ 237:Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h **** 	__asm volatile
+  43              		.loc 2 237 0
+  44              	@ 237 "Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h" 1
+  45 0006 4FF05003 			mov r3, #80												
+  46 000a 72B6     		cpsid i													
+  47 000c 83F31188 		msr basepri, r3											
+  48 0010 BFF36F8F 		isb														
+  49 0014 BFF34F8F 		dsb														
+  50 0018 62B6     		cpsie i													
+  51              	
+  52              	@ 0 "" 2
+  53              	.LVL1:
+  54              		.thumb
+  55              	.L3:
+  56              	.LBE5:
+  57              	.LBE4:
+  58              		.loc 1 122 0 discriminator 1
+  59 001a FEE7     		b	.L3
+  60              	.L2:
+ 123:Src/main.c    ****     //HAL_UART_Transmit(&huart3, "Main Task\n", strlen("Main Task\n"), 0xFF);
+ 124:Src/main.c    **** 
+ 125:Src/main.c    ****     /*Main Task LED*/
+ 126:Src/main.c    ****     HAL_GPIO_WritePin(GPIOB, GPIO_PIN_0, GPIO_PIN_SET);
+  61              		.loc 1 126 0
+  62 001c 0548     		ldr	r0, .L7
+  63              	.LVL2:
+  64 001e 0121     		movs	r1, #1
+  65 0020 0A46     		mov	r2, r1
+  66 0022 FFF7FEFF 		bl	HAL_GPIO_WritePin
+  67              	.LVL3:
+ 127:Src/main.c    **** 
+ 128:Src/main.c    ****     /*Launching Finite State Machine*/
+ 129:Src/main.c    ****     while(state_fn)
+  68              		.loc 1 129 0
+  69 0026 00E0     		b	.L4
+  70              	.L5:
+ 130:Src/main.c    ****     {
+ 131:Src/main.c    ****     	(*state_fn)();
+  71              		.loc 1 131 0
+  72 0028 9847     		blx	r3
+  73              	.LVL4:
+  74              	.L4:
+ 129:Src/main.c    ****     {
+  75              		.loc 1 129 0
+  76 002a 034B     		ldr	r3, .L7+4
+  77 002c 1B68     		ldr	r3, [r3]
+  78 002e 002B     		cmp	r3, #0
+  79 0030 FAD1     		bne	.L5
+ 132:Src/main.c    ****     }
+ 133:Src/main.c    **** }
+  80              		.loc 1 133 0
+  81 0032 08BD     		pop	{r3, pc}
+  82              	.L8:
+  83              		.align	2
+  84              	.L7:
+  85 0034 00040240 		.word	1073873920
+  86 0038 00000000 		.word	.LANCHOR0
+ARM GAS  /tmp/ccOLls8W.s 			page 9
+
+
+  87              		.cfi_endproc
+  88              	.LFE141:
+  90              		.section	.text.idle,"ax",%progbits
+  91              		.align	2
+  92              		.thumb
+  93              		.thumb_func
+  95              	idle:
+  96              	.LFB142:
+ 134:Src/main.c    **** 
+ 135:Src/main.c    **** static void idle(void)
+ 136:Src/main.c    **** {
+  97              		.loc 1 136 0
+  98              		.cfi_startproc
+  99              		@ args = 0, pretend = 0, frame = 0
+ 100              		@ frame_needed = 0, uses_anonymous_args = 0
+ 101 0000 08B5     		push	{r3, lr}
+ 102              	.LCFI1:
+ 103              		.cfi_def_cfa_offset 8
+ 104              		.cfi_offset 3, -8
+ 105              		.cfi_offset 14, -4
+ 137:Src/main.c    **** 	HAL_UART_Receive_IT(&huart3, (uint8_t *) recv, 0x24);
+ 106              		.loc 1 137 0
+ 107 0002 0348     		ldr	r0, .L11
+ 108 0004 0349     		ldr	r1, .L11+4
+ 109 0006 2422     		movs	r2, #36
+ 110 0008 FFF7FEFF 		bl	HAL_UART_Receive_IT
+ 111              	.LVL5:
+ 112 000c 08BD     		pop	{r3, pc}
+ 113              	.L12:
+ 114 000e 00BF     		.align	2
+ 115              	.L11:
+ 116 0010 00000000 		.word	huart3
+ 117 0014 00000000 		.word	.LANCHOR1
+ 118              		.cfi_endproc
+ 119              	.LFE142:
+ 121              		.section	.text.MX_GPIO_Init,"ax",%progbits
+ 122              		.align	2
+ 123              		.thumb
+ 124              		.thumb_func
+ 126              	MX_GPIO_Init:
+ 127              	.LFB151:
+ 138:Src/main.c    **** }
+ 139:Src/main.c    **** 
+ 140:Src/main.c    **** void computeEntry(void)
+ 141:Src/main.c    **** {
+ 142:Src/main.c    **** 	char codeOp[8];
+ 143:Src/main.c    **** 	char name[24];
+ 144:Src/main.c    **** 	char hours[8];
+ 145:Src/main.c    **** 	char minutes[8];
+ 146:Src/main.c    **** 	char volume[8];
+ 147:Src/main.c    **** 
+ 148:Src/main.c    **** 	parse(codeOp, name, hours, minutes, volume);
+ 149:Src/main.c    **** 
+ 150:Src/main.c    **** 	unsigned int ucodeOp = atoi(codeOp);
+ 151:Src/main.c    **** 	unsigned int uhours = atoi(hours);
+ 152:Src/main.c    **** 	unsigned int uminutes = atoi(minutes);
+ 153:Src/main.c    **** 	unsigned int uvolume = atoi(volume);
+ARM GAS  /tmp/ccOLls8W.s 			page 10
+
+
+ 154:Src/main.c    **** 	
+ 155:Src/main.c    **** 	/*Deletion operation*/
+ 156:Src/main.c    **** 	if( ucodeOp == 0 )
+ 157:Src/main.c    **** 	{
+ 158:Src/main.c    **** 		if(CheckName(&drugCureList, name) > 0)
+ 159:Src/main.c    **** 		{
+ 160:Src/main.c    **** 			RemoveCure(&drugCureList, name);
+ 161:Src/main.c    **** 		}
+ 162:Src/main.c    **** 	}
+ 163:Src/main.c    **** 
+ 164:Src/main.c    **** 	/*Creation operation Mode*/
+ 165:Src/main.c    **** 	else if( ucodeOp ==  1)
+ 166:Src/main.c    **** 	{
+ 167:Src/main.c    **** 		/*Check that the number of task is less than  3*/
+ 168:Src/main.c    **** 		if(uxTaskGetNumberOfTasks() < 4)
+ 169:Src/main.c    **** 		{
+ 170:Src/main.c    **** 			AddCureDrug(&drugCureList, name, uhours, uminutes, uvolume);
+ 171:Src/main.c    **** 			LaunchCure(&drugCureList, name);
+ 172:Src/main.c    **** 		}
+ 173:Src/main.c    **** 	}
+ 174:Src/main.c    **** 	/*Modification Operation Mode*/
+ 175:Src/main.c    **** 	else if( ucodeOp  == 2 )
+ 176:Src/main.c    **** 	{
+ 177:Src/main.c    **** 		if(CheckName(&drugCureList, name) > 0)
+ 178:Src/main.c    **** 				{
+ 179:Src/main.c    **** 					ModifyCure(&drugCureList, name, uhours, uminutes, uvolume);
+ 180:Src/main.c    **** 				}
+ 181:Src/main.c    **** 	}
+ 182:Src/main.c    **** 
+ 183:Src/main.c    **** 	/*Received Wrong Packet*/
+ 184:Src/main.c    **** 	else
+ 185:Src/main.c    **** 	{
+ 186:Src/main.c    **** 	}
+ 187:Src/main.c    **** 
+ 188:Src/main.c    **** 	/*Back to idle state in the FSM*/
+ 189:Src/main.c    **** 	state_fn = idle;
+ 190:Src/main.c    **** }
+ 191:Src/main.c    **** 
+ 192:Src/main.c    **** void parse(char * codeOp, char * name, char * hours, char * minutes, char * volume)
+ 193:Src/main.c    **** {
+ 194:Src/main.c    **** 	int i;
+ 195:Src/main.c    **** 	char *Strptr = (char *) & recv;
+ 196:Src/main.c    **** 
+ 197:Src/main.c    **** 	for( i=0 ; i<4 ; i++, Strptr++)
+ 198:Src/main.c    **** 		*(codeOp + i) = *(Strptr);
+ 199:Src/main.c    **** 	*(codeOp + 4 )='\0';
+ 200:Src/main.c    **** 
+ 201:Src/main.c    **** 	for( i=0 ; i<20 ; i++, Strptr++)
+ 202:Src/main.c    **** 		*(name + i) = *(Strptr);
+ 203:Src/main.c    **** 	*(name + 20) ='\0';
+ 204:Src/main.c    **** 
+ 205:Src/main.c    **** 	for( i=0 ; i<4 ; i++, Strptr++ )
+ 206:Src/main.c    **** 			*(hours +i) = *(Strptr);
+ 207:Src/main.c    **** 	*(hours +4) ='\0';
+ 208:Src/main.c    **** 
+ 209:Src/main.c    **** 	for( i=0 ; i<4 ; i++, Strptr++ )
+ 210:Src/main.c    **** 			*(minutes + i) = *(Strptr);
+ARM GAS  /tmp/ccOLls8W.s 			page 11
+
+
+ 211:Src/main.c    **** 	*(minutes + 5) ='\0';
+ 212:Src/main.c    **** 
+ 213:Src/main.c    **** 	for( i=0 ; i<4 ; i++, Strptr++ )
+ 214:Src/main.c    **** 			*(volume + i) = *(Strptr);
+ 215:Src/main.c    **** 	*(volume + 5)='\0';
+ 216:Src/main.c    **** 	return;
+ 217:Src/main.c    **** }
+ 218:Src/main.c    **** 
+ 219:Src/main.c    **** char * concat(int id, char * name, uint32_t count)
+ 220:Src/main.c    **** {
+ 221:Src/main.c    **** 	char *ptr_buffer = (char *) malloc(sizeof(char) * 48);
+ 222:Src/main.c    **** 
+ 223:Src/main.c    **** 	if(ptr_buffer == 0x00)
+ 224:Src/main.c    **** 	{
+ 225:Src/main.c    **** 		perror("malloc");
+ 226:Src/main.c    **** 	}
+ 227:Src/main.c    **** 
+ 228:Src/main.c    **** 	char *ptr_begin_buffer = ptr_buffer;
+ 229:Src/main.c    **** 
+ 230:Src/main.c    ****     char buf_name[24];
+ 231:Src/main.c    ****     char buf_id[8];
+ 232:Src/main.c    ****     char buf_count[12];
+ 233:Src/main.c    **** 
+ 234:Src/main.c    **** 
+ 235:Src/main.c    ****     char *ptr_id = (char *) buf_id;
+ 236:Src/main.c    ****     char *ptr_name = (char *) buf_name;
+ 237:Src/main.c    ****     char *ptr_count = (char *) buf_count;
+ 238:Src/main.c    **** 
+ 239:Src/main.c    ****     int i;
+ 240:Src/main.c    **** 
+ 241:Src/main.c    ****     sprintf(buf_name, "%s", name);
+ 242:Src/main.c    ****     sprintf(buf_id, "%d", id);
+ 243:Src/main.c    ****     //sprintf(buf_count, "%zu", count);
+ 244:Src/main.c    **** 	sprintf(buf_count, "%" PRIu32 , count);
+ 245:Src/main.c    **** 
+ 246:Src/main.c    ****     if(strlen(buf_id) <= 4)
+ 247:Src/main.c    ****     {
+ 248:Src/main.c    ****         for(i=0;i<(4-strlen(buf_id));i++, ptr_buffer++)
+ 249:Src/main.c    ****         {
+ 250:Src/main.c    ****             *(ptr_buffer) = '0';
+ 251:Src/main.c    ****         }
+ 252:Src/main.c    **** 
+ 253:Src/main.c    ****         for(i=0;i<strlen(buf_id);i++, ptr_buffer++, ptr_id++)
+ 254:Src/main.c    ****         {
+ 255:Src/main.c    ****             *(ptr_buffer) = *(ptr_id);
+ 256:Src/main.c    ****         }
+ 257:Src/main.c    ****     }
+ 258:Src/main.c    ****     *(buf_id + 4) = '\0';
+ 259:Src/main.c    **** 
+ 260:Src/main.c    ****     if(strlen(buf_name) <= 20)
+ 261:Src/main.c    ****     {
+ 262:Src/main.c    ****         for(i=0;i<(20-strlen(buf_name));i++, ptr_buffer++)
+ 263:Src/main.c    ****         {
+ 264:Src/main.c    ****             *(ptr_buffer) = '0';
+ 265:Src/main.c    ****         }
+ 266:Src/main.c    **** 
+ 267:Src/main.c    ****         for(i=0;i<strlen(buf_name);i++, ptr_buffer++, ptr_name++)
+ARM GAS  /tmp/ccOLls8W.s 			page 12
+
+
+ 268:Src/main.c    ****         {
+ 269:Src/main.c    ****             *(ptr_buffer) = *(ptr_name);
+ 270:Src/main.c    ****         }
+ 271:Src/main.c    **** 
+ 272:Src/main.c    ****     }
+ 273:Src/main.c    ****     *(buf_name + 20) = '\0';
+ 274:Src/main.c    **** 
+ 275:Src/main.c    ****     if(strlen(buf_count) <= 8)
+ 276:Src/main.c    ****     {
+ 277:Src/main.c    ****         for(i=0;i<(8-strlen(buf_count));i++, ptr_buffer++)
+ 278:Src/main.c    ****         {
+ 279:Src/main.c    ****             *(ptr_buffer) = '0';
+ 280:Src/main.c    ****         }
+ 281:Src/main.c    **** 
+ 282:Src/main.c    ****         for(i=0;i<strlen(buf_count);i++, ptr_buffer++, ptr_count++)
+ 283:Src/main.c    ****         {
+ 284:Src/main.c    ****             *(ptr_buffer) = *(ptr_count);
+ 285:Src/main.c    ****         }
+ 286:Src/main.c    ****     }
+ 287:Src/main.c    ****     *(ptr_buffer) = '\0';
+ 288:Src/main.c    **** 
+ 289:Src/main.c    ****  return ptr_begin_buffer;
+ 290:Src/main.c    **** }
+ 291:Src/main.c    **** 
+ 292:Src/main.c    **** /*Uart CallBack For Changing the FSM*/
+ 293:Src/main.c    **** void HAL_UART_RxCpltCallback( UART_HandleTypeDef * huart )
+ 294:Src/main.c    **** {
+ 295:Src/main.c    **** 	  state_fn = computeEntry;
+ 296:Src/main.c    **** }
+ 297:Src/main.c    **** 
+ 298:Src/main.c    **** /* Task Cure 1 */
+ 299:Src/main.c    **** void vCureTaskCodeA( void * pvParameters )
+ 300:Src/main.c    **** {
+ 301:Src/main.c    **** 	char *buffer = 0x00;
+ 302:Src/main.c    ****     
+ 303:Src/main.c    **** 	DrugCure *drug = pvParameters;
+ 304:Src/main.c    **** 
+ 305:Src/main.c    **** 	int id = 1;
+ 306:Src/main.c    **** 	int i; 
+ 307:Src/main.c    **** 
+ 308:Src/main.c    **** 	uint32_t tickBegin;
+ 309:Src/main.c    **** 	uint32_t tickDuration;
+ 310:Src/main.c    **** 	uint32_t cureDuration = drug->hours * 3600 + drug->minutes*60;
+ 311:Src/main.c    **** 
+ 312:Src/main.c    **** 	tickBegin = xTaskGetTickCount();
+ 313:Src/main.c    **** 
+ 314:Src/main.c    ****     for( ;; )
+ 315:Src/main.c    ****     {
+ 316:Src/main.c    ****     	for(i=0;i<5;i++)
+ 317:Src/main.c    ****         {
+ 318:Src/main.c    ****         	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_7, GPIO_PIN_SET);
+ 319:Src/main.c    ****         	vTaskDelay(25);
+ 320:Src/main.c    ****         	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_7, GPIO_PIN_RESET);
+ 321:Src/main.c    ****         }
+ 322:Src/main.c    **** 
+ 323:Src/main.c    ****     	tickDuration = xTaskGetTickCount();
+ 324:Src/main.c    **** 
+ARM GAS  /tmp/ccOLls8W.s 			page 13
+
+
+ 325:Src/main.c    ****     	if(( (tickDuration - tickBegin) /configTICK_RATE_HZ) <= cureDuration)
+ 326:Src/main.c    **** 		{
+ 327:Src/main.c    ****     		if( xSemaphoreTake(drug->xSemaphore, ( TickType_t ) 1000 ) == pdTRUE )
+ 328:Src/main.c    ****     		{
+ 329:Src/main.c    ****     			buffer = concat(id, drug->name, ((tickDuration - tickBegin)/configTICK_RATE_HZ));
+ 330:Src/main.c    ****     			xSemaphoreGive(drug->xSemaphore);
+ 331:Src/main.c    ****     		}
+ 332:Src/main.c    ****     		HAL_UART_Transmit(&huart3, (uint8_t *) buffer, strlen(buffer), 0xFF);
+ 333:Src/main.c    ****     		free(buffer);
+ 334:Src/main.c    ****     		buffer = 0x00;
+ 335:Src/main.c    **** 		}
+ 336:Src/main.c    **** 
+ 337:Src/main.c    **** 		vTaskDelay(1000);
+ 338:Src/main.c    **** 	}
+ 339:Src/main.c    **** }
+ 340:Src/main.c    **** 
+ 341:Src/main.c    **** 
+ 342:Src/main.c    **** /* Task Cure 2 */
+ 343:Src/main.c    **** void vCureTaskCodeB( void * pvParameters )
+ 344:Src/main.c    **** {
+ 345:Src/main.c    **** 	char *buffer = 0x00;
+ 346:Src/main.c    **** 
+ 347:Src/main.c    **** 	DrugCure *drug = pvParameters;
+ 348:Src/main.c    **** 
+ 349:Src/main.c    **** 	int id = 2;
+ 350:Src/main.c    **** 	int i;	
+ 351:Src/main.c    **** 
+ 352:Src/main.c    **** 	uint32_t tickBegin;
+ 353:Src/main.c    **** 	uint32_t tickDuration;
+ 354:Src/main.c    **** 	uint32_t cureDuration = drug->hours * 3600 + drug->minutes*60;
+ 355:Src/main.c    **** 
+ 356:Src/main.c    **** 
+ 357:Src/main.c    **** 	tickBegin = xTaskGetTickCount();
+ 358:Src/main.c    **** 
+ 359:Src/main.c    ****     for( ;; )
+ 360:Src/main.c    ****     {
+ 361:Src/main.c    **** 	   	for(i=0;i<5;i++)
+ 362:Src/main.c    ****         {
+ 363:Src/main.c    ****         	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_14, GPIO_PIN_SET);
+ 364:Src/main.c    ****         	vTaskDelay(25);
+ 365:Src/main.c    ****         	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_14, GPIO_PIN_RESET);
+ 366:Src/main.c    ****         }
+ 367:Src/main.c    **** 
+ 368:Src/main.c    ****     	tickDuration = xTaskGetTickCount();
+ 369:Src/main.c    **** 
+ 370:Src/main.c    ****     	if(( (tickDuration - tickBegin) /configTICK_RATE_HZ) <= cureDuration)
+ 371:Src/main.c    **** 		{
+ 372:Src/main.c    **** 	   		if( xSemaphoreTake(drug->xSemaphore, ( TickType_t ) 1000 ) == pdTRUE )
+ 373:Src/main.c    ****     		{
+ 374:Src/main.c    **** 	    		buffer = concat(id, drug->name, ((tickDuration - tickBegin)/configTICK_RATE_HZ));
+ 375:Src/main.c    **** 	    		xSemaphoreGive(drug->xSemaphore);
+ 376:Src/main.c    **** 	    	}
+ 377:Src/main.c    **** 	    	HAL_UART_Transmit(&huart3, (uint8_t *) buffer, strlen(buffer), 0xFF);
+ 378:Src/main.c    **** 	    	free(buffer);
+ 379:Src/main.c    **** 	    	buffer = 0x00;
+ 380:Src/main.c    **** 
+ 381:Src/main.c    **** 		}
+ARM GAS  /tmp/ccOLls8W.s 			page 14
+
+
+ 382:Src/main.c    **** 	  	
+ 383:Src/main.c    **** 		vTaskDelay(1000);
+ 384:Src/main.c    **** 	}
+ 385:Src/main.c    **** }
+ 386:Src/main.c    **** 
+ 387:Src/main.c    **** /**
+ 388:Src/main.c    ****   * @brief System Clock Configuration
+ 389:Src/main.c    ****   * @retval None
+ 390:Src/main.c    ****   */
+ 391:Src/main.c    **** void SystemClock_Config(void)
+ 392:Src/main.c    **** {
+ 393:Src/main.c    **** 
+ 394:Src/main.c    ****   RCC_OscInitTypeDef RCC_OscInitStruct;
+ 395:Src/main.c    ****   RCC_ClkInitTypeDef RCC_ClkInitStruct;
+ 396:Src/main.c    ****   RCC_PeriphCLKInitTypeDef PeriphClkInitStruct;
+ 397:Src/main.c    **** 
+ 398:Src/main.c    ****     /**Configure the main internal regulator output voltage 
+ 399:Src/main.c    ****     */
+ 400:Src/main.c    ****   __HAL_RCC_PWR_CLK_ENABLE();
+ 401:Src/main.c    **** 
+ 402:Src/main.c    ****   __HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE1);
+ 403:Src/main.c    **** 
+ 404:Src/main.c    ****     /**Initializes the CPU, AHB and APB busses clocks 
+ 405:Src/main.c    ****     */
+ 406:Src/main.c    ****   RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI;
+ 407:Src/main.c    ****   RCC_OscInitStruct.HSIState = RCC_HSI_ON;
+ 408:Src/main.c    ****   RCC_OscInitStruct.HSICalibrationValue = 16;
+ 409:Src/main.c    ****   RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
+ 410:Src/main.c    ****   RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSI;
+ 411:Src/main.c    ****   RCC_OscInitStruct.PLL.PLLM = 8;
+ 412:Src/main.c    ****   RCC_OscInitStruct.PLL.PLLN = 216;
+ 413:Src/main.c    ****   RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV2;
+ 414:Src/main.c    ****   RCC_OscInitStruct.PLL.PLLQ = 2;
+ 415:Src/main.c    ****   if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
+ 416:Src/main.c    ****   {
+ 417:Src/main.c    ****     _Error_Handler(__FILE__, __LINE__);
+ 418:Src/main.c    ****   }
+ 419:Src/main.c    **** 
+ 420:Src/main.c    ****     /**Activate the Over-Drive mode 
+ 421:Src/main.c    ****     */
+ 422:Src/main.c    ****   if (HAL_PWREx_EnableOverDrive() != HAL_OK)
+ 423:Src/main.c    ****   {
+ 424:Src/main.c    ****     _Error_Handler(__FILE__, __LINE__);
+ 425:Src/main.c    ****   }
+ 426:Src/main.c    **** 
+ 427:Src/main.c    ****     /**Initializes the CPU, AHB and APB busses clocks 
+ 428:Src/main.c    ****     */
+ 429:Src/main.c    ****   RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK|RCC_CLOCKTYPE_SYSCLK
+ 430:Src/main.c    ****                               |RCC_CLOCKTYPE_PCLK1|RCC_CLOCKTYPE_PCLK2;
+ 431:Src/main.c    ****   RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
+ 432:Src/main.c    ****   RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
+ 433:Src/main.c    ****   RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV4;
+ 434:Src/main.c    ****   RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV2;
+ 435:Src/main.c    **** 
+ 436:Src/main.c    ****   if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_7) != HAL_OK)
+ 437:Src/main.c    ****   {
+ 438:Src/main.c    ****     _Error_Handler(__FILE__, __LINE__);
+ARM GAS  /tmp/ccOLls8W.s 			page 15
+
+
+ 439:Src/main.c    ****   }
+ 440:Src/main.c    **** 
+ 441:Src/main.c    ****   PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_USART3;
+ 442:Src/main.c    ****   PeriphClkInitStruct.Usart3ClockSelection = RCC_USART3CLKSOURCE_PCLK1;
+ 443:Src/main.c    ****   if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInitStruct) != HAL_OK)
+ 444:Src/main.c    ****   {
+ 445:Src/main.c    ****     _Error_Handler(__FILE__, __LINE__);
+ 446:Src/main.c    ****   }
+ 447:Src/main.c    **** 
+ 448:Src/main.c    ****     /**Configure the Systick interrupt time 
+ 449:Src/main.c    ****     */
+ 450:Src/main.c    ****   HAL_SYSTICK_Config(HAL_RCC_GetHCLKFreq()/1000);
+ 451:Src/main.c    **** 
+ 452:Src/main.c    ****     /**Configure the Systick 
+ 453:Src/main.c    ****     */
+ 454:Src/main.c    ****   HAL_SYSTICK_CLKSourceConfig(SYSTICK_CLKSOURCE_HCLK);
+ 455:Src/main.c    **** 
+ 456:Src/main.c    ****   /* SysTick_IRQn interrupt configuration */
+ 457:Src/main.c    ****   HAL_NVIC_SetPriority(SysTick_IRQn, 15, 0);
+ 458:Src/main.c    **** }
+ 459:Src/main.c    **** 
+ 460:Src/main.c    **** /* USART3 init function */
+ 461:Src/main.c    **** static void MX_USART3_UART_Init(void)
+ 462:Src/main.c    **** {
+ 463:Src/main.c    **** 
+ 464:Src/main.c    ****   huart3.Instance = USART3;
+ 465:Src/main.c    ****   huart3.Init.BaudRate = 115200;
+ 466:Src/main.c    ****   huart3.Init.WordLength = UART_WORDLENGTH_8B;
+ 467:Src/main.c    ****   huart3.Init.StopBits = UART_STOPBITS_1;
+ 468:Src/main.c    ****   huart3.Init.Parity = UART_PARITY_NONE;
+ 469:Src/main.c    ****   huart3.Init.Mode = UART_MODE_TX_RX;
+ 470:Src/main.c    ****   huart3.Init.HwFlowCtl = UART_HWCONTROL_NONE;
+ 471:Src/main.c    ****   huart3.Init.OverSampling = UART_OVERSAMPLING_16;
+ 472:Src/main.c    ****   huart3.Init.OneBitSampling = UART_ONE_BIT_SAMPLE_DISABLE;
+ 473:Src/main.c    ****   huart3.AdvancedInit.AdvFeatureInit = UART_ADVFEATURE_NO_INIT;
+ 474:Src/main.c    ****   if (HAL_UART_Init(&huart3) != HAL_OK)
+ 475:Src/main.c    ****   {
+ 476:Src/main.c    ****     _Error_Handler(__FILE__, __LINE__);
+ 477:Src/main.c    ****   }
+ 478:Src/main.c    **** 
+ 479:Src/main.c    **** }
+ 480:Src/main.c    **** 
+ 481:Src/main.c    **** /** Configure pins as 
+ 482:Src/main.c    ****         * Analog 
+ 483:Src/main.c    ****         * Input 
+ 484:Src/main.c    ****         * Output
+ 485:Src/main.c    ****         * EVENT_OUT
+ 486:Src/main.c    ****         * EXTI
+ 487:Src/main.c    **** */
+ 488:Src/main.c    **** static void MX_GPIO_Init(void)
+ 489:Src/main.c    **** {
+ 128              		.loc 1 489 0
+ 129              		.cfi_startproc
+ 130              		@ args = 0, pretend = 0, frame = 40
+ 131              		@ frame_needed = 0, uses_anonymous_args = 0
+ 132 0000 10B5     		push	{r4, lr}
+ 133              	.LCFI2:
+ARM GAS  /tmp/ccOLls8W.s 			page 16
+
+
+ 134              		.cfi_def_cfa_offset 8
+ 135              		.cfi_offset 4, -8
+ 136              		.cfi_offset 14, -4
+ 137 0002 8AB0     		sub	sp, sp, #40
+ 138              	.LCFI3:
+ 139              		.cfi_def_cfa_offset 48
+ 140              	.LBB6:
+ 490:Src/main.c    **** 
+ 491:Src/main.c    ****   GPIO_InitTypeDef GPIO_InitStruct;
+ 492:Src/main.c    **** 
+ 493:Src/main.c    ****   /* GPIO Ports Clock Enable */
+ 494:Src/main.c    ****   __HAL_RCC_GPIOH_CLK_ENABLE();
+ 141              		.loc 1 494 0
+ 142 0004 1C4B     		ldr	r3, .L15
+ 143 0006 1A6B     		ldr	r2, [r3, #48]
+ 144 0008 42F08002 		orr	r2, r2, #128
+ 145 000c 1A63     		str	r2, [r3, #48]
+ 146 000e 1A6B     		ldr	r2, [r3, #48]
+ 147 0010 02F08002 		and	r2, r2, #128
+ 148 0014 0192     		str	r2, [sp, #4]
+ 149 0016 019A     		ldr	r2, [sp, #4]
+ 150              	.LBE6:
+ 151              	.LBB7:
+ 495:Src/main.c    ****   __HAL_RCC_GPIOB_CLK_ENABLE();
+ 152              		.loc 1 495 0
+ 153 0018 1A6B     		ldr	r2, [r3, #48]
+ 154 001a 42F00202 		orr	r2, r2, #2
+ 155 001e 1A63     		str	r2, [r3, #48]
+ 156 0020 1A6B     		ldr	r2, [r3, #48]
+ 157 0022 02F00202 		and	r2, r2, #2
+ 158 0026 0292     		str	r2, [sp, #8]
+ 159 0028 029A     		ldr	r2, [sp, #8]
+ 160              	.LBE7:
+ 161              	.LBB8:
+ 496:Src/main.c    ****   __HAL_RCC_GPIOD_CLK_ENABLE();
+ 162              		.loc 1 496 0
+ 163 002a 1A6B     		ldr	r2, [r3, #48]
+ 164 002c 42F00802 		orr	r2, r2, #8
+ 165 0030 1A63     		str	r2, [r3, #48]
+ 166 0032 1A6B     		ldr	r2, [r3, #48]
+ 167 0034 02F00802 		and	r2, r2, #8
+ 168 0038 0392     		str	r2, [sp, #12]
+ 169 003a 039A     		ldr	r2, [sp, #12]
+ 170              	.LBE8:
+ 171              	.LBB9:
+ 497:Src/main.c    ****   __HAL_RCC_GPIOA_CLK_ENABLE();
+ 172              		.loc 1 497 0
+ 173 003c 1A6B     		ldr	r2, [r3, #48]
+ 174 003e 42F00102 		orr	r2, r2, #1
+ 175 0042 1A63     		str	r2, [r3, #48]
+ 176 0044 1B6B     		ldr	r3, [r3, #48]
+ 177 0046 03F00103 		and	r3, r3, #1
+ 178 004a 0493     		str	r3, [sp, #16]
+ 179 004c 049B     		ldr	r3, [sp, #16]
+ 180              	.LBE9:
+ 498:Src/main.c    **** 
+ 499:Src/main.c    ****   /*Configure GPIO pin Output Level */
+ARM GAS  /tmp/ccOLls8W.s 			page 17
+
+
+ 500:Src/main.c    ****   HAL_GPIO_WritePin(GPIOB, GPIO_PIN_0|GPIO_PIN_14|GPIO_PIN_7, GPIO_PIN_RESET);
+ 181              		.loc 1 500 0
+ 182 004e 0B4C     		ldr	r4, .L15+4
+ 183 0050 2046     		mov	r0, r4
+ 184 0052 44F28101 		movw	r1, #16513
+ 185 0056 0022     		movs	r2, #0
+ 186 0058 FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 187              	.LVL6:
+ 501:Src/main.c    **** 
+ 502:Src/main.c    ****   /*Configure GPIO pins : PB0 PB14 PB7 */
+ 503:Src/main.c    ****   GPIO_InitStruct.Pin = GPIO_PIN_0|GPIO_PIN_14|GPIO_PIN_7;
+ 188              		.loc 1 503 0
+ 189 005c 44F28103 		movw	r3, #16513
+ 190 0060 0593     		str	r3, [sp, #20]
+ 504:Src/main.c    ****   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+ 191              		.loc 1 504 0
+ 192 0062 0123     		movs	r3, #1
+ 193 0064 0693     		str	r3, [sp, #24]
+ 505:Src/main.c    ****   GPIO_InitStruct.Pull = GPIO_NOPULL;
+ 194              		.loc 1 505 0
+ 195 0066 0023     		movs	r3, #0
+ 196 0068 0793     		str	r3, [sp, #28]
+ 506:Src/main.c    ****   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+ 197              		.loc 1 506 0
+ 198 006a 0893     		str	r3, [sp, #32]
+ 507:Src/main.c    ****   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+ 199              		.loc 1 507 0
+ 200 006c 2046     		mov	r0, r4
+ 201 006e 05A9     		add	r1, sp, #20
+ 202 0070 FFF7FEFF 		bl	HAL_GPIO_Init
+ 203              	.LVL7:
+ 508:Src/main.c    **** 
+ 509:Src/main.c    **** }
+ 204              		.loc 1 509 0
+ 205 0074 0AB0     		add	sp, sp, #40
+ 206              	.LCFI4:
+ 207              		.cfi_def_cfa_offset 8
+ 208              		@ sp needed
+ 209 0076 10BD     		pop	{r4, pc}
+ 210              	.L16:
+ 211              		.align	2
+ 212              	.L15:
+ 213 0078 00380240 		.word	1073887232
+ 214 007c 00040240 		.word	1073873920
+ 215              		.cfi_endproc
+ 216              	.LFE151:
+ 218              		.section	.text.parse,"ax",%progbits
+ 219              		.align	2
+ 220              		.global	parse
+ 221              		.thumb
+ 222              		.thumb_func
+ 224              	parse:
+ 225              	.LFB144:
+ 193:Src/main.c    **** 	int i;
+ 226              		.loc 1 193 0
+ 227              		.cfi_startproc
+ 228              		@ args = 4, pretend = 0, frame = 0
+ARM GAS  /tmp/ccOLls8W.s 			page 18
+
+
+ 229              		@ frame_needed = 0, uses_anonymous_args = 0
+ 230              		@ link register save eliminated.
+ 231              	.LVL8:
+ 232 0000 F0B4     		push	{r4, r5, r6, r7}
+ 233              	.LCFI5:
+ 234              		.cfi_def_cfa_offset 16
+ 235              		.cfi_offset 4, -16
+ 236              		.cfi_offset 5, -12
+ 237              		.cfi_offset 6, -8
+ 238              		.cfi_offset 7, -4
+ 239 0002 049E     		ldr	r6, [sp, #16]
+ 240              	.LVL9:
+ 195:Src/main.c    **** 
+ 241              		.loc 1 195 0
+ 242 0004 1A4D     		ldr	r5, .L29
+ 197:Src/main.c    **** 		*(codeOp + i) = *(Strptr);
+ 243              		.loc 1 197 0
+ 244 0006 0024     		movs	r4, #0
+ 245 0008 03E0     		b	.L18
+ 246              	.LVL10:
+ 247              	.L19:
+ 198:Src/main.c    **** 	*(codeOp + 4 )='\0';
+ 248              		.loc 1 198 0 discriminator 3
+ 249 000a 15F8017B 		ldrb	r7, [r5], #1	@ zero_extendqisi2
+ 250              	.LVL11:
+ 251 000e 0755     		strb	r7, [r0, r4]
+ 197:Src/main.c    **** 		*(codeOp + i) = *(Strptr);
+ 252              		.loc 1 197 0 discriminator 3
+ 253 0010 0134     		adds	r4, r4, #1
+ 254              	.LVL12:
+ 255              	.L18:
+ 197:Src/main.c    **** 		*(codeOp + i) = *(Strptr);
+ 256              		.loc 1 197 0 is_stmt 0 discriminator 1
+ 257 0012 032C     		cmp	r4, #3
+ 258 0014 F9DD     		ble	.L19
+ 199:Src/main.c    **** 
+ 259              		.loc 1 199 0 is_stmt 1
+ 260 0016 0024     		movs	r4, #0
+ 261              	.LVL13:
+ 262 0018 0471     		strb	r4, [r0, #4]
+ 263              	.LVL14:
+ 201:Src/main.c    **** 		*(name + i) = *(Strptr);
+ 264              		.loc 1 201 0
+ 265 001a 2046     		mov	r0, r4
+ 266              	.LVL15:
+ 267 001c 03E0     		b	.L20
+ 268              	.LVL16:
+ 269              	.L21:
+ 202:Src/main.c    **** 	*(name + 20) ='\0';
+ 270              		.loc 1 202 0 discriminator 3
+ 271 001e 15F8014B 		ldrb	r4, [r5], #1	@ zero_extendqisi2
+ 272              	.LVL17:
+ 273 0022 0C54     		strb	r4, [r1, r0]
+ 201:Src/main.c    **** 		*(name + i) = *(Strptr);
+ 274              		.loc 1 201 0 discriminator 3
+ 275 0024 0130     		adds	r0, r0, #1
+ 276              	.LVL18:
+ARM GAS  /tmp/ccOLls8W.s 			page 19
+
+
+ 277              	.L20:
+ 201:Src/main.c    **** 		*(name + i) = *(Strptr);
+ 278              		.loc 1 201 0 is_stmt 0 discriminator 1
+ 279 0026 1328     		cmp	r0, #19
+ 280 0028 F9DD     		ble	.L21
+ 203:Src/main.c    **** 
+ 281              		.loc 1 203 0 is_stmt 1
+ 282 002a 0020     		movs	r0, #0
+ 283              	.LVL19:
+ 284 002c 0875     		strb	r0, [r1, #20]
+ 285              	.LVL20:
+ 205:Src/main.c    **** 			*(hours +i) = *(Strptr);
+ 286              		.loc 1 205 0
+ 287 002e 0146     		mov	r1, r0
+ 288              	.LVL21:
+ 289 0030 03E0     		b	.L22
+ 290              	.LVL22:
+ 291              	.L23:
+ 206:Src/main.c    **** 	*(hours +4) ='\0';
+ 292              		.loc 1 206 0 discriminator 3
+ 293 0032 15F8010B 		ldrb	r0, [r5], #1	@ zero_extendqisi2
+ 294              	.LVL23:
+ 295 0036 5054     		strb	r0, [r2, r1]
+ 205:Src/main.c    **** 			*(hours +i) = *(Strptr);
+ 296              		.loc 1 205 0 discriminator 3
+ 297 0038 0131     		adds	r1, r1, #1
+ 298              	.LVL24:
+ 299              	.L22:
+ 205:Src/main.c    **** 			*(hours +i) = *(Strptr);
+ 300              		.loc 1 205 0 is_stmt 0 discriminator 1
+ 301 003a 0329     		cmp	r1, #3
+ 302 003c F9DD     		ble	.L23
+ 207:Src/main.c    **** 
+ 303              		.loc 1 207 0 is_stmt 1
+ 304 003e 0021     		movs	r1, #0
+ 305              	.LVL25:
+ 306 0040 1171     		strb	r1, [r2, #4]
+ 307              	.LVL26:
+ 209:Src/main.c    **** 			*(minutes + i) = *(Strptr);
+ 308              		.loc 1 209 0
+ 309 0042 0A46     		mov	r2, r1
+ 310              	.LVL27:
+ 311 0044 03E0     		b	.L24
+ 312              	.LVL28:
+ 313              	.L25:
+ 210:Src/main.c    **** 	*(minutes + 5) ='\0';
+ 314              		.loc 1 210 0 discriminator 3
+ 315 0046 15F8011B 		ldrb	r1, [r5], #1	@ zero_extendqisi2
+ 316              	.LVL29:
+ 317 004a 9954     		strb	r1, [r3, r2]
+ 209:Src/main.c    **** 			*(minutes + i) = *(Strptr);
+ 318              		.loc 1 209 0 discriminator 3
+ 319 004c 0132     		adds	r2, r2, #1
+ 320              	.LVL30:
+ 321              	.L24:
+ 209:Src/main.c    **** 			*(minutes + i) = *(Strptr);
+ 322              		.loc 1 209 0 is_stmt 0 discriminator 1
+ARM GAS  /tmp/ccOLls8W.s 			page 20
+
+
+ 323 004e 032A     		cmp	r2, #3
+ 324 0050 F9DD     		ble	.L25
+ 211:Src/main.c    **** 
+ 325              		.loc 1 211 0 is_stmt 1
+ 326 0052 0022     		movs	r2, #0
+ 327              	.LVL31:
+ 328 0054 5A71     		strb	r2, [r3, #5]
+ 329              	.LVL32:
+ 213:Src/main.c    **** 			*(volume + i) = *(Strptr);
+ 330              		.loc 1 213 0
+ 331 0056 1346     		mov	r3, r2
+ 332              	.LVL33:
+ 333 0058 03E0     		b	.L26
+ 334              	.LVL34:
+ 335              	.L27:
+ 214:Src/main.c    **** 	*(volume + 5)='\0';
+ 336              		.loc 1 214 0 discriminator 3
+ 337 005a 15F8012B 		ldrb	r2, [r5], #1	@ zero_extendqisi2
+ 338              	.LVL35:
+ 339 005e F254     		strb	r2, [r6, r3]
+ 213:Src/main.c    **** 			*(volume + i) = *(Strptr);
+ 340              		.loc 1 213 0 discriminator 3
+ 341 0060 0133     		adds	r3, r3, #1
+ 342              	.LVL36:
+ 343              	.L26:
+ 213:Src/main.c    **** 			*(volume + i) = *(Strptr);
+ 344              		.loc 1 213 0 is_stmt 0 discriminator 1
+ 345 0062 032B     		cmp	r3, #3
+ 346 0064 F9DD     		ble	.L27
+ 215:Src/main.c    **** 	return;
+ 347              		.loc 1 215 0 is_stmt 1
+ 348 0066 0023     		movs	r3, #0
+ 349              	.LVL37:
+ 350 0068 7371     		strb	r3, [r6, #5]
+ 217:Src/main.c    **** 
+ 351              		.loc 1 217 0
+ 352 006a F0BC     		pop	{r4, r5, r6, r7}
+ 353              	.LCFI6:
+ 354              		.cfi_restore 7
+ 355              		.cfi_restore 6
+ 356              		.cfi_restore 5
+ 357              		.cfi_restore 4
+ 358              		.cfi_def_cfa_offset 0
+ 359              	.LVL38:
+ 360 006c 7047     		bx	lr
+ 361              	.L30:
+ 362 006e 00BF     		.align	2
+ 363              	.L29:
+ 364 0070 00000000 		.word	.LANCHOR1
+ 365              		.cfi_endproc
+ 366              	.LFE144:
+ 368              		.section	.text.computeEntry,"ax",%progbits
+ 369              		.align	2
+ 370              		.global	computeEntry
+ 371              		.thumb
+ 372              		.thumb_func
+ 374              	computeEntry:
+ARM GAS  /tmp/ccOLls8W.s 			page 21
+
+
+ 375              	.LFB143:
+ 141:Src/main.c    **** 	char codeOp[8];
+ 376              		.loc 1 141 0
+ 377              		.cfi_startproc
+ 378              		@ args = 0, pretend = 0, frame = 56
+ 379              		@ frame_needed = 0, uses_anonymous_args = 0
+ 380 0000 F0B5     		push	{r4, r5, r6, r7, lr}
+ 381              	.LCFI7:
+ 382              		.cfi_def_cfa_offset 20
+ 383              		.cfi_offset 4, -20
+ 384              		.cfi_offset 5, -16
+ 385              		.cfi_offset 6, -12
+ 386              		.cfi_offset 7, -8
+ 387              		.cfi_offset 14, -4
+ 388 0002 91B0     		sub	sp, sp, #68
+ 389              	.LCFI8:
+ 390              		.cfi_def_cfa_offset 88
+ 148:Src/main.c    **** 
+ 391              		.loc 1 148 0
+ 392 0004 02AD     		add	r5, sp, #8
+ 393 0006 0095     		str	r5, [sp]
+ 394 0008 0EA8     		add	r0, sp, #56
+ 395 000a 08A9     		add	r1, sp, #32
+ 396 000c 06AA     		add	r2, sp, #24
+ 397 000e 04AB     		add	r3, sp, #16
+ 398 0010 FFF7FEFF 		bl	parse
+ 399              	.LVL39:
+ 150:Src/main.c    **** 	unsigned int uhours = atoi(hours);
+ 400              		.loc 1 150 0
+ 401 0014 0EA8     		add	r0, sp, #56
+ 402 0016 FFF7FEFF 		bl	atoi
+ 403              	.LVL40:
+ 404 001a 0446     		mov	r4, r0
+ 405              	.LVL41:
+ 151:Src/main.c    **** 	unsigned int uminutes = atoi(minutes);
+ 406              		.loc 1 151 0
+ 407 001c 06A8     		add	r0, sp, #24
+ 408              	.LVL42:
+ 409 001e FFF7FEFF 		bl	atoi
+ 410              	.LVL43:
+ 411 0022 0746     		mov	r7, r0
+ 412              	.LVL44:
+ 152:Src/main.c    **** 	unsigned int uvolume = atoi(volume);
+ 413              		.loc 1 152 0
+ 414 0024 04A8     		add	r0, sp, #16
+ 415              	.LVL45:
+ 416 0026 FFF7FEFF 		bl	atoi
+ 417              	.LVL46:
+ 418 002a 0646     		mov	r6, r0
+ 419              	.LVL47:
+ 153:Src/main.c    **** 	
+ 420              		.loc 1 153 0
+ 421 002c 2846     		mov	r0, r5
+ 422              	.LVL48:
+ 423 002e FFF7FEFF 		bl	atoi
+ 424              	.LVL49:
+ 156:Src/main.c    **** 	{
+ARM GAS  /tmp/ccOLls8W.s 			page 22
+
+
+ 425              		.loc 1 156 0
+ 426 0032 54B9     		cbnz	r4, .L32
+ 158:Src/main.c    **** 		{
+ 427              		.loc 1 158 0
+ 428 0034 1948     		ldr	r0, .L36
+ 429 0036 08A9     		add	r1, sp, #32
+ 430 0038 FFF7FEFF 		bl	CheckName
+ 431              	.LVL50:
+ 432 003c 0028     		cmp	r0, #0
+ 433 003e 27DD     		ble	.L33
+ 160:Src/main.c    **** 		}
+ 434              		.loc 1 160 0
+ 435 0040 1648     		ldr	r0, .L36
+ 436 0042 08A9     		add	r1, sp, #32
+ 437 0044 FFF7FEFF 		bl	RemoveCure
+ 438              	.LVL51:
+ 439 0048 22E0     		b	.L33
+ 440              	.L32:
+ 441 004a 0546     		mov	r5, r0
+ 442              	.LVL52:
+ 165:Src/main.c    **** 	{
+ 443              		.loc 1 165 0
+ 444 004c 012C     		cmp	r4, #1
+ 445 004e 10D1     		bne	.L34
+ 168:Src/main.c    **** 		{
+ 446              		.loc 1 168 0
+ 447 0050 FFF7FEFF 		bl	uxTaskGetNumberOfTasks
+ 448              	.LVL53:
+ 449 0054 0328     		cmp	r0, #3
+ 450 0056 1BD8     		bhi	.L33
+ 170:Src/main.c    **** 			LaunchCure(&drugCureList, name);
+ 451              		.loc 1 170 0
+ 452 0058 104C     		ldr	r4, .L36
+ 453              	.LVL54:
+ 454 005a 0095     		str	r5, [sp]
+ 455 005c 2046     		mov	r0, r4
+ 456 005e 08A9     		add	r1, sp, #32
+ 457 0060 3A46     		mov	r2, r7
+ 458 0062 3346     		mov	r3, r6
+ 459 0064 FFF7FEFF 		bl	AddCureDrug
+ 460              	.LVL55:
+ 171:Src/main.c    **** 		}
+ 461              		.loc 1 171 0
+ 462 0068 2046     		mov	r0, r4
+ 463 006a 08A9     		add	r1, sp, #32
+ 464 006c FFF7FEFF 		bl	LaunchCure
+ 465              	.LVL56:
+ 466 0070 0EE0     		b	.L33
+ 467              	.LVL57:
+ 468              	.L34:
+ 175:Src/main.c    **** 	{
+ 469              		.loc 1 175 0
+ 470 0072 022C     		cmp	r4, #2
+ 471 0074 0CD1     		bne	.L33
+ 177:Src/main.c    **** 				{
+ 472              		.loc 1 177 0
+ 473 0076 0948     		ldr	r0, .L36
+ARM GAS  /tmp/ccOLls8W.s 			page 23
+
+
+ 474 0078 08A9     		add	r1, sp, #32
+ 475 007a FFF7FEFF 		bl	CheckName
+ 476              	.LVL58:
+ 477 007e 0028     		cmp	r0, #0
+ 478 0080 06DD     		ble	.L33
+ 179:Src/main.c    **** 				}
+ 479              		.loc 1 179 0
+ 480 0082 0095     		str	r5, [sp]
+ 481 0084 0548     		ldr	r0, .L36
+ 482 0086 08A9     		add	r1, sp, #32
+ 483 0088 3A46     		mov	r2, r7
+ 484 008a 3346     		mov	r3, r6
+ 485 008c FFF7FEFF 		bl	ModifyCure
+ 486              	.LVL59:
+ 487              	.L33:
+ 189:Src/main.c    **** }
+ 488              		.loc 1 189 0
+ 489 0090 034A     		ldr	r2, .L36+4
+ 490 0092 044B     		ldr	r3, .L36+8
+ 491 0094 1A60     		str	r2, [r3]
+ 190:Src/main.c    **** 
+ 492              		.loc 1 190 0
+ 493 0096 11B0     		add	sp, sp, #68
+ 494              	.LCFI9:
+ 495              		.cfi_def_cfa_offset 20
+ 496              		@ sp needed
+ 497 0098 F0BD     		pop	{r4, r5, r6, r7, pc}
+ 498              	.LVL60:
+ 499              	.L37:
+ 500 009a 00BF     		.align	2
+ 501              	.L36:
+ 502 009c 00000000 		.word	drugCureList
+ 503 00a0 00000000 		.word	idle
+ 504 00a4 00000000 		.word	.LANCHOR0
+ 505              		.cfi_endproc
+ 506              	.LFE143:
+ 508              		.section	.text.concat,"ax",%progbits
+ 509              		.align	2
+ 510              		.global	concat
+ 511              		.thumb
+ 512              		.thumb_func
+ 514              	concat:
+ 515              	.LFB145:
+ 220:Src/main.c    **** 	char *ptr_buffer = (char *) malloc(sizeof(char) * 48);
+ 516              		.loc 1 220 0
+ 517              		.cfi_startproc
+ 518              		@ args = 0, pretend = 0, frame = 48
+ 519              		@ frame_needed = 0, uses_anonymous_args = 0
+ 520              	.LVL61:
+ 521 0000 F0B5     		push	{r4, r5, r6, r7, lr}
+ 522              	.LCFI10:
+ 523              		.cfi_def_cfa_offset 20
+ 524              		.cfi_offset 4, -20
+ 525              		.cfi_offset 5, -16
+ 526              		.cfi_offset 6, -12
+ 527              		.cfi_offset 7, -8
+ 528              		.cfi_offset 14, -4
+ARM GAS  /tmp/ccOLls8W.s 			page 24
+
+
+ 529 0002 8DB0     		sub	sp, sp, #52
+ 530              	.LCFI11:
+ 531              		.cfi_def_cfa_offset 72
+ 532 0004 0546     		mov	r5, r0
+ 533 0006 0F46     		mov	r7, r1
+ 534 0008 1446     		mov	r4, r2
+ 221:Src/main.c    **** 
+ 535              		.loc 1 221 0
+ 536 000a 3020     		movs	r0, #48
+ 537              	.LVL62:
+ 538 000c FFF7FEFF 		bl	malloc
+ 539              	.LVL63:
+ 223:Src/main.c    **** 	{
+ 540              		.loc 1 223 0
+ 541 0010 0646     		mov	r6, r0
+ 542 0012 10B9     		cbnz	r0, .L39
+ 225:Src/main.c    **** 	}
+ 543              		.loc 1 225 0
+ 544 0014 3E48     		ldr	r0, .L59
+ 545              	.LVL64:
+ 546 0016 FFF7FEFF 		bl	perror
+ 547              	.LVL65:
+ 548              	.L39:
+ 241:Src/main.c    ****     sprintf(buf_id, "%d", id);
+ 549              		.loc 1 241 0
+ 550 001a 06A8     		add	r0, sp, #24
+ 551              	.LVL66:
+ 552 001c 3946     		mov	r1, r7
+ 553 001e FFF7FEFF 		bl	strcpy
+ 554              	.LVL67:
+ 242:Src/main.c    ****     //sprintf(buf_count, "%zu", count);
+ 555              		.loc 1 242 0
+ 556 0022 04A8     		add	r0, sp, #16
+ 557              	.LVL68:
+ 558 0024 3B49     		ldr	r1, .L59+4
+ 559 0026 2A46     		mov	r2, r5
+ 560 0028 FFF7FEFF 		bl	sprintf
+ 561              	.LVL69:
+ 244:Src/main.c    **** 
+ 562              		.loc 1 244 0
+ 563 002c 01A8     		add	r0, sp, #4
+ 564              	.LVL70:
+ 565 002e 3A49     		ldr	r1, .L59+8
+ 566 0030 2246     		mov	r2, r4
+ 567 0032 FFF7FEFF 		bl	sprintf
+ 568              	.LVL71:
+ 246:Src/main.c    ****     {
+ 569              		.loc 1 246 0
+ 570 0036 04A8     		add	r0, sp, #16
+ 571              	.LVL72:
+ 572 0038 FFF7FEFF 		bl	strlen
+ 573              	.LVL73:
+ 574 003c 0428     		cmp	r0, #4
+ 575 003e 06D9     		bls	.L55
+ 221:Src/main.c    **** 
+ 576              		.loc 1 221 0
+ 577 0040 3446     		mov	r4, r6
+ARM GAS  /tmp/ccOLls8W.s 			page 25
+
+
+ 578              	.LVL74:
+ 579 0042 1AE0     		b	.L41
+ 580              	.LVL75:
+ 581              	.L42:
+ 250:Src/main.c    ****         }
+ 582              		.loc 1 250 0 discriminator 3
+ 583 0044 3023     		movs	r3, #48
+ 584 0046 04F8013B 		strb	r3, [r4], #1
+ 585              	.LVL76:
+ 248:Src/main.c    ****         {
+ 586              		.loc 1 248 0 discriminator 3
+ 587 004a 0135     		adds	r5, r5, #1
+ 588              	.LVL77:
+ 589 004c 01E0     		b	.L40
+ 590              	.LVL78:
+ 591              	.L55:
+ 592 004e 3446     		mov	r4, r6
+ 593              	.LVL79:
+ 594 0050 0025     		movs	r5, #0
+ 595              	.LVL80:
+ 596              	.L40:
+ 248:Src/main.c    ****         {
+ 597              		.loc 1 248 0 is_stmt 0 discriminator 1
+ 598 0052 04A8     		add	r0, sp, #16
+ 599              	.LVL81:
+ 600 0054 FFF7FEFF 		bl	strlen
+ 601              	.LVL82:
+ 602 0058 C0F10400 		rsb	r0, r0, #4
+ 603 005c 8542     		cmp	r5, r0
+ 604 005e F1D3     		bcc	.L42
+ 605 0060 0025     		movs	r5, #0
+ 606              	.LVL83:
+ 607 0062 04AF     		add	r7, sp, #16
+ 608              	.LVL84:
+ 609 0064 04E0     		b	.L43
+ 610              	.LVL85:
+ 611              	.L44:
+ 255:Src/main.c    ****         }
+ 612              		.loc 1 255 0 is_stmt 1 discriminator 3
+ 613 0066 17F8013B 		ldrb	r3, [r7], #1	@ zero_extendqisi2
+ 614              	.LVL86:
+ 615 006a 04F8013B 		strb	r3, [r4], #1
+ 616              	.LVL87:
+ 253:Src/main.c    ****         {
+ 617              		.loc 1 253 0 discriminator 3
+ 618 006e 0135     		adds	r5, r5, #1
+ 619              	.LVL88:
+ 620              	.L43:
+ 253:Src/main.c    ****         {
+ 621              		.loc 1 253 0 is_stmt 0 discriminator 1
+ 622 0070 04A8     		add	r0, sp, #16
+ 623 0072 FFF7FEFF 		bl	strlen
+ 624              	.LVL89:
+ 625 0076 8542     		cmp	r5, r0
+ 626 0078 F5D3     		bcc	.L44
+ 627              	.LVL90:
+ 628              	.L41:
+ARM GAS  /tmp/ccOLls8W.s 			page 26
+
+
+ 258:Src/main.c    **** 
+ 629              		.loc 1 258 0 is_stmt 1
+ 630 007a 0023     		movs	r3, #0
+ 631 007c 8DF81430 		strb	r3, [sp, #20]
+ 260:Src/main.c    ****     {
+ 632              		.loc 1 260 0
+ 633 0080 06A8     		add	r0, sp, #24
+ 634              	.LVL91:
+ 635 0082 FFF7FEFF 		bl	strlen
+ 636              	.LVL92:
+ 637 0086 1428     		cmp	r0, #20
+ 638 0088 05D9     		bls	.L56
+ 639 008a 19E0     		b	.L46
+ 640              	.LVL93:
+ 641              	.L47:
+ 264:Src/main.c    ****         }
+ 642              		.loc 1 264 0 discriminator 3
+ 643 008c 3023     		movs	r3, #48
+ 644 008e 04F8013B 		strb	r3, [r4], #1
+ 645              	.LVL94:
+ 262:Src/main.c    ****         {
+ 646              		.loc 1 262 0 discriminator 3
+ 647 0092 0135     		adds	r5, r5, #1
+ 648              	.LVL95:
+ 649 0094 00E0     		b	.L45
+ 650              	.LVL96:
+ 651              	.L56:
+ 652 0096 0025     		movs	r5, #0
+ 653              	.L45:
+ 654              	.LVL97:
+ 262:Src/main.c    ****         {
+ 655              		.loc 1 262 0 is_stmt 0 discriminator 1
+ 656 0098 06A8     		add	r0, sp, #24
+ 657              	.LVL98:
+ 658 009a FFF7FEFF 		bl	strlen
+ 659              	.LVL99:
+ 660 009e C0F11400 		rsb	r0, r0, #20
+ 661 00a2 8542     		cmp	r5, r0
+ 662 00a4 F2D3     		bcc	.L47
+ 663 00a6 0025     		movs	r5, #0
+ 664              	.LVL100:
+ 665 00a8 06AF     		add	r7, sp, #24
+ 666              	.LVL101:
+ 667 00aa 04E0     		b	.L48
+ 668              	.LVL102:
+ 669              	.L49:
+ 269:Src/main.c    ****         }
+ 670              		.loc 1 269 0 is_stmt 1 discriminator 3
+ 671 00ac 17F8013B 		ldrb	r3, [r7], #1	@ zero_extendqisi2
+ 672              	.LVL103:
+ 673 00b0 04F8013B 		strb	r3, [r4], #1
+ 674              	.LVL104:
+ 267:Src/main.c    ****         {
+ 675              		.loc 1 267 0 discriminator 3
+ 676 00b4 0135     		adds	r5, r5, #1
+ 677              	.LVL105:
+ 678              	.L48:
+ARM GAS  /tmp/ccOLls8W.s 			page 27
+
+
+ 267:Src/main.c    ****         {
+ 679              		.loc 1 267 0 is_stmt 0 discriminator 1
+ 680 00b6 06A8     		add	r0, sp, #24
+ 681 00b8 FFF7FEFF 		bl	strlen
+ 682              	.LVL106:
+ 683 00bc 8542     		cmp	r5, r0
+ 684 00be F5D3     		bcc	.L49
+ 685              	.LVL107:
+ 686              	.L46:
+ 273:Src/main.c    **** 
+ 687              		.loc 1 273 0 is_stmt 1
+ 688 00c0 0023     		movs	r3, #0
+ 689 00c2 8DF82C30 		strb	r3, [sp, #44]
+ 275:Src/main.c    ****     {
+ 690              		.loc 1 275 0
+ 691 00c6 01A8     		add	r0, sp, #4
+ 692              	.LVL108:
+ 693 00c8 FFF7FEFF 		bl	strlen
+ 694              	.LVL109:
+ 695 00cc 0828     		cmp	r0, #8
+ 696 00ce 05D9     		bls	.L57
+ 697 00d0 19E0     		b	.L51
+ 698              	.LVL110:
+ 699              	.L52:
+ 279:Src/main.c    ****         }
+ 700              		.loc 1 279 0 discriminator 3
+ 701 00d2 3023     		movs	r3, #48
+ 702 00d4 04F8013B 		strb	r3, [r4], #1
+ 703              	.LVL111:
+ 277:Src/main.c    ****         {
+ 704              		.loc 1 277 0 discriminator 3
+ 705 00d8 0135     		adds	r5, r5, #1
+ 706              	.LVL112:
+ 707 00da 00E0     		b	.L50
+ 708              	.LVL113:
+ 709              	.L57:
+ 710 00dc 0025     		movs	r5, #0
+ 711              	.L50:
+ 712              	.LVL114:
+ 277:Src/main.c    ****         {
+ 713              		.loc 1 277 0 is_stmt 0 discriminator 1
+ 714 00de 01A8     		add	r0, sp, #4
+ 715              	.LVL115:
+ 716 00e0 FFF7FEFF 		bl	strlen
+ 717              	.LVL116:
+ 718 00e4 C0F10800 		rsb	r0, r0, #8
+ 719 00e8 8542     		cmp	r5, r0
+ 720 00ea F2D3     		bcc	.L52
+ 721 00ec 0025     		movs	r5, #0
+ 722              	.LVL117:
+ 723 00ee 01AF     		add	r7, sp, #4
+ 724              	.LVL118:
+ 725 00f0 04E0     		b	.L53
+ 726              	.LVL119:
+ 727              	.L54:
+ 284:Src/main.c    ****         }
+ 728              		.loc 1 284 0 is_stmt 1 discriminator 3
+ARM GAS  /tmp/ccOLls8W.s 			page 28
+
+
+ 729 00f2 17F8013B 		ldrb	r3, [r7], #1	@ zero_extendqisi2
+ 730              	.LVL120:
+ 731 00f6 04F8013B 		strb	r3, [r4], #1
+ 732              	.LVL121:
+ 282:Src/main.c    ****         {
+ 733              		.loc 1 282 0 discriminator 3
+ 734 00fa 0135     		adds	r5, r5, #1
+ 735              	.LVL122:
+ 736              	.L53:
+ 282:Src/main.c    ****         {
+ 737              		.loc 1 282 0 is_stmt 0 discriminator 1
+ 738 00fc 01A8     		add	r0, sp, #4
+ 739 00fe FFF7FEFF 		bl	strlen
+ 740              	.LVL123:
+ 741 0102 8542     		cmp	r5, r0
+ 742 0104 F5D3     		bcc	.L54
+ 743              	.LVL124:
+ 744              	.L51:
+ 287:Src/main.c    **** 
+ 745              		.loc 1 287 0 is_stmt 1
+ 746 0106 0023     		movs	r3, #0
+ 747 0108 2370     		strb	r3, [r4]
+ 290:Src/main.c    **** 
+ 748              		.loc 1 290 0
+ 749 010a 3046     		mov	r0, r6
+ 750 010c 0DB0     		add	sp, sp, #52
+ 751              	.LCFI12:
+ 752              		.cfi_def_cfa_offset 20
+ 753              		@ sp needed
+ 754 010e F0BD     		pop	{r4, r5, r6, r7, pc}
+ 755              	.LVL125:
+ 756              	.L60:
+ 757              		.align	2
+ 758              	.L59:
+ 759 0110 00000000 		.word	.LC0
+ 760 0114 08000000 		.word	.LC1
+ 761 0118 0C000000 		.word	.LC2
+ 762              		.cfi_endproc
+ 763              	.LFE145:
+ 765              		.section	.text.HAL_UART_RxCpltCallback,"ax",%progbits
+ 766              		.align	2
+ 767              		.global	HAL_UART_RxCpltCallback
+ 768              		.thumb
+ 769              		.thumb_func
+ 771              	HAL_UART_RxCpltCallback:
+ 772              	.LFB146:
+ 294:Src/main.c    **** 	  state_fn = computeEntry;
+ 773              		.loc 1 294 0
+ 774              		.cfi_startproc
+ 775              		@ args = 0, pretend = 0, frame = 0
+ 776              		@ frame_needed = 0, uses_anonymous_args = 0
+ 777              		@ link register save eliminated.
+ 778              	.LVL126:
+ 295:Src/main.c    **** }
+ 779              		.loc 1 295 0
+ 780 0000 014A     		ldr	r2, .L62
+ 781 0002 024B     		ldr	r3, .L62+4
+ARM GAS  /tmp/ccOLls8W.s 			page 29
+
+
+ 782 0004 1A60     		str	r2, [r3]
+ 783 0006 7047     		bx	lr
+ 784              	.L63:
+ 785              		.align	2
+ 786              	.L62:
+ 787 0008 00000000 		.word	computeEntry
+ 788 000c 00000000 		.word	.LANCHOR0
+ 789              		.cfi_endproc
+ 790              	.LFE146:
+ 792              		.section	.text.vCureTaskCodeA,"ax",%progbits
+ 793              		.align	2
+ 794              		.global	vCureTaskCodeA
+ 795              		.thumb
+ 796              		.thumb_func
+ 798              	vCureTaskCodeA:
+ 799              	.LFB147:
+ 300:Src/main.c    **** 	char *buffer = 0x00;
+ 800              		.loc 1 300 0
+ 801              		.cfi_startproc
+ 802              		@ args = 0, pretend = 0, frame = 0
+ 803              		@ frame_needed = 0, uses_anonymous_args = 0
+ 804              	.LVL127:
+ 805 0000 2DE9F041 		push	{r4, r5, r6, r7, r8, lr}
+ 806              	.LCFI13:
+ 807              		.cfi_def_cfa_offset 24
+ 808              		.cfi_offset 4, -24
+ 809              		.cfi_offset 5, -20
+ 810              		.cfi_offset 6, -16
+ 811              		.cfi_offset 7, -12
+ 812              		.cfi_offset 8, -8
+ 813              		.cfi_offset 14, -4
+ 814 0004 8046     		mov	r8, r0
+ 815              	.LVL128:
+ 310:Src/main.c    **** 
+ 816              		.loc 1 310 0
+ 817 0006 8268     		ldr	r2, [r0, #8]
+ 818 0008 4368     		ldr	r3, [r0, #4]
+ 819 000a C3EB0313 		rsb	r3, r3, r3, lsl #4
+ 820 000e 9B00     		lsls	r3, r3, #2
+ 821 0010 4FF46166 		mov	r6, #3600
+ 822 0014 06FB0236 		mla	r6, r6, r2, r3
+ 823              	.LVL129:
+ 312:Src/main.c    **** 
+ 824              		.loc 1 312 0
+ 825 0018 FFF7FEFF 		bl	xTaskGetTickCount
+ 826              	.LVL130:
+ 827 001c 0746     		mov	r7, r0
+ 828              	.LVL131:
+ 829              	.L69:
+ 316:Src/main.c    ****         {
+ 830              		.loc 1 316 0
+ 831 001e 0024     		movs	r4, #0
+ 832 0020 0EE0     		b	.L65
+ 833              	.LVL132:
+ 834              	.L66:
+ 318:Src/main.c    ****         	vTaskDelay(25);
+ 835              		.loc 1 318 0 discriminator 3
+ARM GAS  /tmp/ccOLls8W.s 			page 30
+
+
+ 836 0022 224D     		ldr	r5, .L72
+ 837 0024 2846     		mov	r0, r5
+ 838 0026 8021     		movs	r1, #128
+ 839 0028 0122     		movs	r2, #1
+ 840 002a FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 841              	.LVL133:
+ 319:Src/main.c    ****         	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_7, GPIO_PIN_RESET);
+ 842              		.loc 1 319 0 discriminator 3
+ 843 002e 1920     		movs	r0, #25
+ 844 0030 FFF7FEFF 		bl	vTaskDelay
+ 845              	.LVL134:
+ 320:Src/main.c    ****         }
+ 846              		.loc 1 320 0 discriminator 3
+ 847 0034 2846     		mov	r0, r5
+ 848 0036 8021     		movs	r1, #128
+ 849 0038 0022     		movs	r2, #0
+ 850 003a FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 851              	.LVL135:
+ 316:Src/main.c    ****         {
+ 852              		.loc 1 316 0 discriminator 3
+ 853 003e 0134     		adds	r4, r4, #1
+ 854              	.LVL136:
+ 855              	.L65:
+ 316:Src/main.c    ****         {
+ 856              		.loc 1 316 0 is_stmt 0 discriminator 1
+ 857 0040 042C     		cmp	r4, #4
+ 858 0042 EEDD     		ble	.L66
+ 323:Src/main.c    **** 
+ 859              		.loc 1 323 0 is_stmt 1
+ 860 0044 FFF7FEFF 		bl	xTaskGetTickCount
+ 861              	.LVL137:
+ 325:Src/main.c    **** 		{
+ 862              		.loc 1 325 0
+ 863 0048 C01B     		subs	r0, r0, r7
+ 864              	.LVL138:
+ 865 004a 194C     		ldr	r4, .L72+4
+ 866              	.LVL139:
+ 867 004c A4FB0034 		umull	r3, r4, r4, r0
+ 868 0050 A409     		lsrs	r4, r4, #6
+ 869 0052 B442     		cmp	r4, r6
+ 870 0054 24D8     		bhi	.L67
+ 327:Src/main.c    ****     		{
+ 871              		.loc 1 327 0
+ 872 0056 D8F81800 		ldr	r0, [r8, #24]
+ 873 005a 0021     		movs	r1, #0
+ 874 005c 4FF47A72 		mov	r2, #1000
+ 875 0060 0B46     		mov	r3, r1
+ 876 0062 FFF7FEFF 		bl	xQueueGenericReceive
+ 877              	.LVL140:
+ 878 0066 0128     		cmp	r0, #1
+ 879 0068 0DD1     		bne	.L70
+ 329:Src/main.c    ****     			xSemaphoreGive(drug->xSemaphore);
+ 880              		.loc 1 329 0
+ 881 006a D8F80010 		ldr	r1, [r8]
+ 882 006e 2246     		mov	r2, r4
+ 883 0070 FFF7FEFF 		bl	concat
+ 884              	.LVL141:
+ARM GAS  /tmp/ccOLls8W.s 			page 31
+
+
+ 885 0074 0446     		mov	r4, r0
+ 886              	.LVL142:
+ 330:Src/main.c    ****     		}
+ 887              		.loc 1 330 0
+ 888 0076 D8F81800 		ldr	r0, [r8, #24]
+ 889              	.LVL143:
+ 890 007a 0021     		movs	r1, #0
+ 891 007c 0A46     		mov	r2, r1
+ 892 007e 0B46     		mov	r3, r1
+ 893 0080 FFF7FEFF 		bl	xQueueGenericSend
+ 894              	.LVL144:
+ 895 0084 00E0     		b	.L68
+ 896              	.LVL145:
+ 897              	.L70:
+ 898 0086 0024     		movs	r4, #0
+ 899              	.LVL146:
+ 900              	.L68:
+ 332:Src/main.c    ****     		free(buffer);
+ 901              		.loc 1 332 0
+ 902 0088 2046     		mov	r0, r4
+ 903 008a FFF7FEFF 		bl	strlen
+ 904              	.LVL147:
+ 905 008e 82B2     		uxth	r2, r0
+ 906 0090 0848     		ldr	r0, .L72+8
+ 907 0092 2146     		mov	r1, r4
+ 908 0094 FF23     		movs	r3, #255
+ 909 0096 FFF7FEFF 		bl	HAL_UART_Transmit
+ 910              	.LVL148:
+ 333:Src/main.c    ****     		buffer = 0x00;
+ 911              		.loc 1 333 0
+ 912 009a 2046     		mov	r0, r4
+ 913 009c FFF7FEFF 		bl	free
+ 914              	.LVL149:
+ 915              	.L67:
+ 337:Src/main.c    **** 	}
+ 916              		.loc 1 337 0
+ 917 00a0 4FF47A70 		mov	r0, #1000
+ 918 00a4 FFF7FEFF 		bl	vTaskDelay
+ 919              	.LVL150:
+ 338:Src/main.c    **** }
+ 920              		.loc 1 338 0
+ 921 00a8 B9E7     		b	.L69
+ 922              	.L73:
+ 923 00aa 00BF     		.align	2
+ 924              	.L72:
+ 925 00ac 00040240 		.word	1073873920
+ 926 00b0 D34D6210 		.word	274877907
+ 927 00b4 00000000 		.word	huart3
+ 928              		.cfi_endproc
+ 929              	.LFE147:
+ 931              		.section	.text.vCureTaskCodeB,"ax",%progbits
+ 932              		.align	2
+ 933              		.global	vCureTaskCodeB
+ 934              		.thumb
+ 935              		.thumb_func
+ 937              	vCureTaskCodeB:
+ 938              	.LFB148:
+ARM GAS  /tmp/ccOLls8W.s 			page 32
+
+
+ 344:Src/main.c    **** 	char *buffer = 0x00;
+ 939              		.loc 1 344 0
+ 940              		.cfi_startproc
+ 941              		@ args = 0, pretend = 0, frame = 0
+ 942              		@ frame_needed = 0, uses_anonymous_args = 0
+ 943              	.LVL151:
+ 944 0000 2DE9F041 		push	{r4, r5, r6, r7, r8, lr}
+ 945              	.LCFI14:
+ 946              		.cfi_def_cfa_offset 24
+ 947              		.cfi_offset 4, -24
+ 948              		.cfi_offset 5, -20
+ 949              		.cfi_offset 6, -16
+ 950              		.cfi_offset 7, -12
+ 951              		.cfi_offset 8, -8
+ 952              		.cfi_offset 14, -4
+ 953 0004 8046     		mov	r8, r0
+ 954              	.LVL152:
+ 354:Src/main.c    **** 
+ 955              		.loc 1 354 0
+ 956 0006 8268     		ldr	r2, [r0, #8]
+ 957 0008 4368     		ldr	r3, [r0, #4]
+ 958 000a C3EB0313 		rsb	r3, r3, r3, lsl #4
+ 959 000e 9B00     		lsls	r3, r3, #2
+ 960 0010 4FF46166 		mov	r6, #3600
+ 961 0014 06FB0236 		mla	r6, r6, r2, r3
+ 962              	.LVL153:
+ 357:Src/main.c    **** 
+ 963              		.loc 1 357 0
+ 964 0018 FFF7FEFF 		bl	xTaskGetTickCount
+ 965              	.LVL154:
+ 966 001c 0746     		mov	r7, r0
+ 967              	.LVL155:
+ 968              	.L79:
+ 361:Src/main.c    ****         {
+ 969              		.loc 1 361 0
+ 970 001e 0024     		movs	r4, #0
+ 971 0020 10E0     		b	.L75
+ 972              	.LVL156:
+ 973              	.L76:
+ 363:Src/main.c    ****         	vTaskDelay(25);
+ 974              		.loc 1 363 0 discriminator 3
+ 975 0022 234D     		ldr	r5, .L82
+ 976 0024 2846     		mov	r0, r5
+ 977 0026 4FF48041 		mov	r1, #16384
+ 978 002a 0122     		movs	r2, #1
+ 979 002c FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 980              	.LVL157:
+ 364:Src/main.c    ****         	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_14, GPIO_PIN_RESET);
+ 981              		.loc 1 364 0 discriminator 3
+ 982 0030 1920     		movs	r0, #25
+ 983 0032 FFF7FEFF 		bl	vTaskDelay
+ 984              	.LVL158:
+ 365:Src/main.c    ****         }
+ 985              		.loc 1 365 0 discriminator 3
+ 986 0036 2846     		mov	r0, r5
+ 987 0038 4FF48041 		mov	r1, #16384
+ 988 003c 0022     		movs	r2, #0
+ARM GAS  /tmp/ccOLls8W.s 			page 33
+
+
+ 989 003e FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 990              	.LVL159:
+ 361:Src/main.c    ****         {
+ 991              		.loc 1 361 0 discriminator 3
+ 992 0042 0134     		adds	r4, r4, #1
+ 993              	.LVL160:
+ 994              	.L75:
+ 361:Src/main.c    ****         {
+ 995              		.loc 1 361 0 is_stmt 0 discriminator 1
+ 996 0044 042C     		cmp	r4, #4
+ 997 0046 ECDD     		ble	.L76
+ 368:Src/main.c    **** 
+ 998              		.loc 1 368 0 is_stmt 1
+ 999 0048 FFF7FEFF 		bl	xTaskGetTickCount
+ 1000              	.LVL161:
+ 370:Src/main.c    **** 		{
+ 1001              		.loc 1 370 0
+ 1002 004c C01B     		subs	r0, r0, r7
+ 1003              	.LVL162:
+ 1004 004e 194C     		ldr	r4, .L82+4
+ 1005              	.LVL163:
+ 1006 0050 A4FB0034 		umull	r3, r4, r4, r0
+ 1007 0054 A409     		lsrs	r4, r4, #6
+ 1008 0056 B442     		cmp	r4, r6
+ 1009 0058 25D8     		bhi	.L77
+ 372:Src/main.c    ****     		{
+ 1010              		.loc 1 372 0
+ 1011 005a D8F81800 		ldr	r0, [r8, #24]
+ 1012 005e 0021     		movs	r1, #0
+ 1013 0060 4FF47A72 		mov	r2, #1000
+ 1014 0064 0B46     		mov	r3, r1
+ 1015 0066 FFF7FEFF 		bl	xQueueGenericReceive
+ 1016              	.LVL164:
+ 1017 006a 0128     		cmp	r0, #1
+ 1018 006c 0ED1     		bne	.L80
+ 374:Src/main.c    **** 	    		xSemaphoreGive(drug->xSemaphore);
+ 1019              		.loc 1 374 0
+ 1020 006e 0220     		movs	r0, #2
+ 1021 0070 D8F80010 		ldr	r1, [r8]
+ 1022 0074 2246     		mov	r2, r4
+ 1023 0076 FFF7FEFF 		bl	concat
+ 1024              	.LVL165:
+ 1025 007a 0446     		mov	r4, r0
+ 1026              	.LVL166:
+ 375:Src/main.c    **** 	    	}
+ 1027              		.loc 1 375 0
+ 1028 007c D8F81800 		ldr	r0, [r8, #24]
+ 1029              	.LVL167:
+ 1030 0080 0021     		movs	r1, #0
+ 1031 0082 0A46     		mov	r2, r1
+ 1032 0084 0B46     		mov	r3, r1
+ 1033 0086 FFF7FEFF 		bl	xQueueGenericSend
+ 1034              	.LVL168:
+ 1035 008a 00E0     		b	.L78
+ 1036              	.LVL169:
+ 1037              	.L80:
+ 1038 008c 0024     		movs	r4, #0
+ARM GAS  /tmp/ccOLls8W.s 			page 34
+
+
+ 1039              	.LVL170:
+ 1040              	.L78:
+ 377:Src/main.c    **** 	    	free(buffer);
+ 1041              		.loc 1 377 0
+ 1042 008e 2046     		mov	r0, r4
+ 1043 0090 FFF7FEFF 		bl	strlen
+ 1044              	.LVL171:
+ 1045 0094 82B2     		uxth	r2, r0
+ 1046 0096 0848     		ldr	r0, .L82+8
+ 1047 0098 2146     		mov	r1, r4
+ 1048 009a FF23     		movs	r3, #255
+ 1049 009c FFF7FEFF 		bl	HAL_UART_Transmit
+ 1050              	.LVL172:
+ 378:Src/main.c    **** 	    	buffer = 0x00;
+ 1051              		.loc 1 378 0
+ 1052 00a0 2046     		mov	r0, r4
+ 1053 00a2 FFF7FEFF 		bl	free
+ 1054              	.LVL173:
+ 1055              	.L77:
+ 383:Src/main.c    **** 	}
+ 1056              		.loc 1 383 0
+ 1057 00a6 4FF47A70 		mov	r0, #1000
+ 1058 00aa FFF7FEFF 		bl	vTaskDelay
+ 1059              	.LVL174:
+ 384:Src/main.c    **** }
+ 1060              		.loc 1 384 0
+ 1061 00ae B6E7     		b	.L79
+ 1062              	.L83:
+ 1063              		.align	2
+ 1064              	.L82:
+ 1065 00b0 00040240 		.word	1073873920
+ 1066 00b4 D34D6210 		.word	274877907
+ 1067 00b8 00000000 		.word	huart3
+ 1068              		.cfi_endproc
+ 1069              	.LFE148:
+ 1071              		.section	.text.StartDefaultTask,"ax",%progbits
+ 1072              		.align	2
+ 1073              		.global	StartDefaultTask
+ 1074              		.thumb
+ 1075              		.thumb_func
+ 1077              	StartDefaultTask:
+ 1078              	.LFB152:
+ 510:Src/main.c    **** 
+ 511:Src/main.c    **** /* USER CODE BEGIN 4 */
+ 512:Src/main.c    **** 
+ 513:Src/main.c    **** /* USER CODE END 4 */
+ 514:Src/main.c    **** 
+ 515:Src/main.c    **** /* StartDefaultTask function */
+ 516:Src/main.c    **** void StartDefaultTask(void const * argument)
+ 517:Src/main.c    **** {
+ 1079              		.loc 1 517 0
+ 1080              		.cfi_startproc
+ 1081              		@ Volatile: function does not return.
+ 1082              		@ args = 0, pretend = 0, frame = 0
+ 1083              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1084              	.LVL175:
+ 1085 0000 08B5     		push	{r3, lr}
+ARM GAS  /tmp/ccOLls8W.s 			page 35
+
+
+ 1086              	.LCFI15:
+ 1087              		.cfi_def_cfa_offset 8
+ 1088              		.cfi_offset 3, -8
+ 1089              		.cfi_offset 14, -4
+ 1090              	.LVL176:
+ 1091              	.L85:
+ 518:Src/main.c    **** 
+ 519:Src/main.c    ****   /* USER CODE BEGIN 5 */
+ 520:Src/main.c    ****   /* Infinite loop */
+ 521:Src/main.c    ****   for(;;)
+ 522:Src/main.c    ****   {
+ 523:Src/main.c    ****     osDelay(1);
+ 1092              		.loc 1 523 0 discriminator 1
+ 1093 0002 0120     		movs	r0, #1
+ 1094 0004 FFF7FEFF 		bl	osDelay
+ 1095              	.LVL177:
+ 524:Src/main.c    ****   }
+ 1096              		.loc 1 524 0 discriminator 1
+ 1097 0008 FBE7     		b	.L85
+ 1098              		.cfi_endproc
+ 1099              	.LFE152:
+ 1101 000a 00BF     		.section	.text._Error_Handler,"ax",%progbits
+ 1102              		.align	2
+ 1103              		.global	_Error_Handler
+ 1104              		.thumb
+ 1105              		.thumb_func
+ 1107              	_Error_Handler:
+ 1108              	.LFB153:
+ 525:Src/main.c    ****   /* USER CODE END 5 */ 
+ 526:Src/main.c    **** }
+ 527:Src/main.c    **** 
+ 528:Src/main.c    **** /**
+ 529:Src/main.c    ****   * @brief  This function is executed in case of error occurrence.
+ 530:Src/main.c    ****   * @param  file: The file name as string.
+ 531:Src/main.c    ****   * @param  line: The line in file as a number.
+ 532:Src/main.c    ****   * @retval None
+ 533:Src/main.c    ****   */
+ 534:Src/main.c    **** void _Error_Handler(char *file, int line)
+ 535:Src/main.c    **** {
+ 1109              		.loc 1 535 0
+ 1110              		.cfi_startproc
+ 1111              		@ Volatile: function does not return.
+ 1112              		@ args = 0, pretend = 0, frame = 0
+ 1113              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1114              		@ link register save eliminated.
+ 1115              	.LVL178:
+ 1116              	.L88:
+ 536:Src/main.c    ****   /* USER CODE BEGIN Error_Handler_Debug */
+ 537:Src/main.c    ****   /* User can add his own implementation to report the HAL error return state */
+ 538:Src/main.c    ****   while(1)
+ 539:Src/main.c    ****   {
+ 540:Src/main.c    ****   }
+ 1117              		.loc 1 540 0 discriminator 1
+ 1118 0000 FEE7     		b	.L88
+ 1119              		.cfi_endproc
+ 1120              	.LFE153:
+ 1122 0002 00BF     		.section	.text.MX_USART3_UART_Init,"ax",%progbits
+ARM GAS  /tmp/ccOLls8W.s 			page 36
+
+
+ 1123              		.align	2
+ 1124              		.thumb
+ 1125              		.thumb_func
+ 1127              	MX_USART3_UART_Init:
+ 1128              	.LFB150:
+ 462:Src/main.c    **** 
+ 1129              		.loc 1 462 0
+ 1130              		.cfi_startproc
+ 1131              		@ args = 0, pretend = 0, frame = 0
+ 1132              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1133 0000 08B5     		push	{r3, lr}
+ 1134              	.LCFI16:
+ 1135              		.cfi_def_cfa_offset 8
+ 1136              		.cfi_offset 3, -8
+ 1137              		.cfi_offset 14, -4
+ 464:Src/main.c    ****   huart3.Init.BaudRate = 115200;
+ 1138              		.loc 1 464 0
+ 1139 0002 0C48     		ldr	r0, .L92
+ 1140 0004 0C4B     		ldr	r3, .L92+4
+ 1141 0006 0360     		str	r3, [r0]
+ 465:Src/main.c    ****   huart3.Init.WordLength = UART_WORDLENGTH_8B;
+ 1142              		.loc 1 465 0
+ 1143 0008 4FF4E133 		mov	r3, #115200
+ 1144 000c 4360     		str	r3, [r0, #4]
+ 466:Src/main.c    ****   huart3.Init.StopBits = UART_STOPBITS_1;
+ 1145              		.loc 1 466 0
+ 1146 000e 0023     		movs	r3, #0
+ 1147 0010 8360     		str	r3, [r0, #8]
+ 467:Src/main.c    ****   huart3.Init.Parity = UART_PARITY_NONE;
+ 1148              		.loc 1 467 0
+ 1149 0012 C360     		str	r3, [r0, #12]
+ 468:Src/main.c    ****   huart3.Init.Mode = UART_MODE_TX_RX;
+ 1150              		.loc 1 468 0
+ 1151 0014 0361     		str	r3, [r0, #16]
+ 469:Src/main.c    ****   huart3.Init.HwFlowCtl = UART_HWCONTROL_NONE;
+ 1152              		.loc 1 469 0
+ 1153 0016 0C22     		movs	r2, #12
+ 1154 0018 4261     		str	r2, [r0, #20]
+ 470:Src/main.c    ****   huart3.Init.OverSampling = UART_OVERSAMPLING_16;
+ 1155              		.loc 1 470 0
+ 1156 001a 8361     		str	r3, [r0, #24]
+ 471:Src/main.c    ****   huart3.Init.OneBitSampling = UART_ONE_BIT_SAMPLE_DISABLE;
+ 1157              		.loc 1 471 0
+ 1158 001c C361     		str	r3, [r0, #28]
+ 472:Src/main.c    ****   huart3.AdvancedInit.AdvFeatureInit = UART_ADVFEATURE_NO_INIT;
+ 1159              		.loc 1 472 0
+ 1160 001e 0362     		str	r3, [r0, #32]
+ 473:Src/main.c    ****   if (HAL_UART_Init(&huart3) != HAL_OK)
+ 1161              		.loc 1 473 0
+ 1162 0020 4362     		str	r3, [r0, #36]
+ 474:Src/main.c    ****   {
+ 1163              		.loc 1 474 0
+ 1164 0022 FFF7FEFF 		bl	HAL_UART_Init
+ 1165              	.LVL179:
+ 1166 0026 20B1     		cbz	r0, .L89
+ 476:Src/main.c    ****   }
+ 1167              		.loc 1 476 0
+ARM GAS  /tmp/ccOLls8W.s 			page 37
+
+
+ 1168 0028 0448     		ldr	r0, .L92+8
+ 1169 002a 4FF4EE71 		mov	r1, #476
+ 1170 002e FFF7FEFF 		bl	_Error_Handler
+ 1171              	.LVL180:
+ 1172              	.L89:
+ 1173 0032 08BD     		pop	{r3, pc}
+ 1174              	.L93:
+ 1175              		.align	2
+ 1176              	.L92:
+ 1177 0034 00000000 		.word	huart3
+ 1178 0038 00480040 		.word	1073760256
+ 1179 003c 10000000 		.word	.LC3
+ 1180              		.cfi_endproc
+ 1181              	.LFE150:
+ 1183              		.section	.text.SystemClock_Config,"ax",%progbits
+ 1184              		.align	2
+ 1185              		.global	SystemClock_Config
+ 1186              		.thumb
+ 1187              		.thumb_func
+ 1189              	SystemClock_Config:
+ 1190              	.LFB149:
+ 392:Src/main.c    **** 
+ 1191              		.loc 1 392 0
+ 1192              		.cfi_startproc
+ 1193              		@ args = 0, pretend = 0, frame = 224
+ 1194              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1195 0000 00B5     		push	{lr}
+ 1196              	.LCFI17:
+ 1197              		.cfi_def_cfa_offset 4
+ 1198              		.cfi_offset 14, -4
+ 1199 0002 B9B0     		sub	sp, sp, #228
+ 1200              	.LCFI18:
+ 1201              		.cfi_def_cfa_offset 232
+ 1202              	.LBB10:
+ 400:Src/main.c    **** 
+ 1203              		.loc 1 400 0
+ 1204 0004 354B     		ldr	r3, .L100
+ 1205 0006 1A6C     		ldr	r2, [r3, #64]
+ 1206 0008 42F08052 		orr	r2, r2, #268435456
+ 1207 000c 1A64     		str	r2, [r3, #64]
+ 1208 000e 1B6C     		ldr	r3, [r3, #64]
+ 1209 0010 03F08053 		and	r3, r3, #268435456
+ 1210 0014 0093     		str	r3, [sp]
+ 1211 0016 009B     		ldr	r3, [sp]
+ 1212              	.LBE10:
+ 1213              	.LBB11:
+ 402:Src/main.c    **** 
+ 1214              		.loc 1 402 0
+ 1215 0018 314B     		ldr	r3, .L100+4
+ 1216 001a 1A68     		ldr	r2, [r3]
+ 1217 001c 42F44042 		orr	r2, r2, #49152
+ 1218 0020 1A60     		str	r2, [r3]
+ 1219 0022 1B68     		ldr	r3, [r3]
+ 1220 0024 03F44043 		and	r3, r3, #49152
+ 1221 0028 0193     		str	r3, [sp, #4]
+ 1222 002a 019B     		ldr	r3, [sp, #4]
+ 1223              	.LBE11:
+ARM GAS  /tmp/ccOLls8W.s 			page 38
+
+
+ 406:Src/main.c    ****   RCC_OscInitStruct.HSIState = RCC_HSI_ON;
+ 1224              		.loc 1 406 0
+ 1225 002c 0223     		movs	r3, #2
+ 1226 002e 2B93     		str	r3, [sp, #172]
+ 407:Src/main.c    ****   RCC_OscInitStruct.HSICalibrationValue = 16;
+ 1227              		.loc 1 407 0
+ 1228 0030 0122     		movs	r2, #1
+ 1229 0032 2E92     		str	r2, [sp, #184]
+ 408:Src/main.c    ****   RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
+ 1230              		.loc 1 408 0
+ 1231 0034 1022     		movs	r2, #16
+ 1232 0036 2F92     		str	r2, [sp, #188]
+ 409:Src/main.c    ****   RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSI;
+ 1233              		.loc 1 409 0
+ 1234 0038 3193     		str	r3, [sp, #196]
+ 410:Src/main.c    ****   RCC_OscInitStruct.PLL.PLLM = 8;
+ 1235              		.loc 1 410 0
+ 1236 003a 0022     		movs	r2, #0
+ 1237 003c 3292     		str	r2, [sp, #200]
+ 411:Src/main.c    ****   RCC_OscInitStruct.PLL.PLLN = 216;
+ 1238              		.loc 1 411 0
+ 1239 003e 0822     		movs	r2, #8
+ 1240 0040 3392     		str	r2, [sp, #204]
+ 412:Src/main.c    ****   RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV2;
+ 1241              		.loc 1 412 0
+ 1242 0042 D822     		movs	r2, #216
+ 1243 0044 3492     		str	r2, [sp, #208]
+ 413:Src/main.c    ****   RCC_OscInitStruct.PLL.PLLQ = 2;
+ 1244              		.loc 1 413 0
+ 1245 0046 3593     		str	r3, [sp, #212]
+ 414:Src/main.c    ****   if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
+ 1246              		.loc 1 414 0
+ 1247 0048 3693     		str	r3, [sp, #216]
+ 415:Src/main.c    ****   {
+ 1248              		.loc 1 415 0
+ 1249 004a 2BA8     		add	r0, sp, #172
+ 1250 004c FFF7FEFF 		bl	HAL_RCC_OscConfig
+ 1251              	.LVL181:
+ 1252 0050 20B1     		cbz	r0, .L95
+ 417:Src/main.c    ****   }
+ 1253              		.loc 1 417 0
+ 1254 0052 2448     		ldr	r0, .L100+8
+ 1255 0054 40F2A111 		movw	r1, #417
+ 1256 0058 FFF7FEFF 		bl	_Error_Handler
+ 1257              	.LVL182:
+ 1258              	.L95:
+ 422:Src/main.c    ****   {
+ 1259              		.loc 1 422 0
+ 1260 005c FFF7FEFF 		bl	HAL_PWREx_EnableOverDrive
+ 1261              	.LVL183:
+ 1262 0060 20B1     		cbz	r0, .L96
+ 424:Src/main.c    ****   }
+ 1263              		.loc 1 424 0
+ 1264 0062 2048     		ldr	r0, .L100+8
+ 1265 0064 4FF4D471 		mov	r1, #424
+ 1266 0068 FFF7FEFF 		bl	_Error_Handler
+ 1267              	.LVL184:
+ARM GAS  /tmp/ccOLls8W.s 			page 39
+
+
+ 1268              	.L96:
+ 429:Src/main.c    ****                               |RCC_CLOCKTYPE_PCLK1|RCC_CLOCKTYPE_PCLK2;
+ 1269              		.loc 1 429 0
+ 1270 006c 0F23     		movs	r3, #15
+ 1271 006e 2693     		str	r3, [sp, #152]
+ 431:Src/main.c    ****   RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
+ 1272              		.loc 1 431 0
+ 1273 0070 0223     		movs	r3, #2
+ 1274 0072 2793     		str	r3, [sp, #156]
+ 432:Src/main.c    ****   RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV4;
+ 1275              		.loc 1 432 0
+ 1276 0074 0023     		movs	r3, #0
+ 1277 0076 2893     		str	r3, [sp, #160]
+ 433:Src/main.c    ****   RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV2;
+ 1278              		.loc 1 433 0
+ 1279 0078 4FF4A053 		mov	r3, #5120
+ 1280 007c 2993     		str	r3, [sp, #164]
+ 434:Src/main.c    **** 
+ 1281              		.loc 1 434 0
+ 1282 007e 4FF48053 		mov	r3, #4096
+ 1283 0082 2A93     		str	r3, [sp, #168]
+ 436:Src/main.c    ****   {
+ 1284              		.loc 1 436 0
+ 1285 0084 26A8     		add	r0, sp, #152
+ 1286 0086 0721     		movs	r1, #7
+ 1287 0088 FFF7FEFF 		bl	HAL_RCC_ClockConfig
+ 1288              	.LVL185:
+ 1289 008c 20B1     		cbz	r0, .L97
+ 438:Src/main.c    ****   }
+ 1290              		.loc 1 438 0
+ 1291 008e 1548     		ldr	r0, .L100+8
+ 1292 0090 4FF4DB71 		mov	r1, #438
+ 1293 0094 FFF7FEFF 		bl	_Error_Handler
+ 1294              	.LVL186:
+ 1295              	.L97:
+ 441:Src/main.c    ****   PeriphClkInitStruct.Usart3ClockSelection = RCC_USART3CLKSOURCE_PCLK1;
+ 1296              		.loc 1 441 0
+ 1297 0098 4FF48073 		mov	r3, #256
+ 1298 009c 0293     		str	r3, [sp, #8]
+ 442:Src/main.c    ****   if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInitStruct) != HAL_OK)
+ 1299              		.loc 1 442 0
+ 1300 009e 0023     		movs	r3, #0
+ 1301 00a0 1593     		str	r3, [sp, #84]
+ 443:Src/main.c    ****   {
+ 1302              		.loc 1 443 0
+ 1303 00a2 02A8     		add	r0, sp, #8
+ 1304 00a4 FFF7FEFF 		bl	HAL_RCCEx_PeriphCLKConfig
+ 1305              	.LVL187:
+ 1306 00a8 20B1     		cbz	r0, .L98
+ 445:Src/main.c    ****   }
+ 1307              		.loc 1 445 0
+ 1308 00aa 0E48     		ldr	r0, .L100+8
+ 1309 00ac 40F2BD11 		movw	r1, #445
+ 1310 00b0 FFF7FEFF 		bl	_Error_Handler
+ 1311              	.LVL188:
+ 1312              	.L98:
+ 450:Src/main.c    **** 
+ARM GAS  /tmp/ccOLls8W.s 			page 40
+
+
+ 1313              		.loc 1 450 0
+ 1314 00b4 FFF7FEFF 		bl	HAL_RCC_GetHCLKFreq
+ 1315              	.LVL189:
+ 1316 00b8 0B4B     		ldr	r3, .L100+12
+ 1317 00ba A3FB0030 		umull	r3, r0, r3, r0
+ 1318 00be 8009     		lsrs	r0, r0, #6
+ 1319 00c0 FFF7FEFF 		bl	HAL_SYSTICK_Config
+ 1320              	.LVL190:
+ 454:Src/main.c    **** 
+ 1321              		.loc 1 454 0
+ 1322 00c4 0420     		movs	r0, #4
+ 1323 00c6 FFF7FEFF 		bl	HAL_SYSTICK_CLKSourceConfig
+ 1324              	.LVL191:
+ 457:Src/main.c    **** }
+ 1325              		.loc 1 457 0
+ 1326 00ca 4FF0FF30 		mov	r0, #-1
+ 1327 00ce 0F21     		movs	r1, #15
+ 1328 00d0 0022     		movs	r2, #0
+ 1329 00d2 FFF7FEFF 		bl	HAL_NVIC_SetPriority
+ 1330              	.LVL192:
+ 458:Src/main.c    **** 
+ 1331              		.loc 1 458 0
+ 1332 00d6 39B0     		add	sp, sp, #228
+ 1333              	.LCFI19:
+ 1334              		.cfi_def_cfa_offset 4
+ 1335              		@ sp needed
+ 1336 00d8 5DF804FB 		ldr	pc, [sp], #4
+ 1337              	.L101:
+ 1338              		.align	2
+ 1339              	.L100:
+ 1340 00dc 00380240 		.word	1073887232
+ 1341 00e0 00700040 		.word	1073770496
+ 1342 00e4 10000000 		.word	.LC3
+ 1343 00e8 D34D6210 		.word	274877907
+ 1344              		.cfi_endproc
+ 1345              	.LFE149:
+ 1347              		.section	.text.main,"ax",%progbits
+ 1348              		.align	2
+ 1349              		.global	main
+ 1350              		.thumb
+ 1351              		.thumb_func
+ 1353              	main:
+ 1354              	.LFB140:
+  77:Src/main.c    ****   /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
+ 1355              		.loc 1 77 0
+ 1356              		.cfi_startproc
+ 1357              		@ args = 0, pretend = 0, frame = 8
+ 1358              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1359 0000 10B5     		push	{r4, lr}
+ 1360              	.LCFI20:
+ 1361              		.cfi_def_cfa_offset 8
+ 1362              		.cfi_offset 4, -8
+ 1363              		.cfi_offset 14, -4
+ 1364 0002 84B0     		sub	sp, sp, #16
+ 1365              	.LCFI21:
+ 1366              		.cfi_def_cfa_offset 24
+  79:Src/main.c    **** 
+ARM GAS  /tmp/ccOLls8W.s 			page 41
+
+
+ 1367              		.loc 1 79 0
+ 1368 0004 FFF7FEFF 		bl	HAL_Init
+ 1369              	.LVL193:
+  82:Src/main.c    **** 
+ 1370              		.loc 1 82 0
+ 1371 0008 FFF7FEFF 		bl	SystemClock_Config
+ 1372              	.LVL194:
+  85:Src/main.c    **** 
+ 1373              		.loc 1 85 0
+ 1374 000c 0E48     		ldr	r0, .L105
+ 1375 000e FFF7FEFF 		bl	InitDrugCureList
+ 1376              	.LVL195:
+  88:Src/main.c    ****   MX_USART3_UART_Init();
+ 1377              		.loc 1 88 0
+ 1378 0012 FFF7FEFF 		bl	MX_GPIO_Init
+ 1379              	.LVL196:
+  89:Src/main.c    **** 
+ 1380              		.loc 1 89 0
+ 1381 0016 FFF7FEFF 		bl	MX_USART3_UART_Init
+ 1382              	.LVL197:
+  93:Src/main.c    ****   xReturned = xTaskCreate(
+ 1383              		.loc 1 93 0
+ 1384 001a 0022     		movs	r2, #0
+ 1385 001c 04AB     		add	r3, sp, #16
+ 1386 001e 43F8042D 		str	r2, [r3, #-4]!
+  94:Src/main.c    ****                       	  vMainTaskCode,       	/* Function that implements the task. */
+ 1387              		.loc 1 94 0
+ 1388 0022 0092     		str	r2, [sp]
+ 1389 0024 0193     		str	r3, [sp, #4]
+ 1390 0026 0948     		ldr	r0, .L105+4
+ 1391 0028 0949     		ldr	r1, .L105+8
+ 1392 002a 8022     		movs	r2, #128
+ 1393 002c 0123     		movs	r3, #1
+ 1394 002e FFF7FEFF 		bl	xTaskCreate
+ 1395              	.LVL198:
+ 1396 0032 0446     		mov	r4, r0
+ 1397              	.LVL199:
+ 103:Src/main.c    ****   
+ 1398              		.loc 1 103 0
+ 1399 0034 FFF7FEFF 		bl	vTaskStartScheduler
+ 1400              	.LVL200:
+ 105:Src/main.c    ****   {
+ 1401              		.loc 1 105 0
+ 1402 0038 B4F1FF3F 		cmp	r4, #-1
+ 1403 003c 02D1     		bne	.L103
+ 107:Src/main.c    ****   }
+ 1404              		.loc 1 107 0
+ 1405 003e 0548     		ldr	r0, .L105+12
+ 1406 0040 FFF7FEFF 		bl	perror
+ 1407              	.LVL201:
+ 1408              	.L103:
+ 113:Src/main.c    **** 
+ 1409              		.loc 1 113 0 discriminator 1
+ 1410 0044 FEE7     		b	.L103
+ 1411              	.L106:
+ 1412 0046 00BF     		.align	2
+ 1413              	.L105:
+ARM GAS  /tmp/ccOLls8W.s 			page 42
+
+
+ 1414 0048 00000000 		.word	drugCureList
+ 1415 004c 00000000 		.word	vMainTaskCode
+ 1416 0050 1C000000 		.word	.LC4
+ 1417 0054 28000000 		.word	.LC5
+ 1418              		.cfi_endproc
+ 1419              	.LFE140:
+ 1421              		.comm	drugCureList,4,4
+ 1422              		.comm	huart3,112,4
+ 1423              		.section	.data.state_fn,"aw",%progbits
+ 1424              		.align	2
+ 1425              		.set	.LANCHOR0,. + 0
+ 1428              	state_fn:
+ 1429 0000 00000000 		.word	idle
+ 1430              		.section	.bss.recv,"aw",%nobits
+ 1431              		.align	2
+ 1432              		.set	.LANCHOR1,. + 0
+ 1435              	recv:
+ 1436 0000 00000000 		.space	36
+ 1436      00000000 
+ 1436      00000000 
+ 1436      00000000 
+ 1436      00000000 
+ 1437              		.section	.rodata.str1.4,"aMS",%progbits,1
+ 1438              		.align	2
+ 1439              	.LC0:
+ 1440 0000 6D616C6C 		.ascii	"malloc\000"
+ 1440      6F6300
+ 1441 0007 00       		.space	1
+ 1442              	.LC1:
+ 1443 0008 256400   		.ascii	"%d\000"
+ 1444 000b 00       		.space	1
+ 1445              	.LC2:
+ 1446 000c 256C7500 		.ascii	"%lu\000"
+ 1447              	.LC3:
+ 1448 0010 5372632F 		.ascii	"Src/main.c\000"
+ 1448      6D61696E 
+ 1448      2E6300
+ 1449 001b 00       		.space	1
+ 1450              	.LC4:
+ 1451 001c 4D61696E 		.ascii	"MainTask\000"
+ 1451      5461736B 
+ 1451      00
+ 1452 0025 000000   		.space	3
+ 1453              	.LC5:
+ 1454 0028 74687265 		.ascii	"thread create\000"
+ 1454      61642063 
+ 1454      72656174 
+ 1454      6500
+ 1455              		.text
+ 1456              	.Letext0:
+ 1457              		.file 3 "Drivers/CMSIS/Device/ST/STM32F7xx/Include/stm32f767xx.h"
+ 1458              		.file 4 "/home/reglisse/opt/gcc-arm-none-eabi-4_9-2015q3/arm-none-eabi/include/machine/_default_ty
+ 1459              		.file 5 "/home/reglisse/opt/gcc-arm-none-eabi-4_9-2015q3/arm-none-eabi/include/sys/_stdint.h"
+ 1460              		.file 6 "/home/reglisse/opt/gcc-arm-none-eabi-4_9-2015q3/lib/gcc/arm-none-eabi/4.9.3/include/stdde
+ 1461              		.file 7 "Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_def.h"
+ 1462              		.file 8 "Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_rcc_ex.h"
+ 1463              		.file 9 "Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_rcc.h"
+ARM GAS  /tmp/ccOLls8W.s 			page 43
+
+
+ 1464              		.file 10 "Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_gpio.h"
+ 1465              		.file 11 "Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_dma.h"
+ 1466              		.file 12 "Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_uart.h"
+ 1467              		.file 13 "Middlewares/Third_Party/FreeRTOS/Source/include/projdefs.h"
+ 1468              		.file 14 "Middlewares/Third_Party/FreeRTOS/Source/include/task.h"
+ 1469              		.file 15 "Middlewares/Third_Party/FreeRTOS/Source/include/queue.h"
+ 1470              		.file 16 "Middlewares/Third_Party/FreeRTOS/Source/include/semphr.h"
+ 1471              		.file 17 "Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS/cmsis_os.h"
+ 1472              		.file 18 "Inc/cureManager.h"
+ 1473              		.file 19 "Drivers/CMSIS/Include/core_cm7.h"
+ 1474              		.file 20 "/home/reglisse/opt/gcc-arm-none-eabi-4_9-2015q3/arm-none-eabi/include/stdlib.h"
+ 1475              		.file 21 "/home/reglisse/opt/gcc-arm-none-eabi-4_9-2015q3/arm-none-eabi/include/stdio.h"
+ 1476              		.file 22 "/home/reglisse/opt/gcc-arm-none-eabi-4_9-2015q3/arm-none-eabi/include/string.h"
+ 1477              		.file 23 "Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_pwr_ex.h"
+ 1478              		.file 24 "Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_cortex.h"
+ 1479              		.file 25 "Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal.h"
+ 1480              		.file 26 "<built-in>"
+ARM GAS  /tmp/ccOLls8W.s 			page 44
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 main.c
+     /tmp/ccOLls8W.s:20     .text.vMainTaskCode:00000000 $t
+     /tmp/ccOLls8W.s:24     .text.vMainTaskCode:00000000 vMainTaskCode
+     /tmp/ccOLls8W.s:85     .text.vMainTaskCode:00000034 $d
+     /tmp/ccOLls8W.s:91     .text.idle:00000000 $t
+     /tmp/ccOLls8W.s:95     .text.idle:00000000 idle
+     /tmp/ccOLls8W.s:116    .text.idle:00000010 $d
+                            *COM*:00000070 huart3
+     /tmp/ccOLls8W.s:122    .text.MX_GPIO_Init:00000000 $t
+     /tmp/ccOLls8W.s:126    .text.MX_GPIO_Init:00000000 MX_GPIO_Init
+     /tmp/ccOLls8W.s:213    .text.MX_GPIO_Init:00000078 $d
+     /tmp/ccOLls8W.s:219    .text.parse:00000000 $t
+     /tmp/ccOLls8W.s:224    .text.parse:00000000 parse
+     /tmp/ccOLls8W.s:364    .text.parse:00000070 $d
+     /tmp/ccOLls8W.s:369    .text.computeEntry:00000000 $t
+     /tmp/ccOLls8W.s:374    .text.computeEntry:00000000 computeEntry
+     /tmp/ccOLls8W.s:502    .text.computeEntry:0000009c $d
+                            *COM*:00000004 drugCureList
+     /tmp/ccOLls8W.s:509    .text.concat:00000000 $t
+     /tmp/ccOLls8W.s:514    .text.concat:00000000 concat
+     /tmp/ccOLls8W.s:759    .text.concat:00000110 $d
+     /tmp/ccOLls8W.s:766    .text.HAL_UART_RxCpltCallback:00000000 $t
+     /tmp/ccOLls8W.s:771    .text.HAL_UART_RxCpltCallback:00000000 HAL_UART_RxCpltCallback
+     /tmp/ccOLls8W.s:787    .text.HAL_UART_RxCpltCallback:00000008 $d
+     /tmp/ccOLls8W.s:793    .text.vCureTaskCodeA:00000000 $t
+     /tmp/ccOLls8W.s:798    .text.vCureTaskCodeA:00000000 vCureTaskCodeA
+     /tmp/ccOLls8W.s:925    .text.vCureTaskCodeA:000000ac $d
+     /tmp/ccOLls8W.s:932    .text.vCureTaskCodeB:00000000 $t
+     /tmp/ccOLls8W.s:937    .text.vCureTaskCodeB:00000000 vCureTaskCodeB
+     /tmp/ccOLls8W.s:1065   .text.vCureTaskCodeB:000000b0 $d
+     /tmp/ccOLls8W.s:1072   .text.StartDefaultTask:00000000 $t
+     /tmp/ccOLls8W.s:1077   .text.StartDefaultTask:00000000 StartDefaultTask
+     /tmp/ccOLls8W.s:1102   .text._Error_Handler:00000000 $t
+     /tmp/ccOLls8W.s:1107   .text._Error_Handler:00000000 _Error_Handler
+     /tmp/ccOLls8W.s:1123   .text.MX_USART3_UART_Init:00000000 $t
+     /tmp/ccOLls8W.s:1127   .text.MX_USART3_UART_Init:00000000 MX_USART3_UART_Init
+     /tmp/ccOLls8W.s:1177   .text.MX_USART3_UART_Init:00000034 $d
+     /tmp/ccOLls8W.s:1184   .text.SystemClock_Config:00000000 $t
+     /tmp/ccOLls8W.s:1189   .text.SystemClock_Config:00000000 SystemClock_Config
+     /tmp/ccOLls8W.s:1340   .text.SystemClock_Config:000000dc $d
+     /tmp/ccOLls8W.s:1348   .text.main:00000000 $t
+     /tmp/ccOLls8W.s:1353   .text.main:00000000 main
+     /tmp/ccOLls8W.s:1414   .text.main:00000048 $d
+     /tmp/ccOLls8W.s:1424   .data.state_fn:00000000 $d
+     /tmp/ccOLls8W.s:1428   .data.state_fn:00000000 state_fn
+     /tmp/ccOLls8W.s:1431   .bss.recv:00000000 $d
+     /tmp/ccOLls8W.s:1435   .bss.recv:00000000 recv
+     /tmp/ccOLls8W.s:1438   .rodata.str1.4:00000000 $d
+                     .debug_frame:00000010 $d
+
+UNDEFINED SYMBOLS
+HAL_GPIO_WritePin
+HAL_UART_Receive_IT
+HAL_GPIO_Init
+atoi
+CheckName
+ARM GAS  /tmp/ccOLls8W.s 			page 45
+
+
+RemoveCure
+uxTaskGetNumberOfTasks
+AddCureDrug
+LaunchCure
+ModifyCure
+malloc
+perror
+strcpy
+sprintf
+strlen
+xTaskGetTickCount
+vTaskDelay
+xQueueGenericReceive
+xQueueGenericSend
+HAL_UART_Transmit
+free
+osDelay
+HAL_UART_Init
+HAL_RCC_OscConfig
+HAL_PWREx_EnableOverDrive
+HAL_RCC_ClockConfig
+HAL_RCCEx_PeriphCLKConfig
+HAL_RCC_GetHCLKFreq
+HAL_SYSTICK_Config
+HAL_SYSTICK_CLKSourceConfig
+HAL_NVIC_SetPriority
+HAL_Init
+InitDrugCureList
+xTaskCreate
+vTaskStartScheduler
