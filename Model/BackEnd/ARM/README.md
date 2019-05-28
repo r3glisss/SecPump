@@ -7,6 +7,9 @@ This port has been design to be run from a linux operating system:
 You can grab it using this command:
 ~~~
 wget https://developer.arm.com/-/media/Files/downloads/gnu-rm/8-2018q4/gcc-arm-none-eabi-8-2018-q4-major-linux.tar.bz2
+tar xfj gcc-arm-none-eabi-8-2018-q4-major-linux.tar.bz2
+echo "export PATH=\$PATH:$(pwd)"\/gcc-arm-none-eabi-8-2018-q4-major-linux\/bin >> ~/.bashrc
+source ~/.bashrc
 ~~~
 
 Then :
@@ -26,6 +29,9 @@ This port has been designed to be run from a linux system.
 You can grab it using this command:
 ~~~
 wget https://developer.arm.com/-/media/Files/downloads/gnu-rm/8-2018q4/gcc-arm-none-eabi-8-2018-q4-major-linux.tar.bz2
+tar xfj gcc-arm-none-eabi-8-2018-q4-major-linux.tar.bz2
+echo "export PATH=\$PATH:$(pwd)"\/gcc-arm-none-eabi-8-2018-q4-major-linux\/bin >> ~/.bashrc
+source ~/.bashrc
 ~~~
 
 Then:
