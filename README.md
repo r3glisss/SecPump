@@ -3,7 +3,9 @@
 Welcome to the SecPump project!
 Documentation is under construction, however all applications are already deployable and functional. 
 
+<p align="center">
 ![VSPM](VSPM.PNG)
+</p>
 
 ## Context
 
