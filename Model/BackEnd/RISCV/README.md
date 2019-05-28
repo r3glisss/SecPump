@@ -1,37 +1,11 @@
-# FreeRTOS Pump
+# RISCV port
 
-This port has been design to be run from a linux operating system: 
-- Make sure that you have the STM32Cube Mx Software installer
-- Make sure that the [AArch32 bare-metal compiler](https://developer.arm.com/open-source/gnu-toolchain/gnu-a/downloads?fbclid=IwAR2I_6zIP3RlRHWNmEP8ILh4RCU_YZxbl81QFU_9FZ7fBnJA82Z5OmoFixg) is in your path (arm-eabi)
+This port has been design to be run from a linux operating system Ubuntu 16-LTS. The RISC-V port of the SecPump is based on the SiFive's E300 Freedom platform. In order to setup the plateform, you first need to carefully follow the [Freedom E300 Arty FPGA Dev Kit](https://github.com/sifive/freedom) installation guide. 
 
-You can grab it using this command:
+Once installed and the bitstream generated for the Arty 7 FPGA, you need to build the SecPump application.Assuming the RISC-V compiler is in your path:
 ~~~
-wget https://developer.arm.com/-/media/Files/downloads/gnu-rm/8-2018q4/gcc-arm-none-eabi-8-2018-q4-major-linux.tar.bz2
-~~~
-
-Then :
-~~~
-cd Baremetal_BLE_Pump/F401RE
+make clean
 make
 ~~~
 
-Congrat's you can now port the binary on the F7 board
-
-
-# Baremetal Pump
-
-This port has been designed to be run from a linux system. 
-- Make sure that the [AArch32 bare-metal compiler](https://developer.arm.com/open-source/gnu-toolchain/gnu-a/downloads?fbclid=IwAR2I_6zIP3RlRHWNmEP8ILh4RCU_YZxbl81QFU_9FZ7fBnJA82Z5OmoFixg) is in your path (arm-eabi)
-
-You can grab it using this command:
-~~~
-wget https://developer.arm.com/-/media/Files/downloads/gnu-rm/8-2018q4/gcc-arm-none-eabi-8-2018-q4-major-linux.tar.bz2
-~~~
-
-Then:
-~~~
-cd FreeRTOS_Pump/F401RE
-make
-~~~
-
-Congrat's you can now port the binary on the F4 board + BlueNRG extension board.
+Congrat's you can now upload the software on the Arty Board. 
