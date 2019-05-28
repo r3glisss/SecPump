@@ -25,3 +25,9 @@ As explain above the VSPM is a complete open source cyber physical system that m
 
 - The Docs folder contains all the specifications of the demonstrator. You may also find a complete security analysis of the demonstrator using the eBIOS method. (ANSII)
 - The Model folder contains the implementation of the embedded application for both RISCV and ARM architecture. You may also find a way to launch the VPSM interface on your host computer. Obviously, the subfolders provide some README to guide in the installation of the demonstrator.
+
+## Acknoledgements
+
+This work is carried out under the SERENE-IoT project, a project labelled within the framework of PENTA, the EUREKA cluster for Application and Technology Research in Europe on NanoElectronics.
+
+This research was partially supported by the National Science Foundation under Grant CNS-1615890.
