@@ -90,8 +90,44 @@ python Sec-Interface.py
 
 A 24-hour simulation is launched (displayed bellow). The diabetic blood glucose is modeled by the python script and the STM32-based pump regulates it with insulin using an integrated PID.
 
+<p align="center">
+    <img src="https://github.com/r3glisss/SecPump/blob/master/Img/Sec-Vanilla.gif">
+</p>
 
-The pump can be switched to "MANUAL MODE" for insulin step regulation. The configuration change of configuration is achieve using BLE. 
+WARNING: Always reset the pump before running a simulation !
+
+The pump can be switched to "MANUAL MODE" for insulin step regulation. The configuration change is achieve using BLE. 
+
+There are two options to make this change:
+
+(1) Do it from a smartphone and an application such as "BLE Scanner" to connect to a BLE device.
+
+In "BLE Scanner" connect to SecPump:
+<p align="center">
+    <img src="https://github.com/r3glisss/SecPump/blob/master/Img/BLE-Notifier-11.jgp">
+</p>
+
+Click on "W" for the first BLE characteristic, and write "1" in text. This will change the pump mode to "MANUAL". (Write 0 to change back to AUTO, or simply reset the pump):
+<p align="center">
+    <img src="https://github.com/r3glisss/SecPump/blob/master/Img/BLE-Notifier-21.jpg">
+</p>
+
+
+Click on "W" for the second BLE characteristic, and write the insulin step to inject. (ex: 15):
+<p align="center">
+    <img src="https://github.com/r3glisss/SecPump/blob/master/Img/BLE-Notifier-21.jpg">
+</p>
+
+By relaunching a simulation you should get the following display:
+<p align="center">
+    <img src="https://github.com/r3glisss/SecPump/blob/master/Img/Sec-Vanilla-Manual.gif">
+</p>
+
+(2) (Requires BLE Stack on Linux) Connect to SecPump using the provided python script:
+~~~bash
+cd Scripts
+python BlueCmd.py
+~~~
 
 
 
