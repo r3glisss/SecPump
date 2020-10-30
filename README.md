@@ -1,4 +1,4 @@
-# The SecPump Project 
+# SecPump :syringe: 
 
 Welcome to the SecPump project!
 Documentation is under construction, however all applications are already deployable and functional. 
