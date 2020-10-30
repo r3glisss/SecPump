@@ -1,0 +1,15 @@
+{
+    "files.associations": {
+        "bluenrg_utils.h": "c",
+        "bluenrg_gatt_aci.h": "c",
+        "mbedtls.h": "c",
+        "mbedtls_config.h": "c",
+        "sensor_service.h": "c",
+        "insulin_injector.h": "c",
+        "unistd.h": "c",
+        "stat.h": "c",
+        "errno.h": "c",
+        "cgm.h": "c"
+    },
+    "python.formatting.provider": "yapf"
+}
