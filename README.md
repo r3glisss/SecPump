@@ -100,11 +100,11 @@ The pump can be switched to "MANUAL MODE" for insulin step regulation. The confi
 
 There are two options to make this change:
 
-(1) Do it from a smartphone and an application such as "BLE Scanner" to connect to a BLE device.
+(Option 1) Do it from a smartphone and an application such as "BLE Scanner" to connect to a BLE device.
 
 In "BLE Scanner" connect to SecPump:
 <p align="center">
-    <img src="https://github.com/r3glisss/SecPump/blob/master/Img/BLE-Notifier-11.jgp">
+    <img src="https://github.com/r3glisss/SecPump/blob/master/Img/BLE-Notifier-11.jpg">
 </p>
 
 Click on "W" for the first BLE characteristic, and write "1" in text. This will change the pump mode to "MANUAL". (Write 0 to change back to AUTO, or simply reset the pump):
@@ -123,7 +123,7 @@ By relaunching a simulation you should get the following display:
     <img src="https://github.com/r3glisss/SecPump/blob/master/Img/Sec-Vanilla-Manual.gif">
 </p>
 
-(2) (Requires BLE Stack on Linux) Connect to SecPump using the provided python script:
+(Option 2) (Requires BLE Stack on Linux) Connect to SecPump using the provided python script:
 ~~~bash
 cd Scripts
 python BlueCmd.py
