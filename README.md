@@ -1,7 +1,8 @@
+
 # SecPump :syringe: 
 
-Welcome to the SecPump project!
-Documentation is under construction, however all applications are already deployable and functional. 
+Welcome to SecPump!
+SecPump is an open wireless insulin pump system workbench that models the insulin kinetics based on the modified Bergman's minimal model. The system workbench is primarily tailored for security assessments and countermeasures development against the numerous security flaws related to wearable medical devices. The platform is open-source and free from commercials constraints making it a suitable target to perform both hardware/software security demonstrations. SecPump aims at being straightforward to use, it only requires an inexpensive Nucleo F401-RE STM32 board with the BlueNRG extension.
 
 <p align="center">
     <img src="https://github.com/r3glisss/SecPump/blob/master/VSPM.PNG">
@@ -9,24 +10,19 @@ Documentation is under construction, however all applications are already deploy
 
 ## Context
 
-The secPump is an open platform modelling a simple infusion pump using Bluetooth Low Energy technology. The SecPump has been designed within the [Serene IoT project](http://serene.minalogic.net/) which aims at contributing to develop high quality connected care services and diagnosis tools based on Advanced Smart Health-Care IoT Devices.  This platform intends to provide a framework for security evaluation, tailored for countermeasures development against the numerous security flaws related to medical devices. 
+SecPump is a research project designed in collaboration with the [LCIS](https://lcis.grenoble-inp.fr/le-laboratoire), the [University of Arizona](https://www.arizona.edu/), and the [SERENE IoT project](http://serene.minalogic.net/). SERENE IoT aims at contributing to developing high quality connected care services and diagnostic tools based on Advanced Smart Health-Care IoT Devices. This platform intends to provide a framework for security evaluation, tailored for countermeasures development against the numerous security flaws related to medical devices. 
 
-## Why an open platform ?
+## Why an open-platform?
 
-Medical infusion pumps are considered as life critical embedded systems. While these devices are promising in the medical area, there are known to be poor in security and strongly vulnerable to many attack vectors. Most of the time basic features such as integrity, authenticity, privacy and safety are not respected. If such a lack of security exists it is due to the difficulty to find an open source model of such a critical system. In addition, the evaluation of security features in these devices can be really difficult to expose and evaluate without a good demonstrator. Here comes the VSPM! The objectives of our platform are threefold: 
+Wireless insulin pumps are considered life critical embedded systems. While these devices are promising innovation, there are known to be poor in security and vulnerable to various cyber-attacks [1]. Unfortunately, due to the lack of openess to research, and commercial constraints, security researchers cannot freely demonstrate security issues on these devices. Besides, the security countermeasures assessments can be difficult without an open-model. Here comes the SecPump! The repo provides: 
 
-- Establishing and providing a set of documents of good security/safety practices for the development of a life critical application. Our software architecture document is also open source and provides all the details related to the medical pump.
+- An abstract representation of a wireless wearable insulin pump that models the blood glucose regulation within the human body. The open source code base of the pump can be extended, and improved for various demonstrations including cyber-physical system design, automation (PID regulation),security, and safety. 
 
-- Providing an abstract representation of the software used in a typical infusion Pump. This open source base can be extended and improved for specific implementation/demonstration. 
+- A software security demonstration based on advanced memory corruption exploitation. This demonstration exploits an intentional stack-based buffer overflow bug introduced in a vulnerable BLE characteristic. The bug allow an attacker to maliciously modify the functionning of the cyber-physical system at run-time. Such attack here raise the amount of insulin injected over the time.
 
-- Providing an open-source medical platform that can be used to demonstrate and expose the exploitation of hardware and software vulnerabilities without attacking a real device. For example, at the hardware level, our technology uses encryption algorithms such as AES. It is therefore possible to carry out side channel attacks to leak cryptographic keys.  
+## Get started
 
-## How to get started ?
 
-As explain above the VSPM is a complete open source cyber physical system that models the dosage and performance of a drug administered to a patient in real time. To start playing with the application may be aware of the architecture of this repo:
-
-- The Docs folder contains all the specifications of the demonstrator. You may also find a complete security analysis of the demonstrator using the eBIOS method. (ANSII)
-- The Model folder contains the implementation of the embedded application for both RISCV and ARM architecture. You may also find a way to launch the VPSM interface on your host computer. Obviously, the subfolders provide some README to guide in the installation of the demonstrator.
 
 ## Acknowledgements
 
