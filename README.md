@@ -136,7 +136,39 @@ python BlueCmd.py
 Once the connection is established, the script allows us to change the operating mode and to program insulin injection steps.
 
 ~~~
+[*] Scanning For Device
+[*] Discovered device f8:1d:78:63:1d:b6
+[*] Discovered device 65:55:21:14:e1:2b
+[*] Discovered device 02:80:e1:00:34:12
+Device 65:55:21:14:e1:2b (random), RSSI=-71 dB
+  Flags = 1a
+  Tx Power = 0c
+  Manufacturer = 4c0010051118028ff6
+Device f8:1d:78:63:1d:b6 (public), RSSI=-96 dB
+  Flags = 05
+  Complete 16b Services = 0000fff0-0000-1000-8000-00805f9b34fb,0000ffe5-0000-1000-8000-00805f9b34fb,0000ffe0-0000-1000-8000-00805f9b34fb
+Device 02:80:e1:00:34:12 (public), RSSI=-71 dB
+  Flags = 06
+  Tx Power = fe
+  Complete Local Name = SecPump
+[+] Found Medical Pump
+[*] Connecting to Device...
+[*] Discovering Services...
+Service <uuid=Generic Attribute handleStart=1 handleEnd=4>
+Service <uuid=Generic Access handleStart=5 handleEnd=11>
+Service <uuid=42821a40-e477-11e2-82d0-0002a5d5c51b handleStart=12 handleEnd=18>
+[*] Accessing Pump Service
+[*] Getting MODE characteristic
+[*] Getting BOLUS characteristic
 
+(1) MODE
+(2) BOLUS
+        Choice?1
+Msg >1
+
+(1) MODE
+(2) BOLUS
+        Choice?15
 ~~~
 
 ### Cyber-physical device research
@@ -170,7 +202,8 @@ While the pump is now regulating the blood glucose, it is time to launch the rem
 On your second computer, disjoined from the main computer, launch the following command:
 
 ~~~
-python Scripts/Exploit.py
+cd Scripts
+python Exploit.py
 ~~~
 
 The exploit script automatically finds the wireless pump and performs the payload injection on the vulnerable BLE characteristic:
@@ -192,6 +225,10 @@ This work is carried out under the SERENE-IoT project, a project labeled within 
 This work is supported by the French National Research Agency in the framework of the “investissementd’avenir” program (ANR-15-IDEX-02)
 
 This research was partially supported by the National Science Foundation under Grant CNS-1615890.
+
+## Licensing
+
+
 
 ## Contact
 
