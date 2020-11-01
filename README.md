@@ -228,6 +228,8 @@ If used for research, please cite the SecPump publication:
 
 C. Bresch, D. Hély, S. Chollet, and R. Lysecky, *“SecPump: A Connected Open Source Infusion Pump for Security Research Purposes,”* IEEE Embedded Systems Letters, 2020.
 
+IEEE link: https://ieeexplore.ieee.org/document/9031704
+
 ## Acknowledgements
 
 This work is carried out under the SERENE-IoT project, a project labeled within the framework of PENTA, the EUREKA Cluster for Application and Technology Research in Europe on NanoElectronics.
