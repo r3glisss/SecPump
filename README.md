@@ -218,17 +218,23 @@ After a couple of second, the amount of insulin injected by the pump should rais
     <img src="https://github.com/r3glisss/SecPump/blob/master/Img/Sec-Vuln.gif">
 </p>
 
+## License
+
+This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by   the Free Software Foundation, in version 3. This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+
+## Attribution
+
+If used for research, please cite the SecPump publication:
+
+C. Bresch, D. Hély, S. Chollet, and R. Lysecky, *“SecPump: A Connected Open Source Infusion Pump for Security Research Purposes,”* IEEE Embedded Systems Letters, 2020.
+
 ## Acknowledgements
 
 This work is carried out under the SERENE-IoT project, a project labeled within the framework of PENTA, the EUREKA Cluster for Application and Technology Research in Europe on NanoElectronics.
 
-This work is supported by the French National Research Agency in the framework of the “investissementd’avenir” program (ANR-15-IDEX-02)
+This work is supported by the French National Research Agency in the framework of the “investissementd’avenir” program (ANR-16-IDEX-02)
 
-This research was partially supported by the National Science Foundation under Grant CNS-1615890.
-
-## Licensing
-
-
+This research was partially supported by the National Science Foundation under Grant CNS-1615891.
 
 ## Contact
 
