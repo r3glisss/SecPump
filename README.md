@@ -104,7 +104,7 @@ There are two options to make this change:
 
 **(Option 1):** Do it from a smartphone and an application such as "BLE Scanner" to connect to a BLE device.
 
-In "BLE Scanner" connect to SecPump:
+With "BLE Scanner" connect to SecPump:
 <p align="center">
     <img src="https://github.com/r3glisss/SecPump/blob/master/Img/BLE-Notifier-11.jpg">
 </p>
