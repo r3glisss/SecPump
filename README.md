@@ -242,7 +242,7 @@ C. Bresch, D. Hély, S. Chollet, and R. Lysecky, *“SecPump: A Connected Open S
 
 This work is carried out under the SERENE-IoT project, a project labeled within the framework of PENTA, the EUREKA Cluster for Application and Technology Research in Europe on NanoElectronics.
 
-This work is supported by the French National Research Agency in the framework of the “investissementd’avenir” program (ANR-16-IDEX-02)
+This work is supported by the French National Research Agency in the framework of the “investissement d’avenir” program (ANR-16-IDEX-02)
 
 This research was partially supported by the National Science Foundation under Grant CNS-1615891.
 
