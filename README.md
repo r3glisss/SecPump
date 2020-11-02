@@ -224,11 +224,19 @@ This program is free software: you can redistribute it and/or modify it under th
 
 ## Attribution
 
-If used for research, please cite the SecPump publication:
+If used for research, please cite the SecPump publication: https://ieeexplore.ieee.org/document/9031704
 
 C. Bresch, D. Hély, S. Chollet, and R. Lysecky, *“SecPump: A Connected Open Source Infusion Pump for Security Research Purposes,”* IEEE Embedded Systems Letters, 2020.
 
-IEEE link: https://ieeexplore.ieee.org/document/9031704
+~~~Latex
+@article{bresch2020secpump,
+  title={SecPump: A Connected Open Source Infusion Pump for Security Research Purposes},
+  author={Bresch, Cyril and H{\'e}ly, David and Chollet, St{\'e}phanie and Lysecky, Roman},
+  journal={IEEE Embedded Systems Letters},
+  year={2020},
+  publisher={IEEE}
+}
+~~~
 
 ## Acknowledgements
 
