@@ -42,6 +42,12 @@ echo "export PATH=\$PATH:$(pwd)"\/gcc-arm-none-eabi-8-2018-q4-major-linux\/bin >
 source ~/.bashrc
 ~~~
 
+Install the python dependencies, it is recommanded to use a dedicated new python environment: 
+
+~~~bash
+pip install -r Scripts/requirements.txt
+~~~
+
 ## SecPump Vanilla
 
 First of all, you have to get into the right folder:
