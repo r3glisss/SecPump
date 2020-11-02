@@ -212,7 +212,7 @@ The exploit script automatically finds the wireless pump and performs the payloa
     <img src="https://github.com/r3glisss/SecPump/blob/master/Img/Xploit.gif">
 </p>
 
-After a couple of second, the amount of insulin injected by the pump should raise considerably being lethal for the patient:
+After a couple of seconds, the amount of insulin injected by the pump should raise considerably being lethal for the patient:
 
 <p align="center">
     <img src="https://github.com/r3glisss/SecPump/blob/master/Img/Sec-Vuln.gif">
