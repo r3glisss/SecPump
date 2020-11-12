@@ -1,0 +1,1032 @@
+ARM GAS  /tmp/ccRIn438.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.eabi_attribute 27, 1
+   3              		.eabi_attribute 28, 1
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 2
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"app_x-cube-ble1.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.section	.rodata.MX_BlueNRG_MS_Init.str1.4,"aMS",%progbits,1
+  18              		.align	2
+  19              	.LC1:
+  20 0000 0A0A3D3D 		.ascii	"\012\012==== SECPUMP INIT====\015\012Hardware versi"
+  20      3D3D2053 
+  20      45435055 
+  20      4D502049 
+  20      4E49543D 
+  21 0027 6F6E3A20 		.ascii	"on: %d\015\012Firmware version: %d\015\012\012\000"
+  21      25640D0A 
+  21      4669726D 
+  21      77617265 
+  21      20766572 
+  22 0047 00       		.align	2
+  23              	.LC2:
+  24 0048 53657474 		.ascii	"Setting BD_ADDR failed.\015\000"
+  24      696E6720 
+  24      42445F41 
+  24      44445220 
+  24      6661696C 
+  25 0061 000000   		.align	2
+  26              	.LC3:
+  27 0064 47415454 		.ascii	"GATT_Init failed.\015\000"
+  27      5F496E69 
+  27      74206661 
+  27      696C6564 
+  27      2E0D00
+  28 0077 00       		.align	2
+  29              	.LC4:
+  30 0078 4741505F 		.ascii	"GAP_Init failed.\015\000"
+  30      496E6974 
+  30      20666169 
+  30      6C65642E 
+  30      0D00
+  31 008a 0000     		.align	2
+  32              	.LC5:
+  33 008c 426C7565 		.ascii	"BlueNRG\000"
+  33      4E524700 
+  34              		.align	2
+  35              	.LC6:
+  36 0094 6163695F 		.ascii	"aci_gatt_update_char_value failed.\015\000"
+ARM GAS  /tmp/ccRIn438.s 			page 2
+
+
+  36      67617474 
+  36      5F757064 
+  36      6174655F 
+  36      63686172 
+  37              		.align	2
+  38              	.LC7:
+  39 00b8 5B2A5D20 		.ascii	"[*] BLE Stack Initialized.\015\000"
+  39      424C4520 
+  39      53746163 
+  39      6B20496E 
+  39      69746961 
+  40              		.align	2
+  41              	.LC8:
+  42 00d4 5B2A5D20 		.ascii	"[*] SERVER: BLE Stack Initialized.\015\000"
+  42      53455256 
+  42      45523A20 
+  42      424C4520 
+  42      53746163 
+  43              		.align	2
+  44              	.LC9:
+  45 00f8 5B2A5D20 		.ascii	"[*] SecPump service added successfully.\015\000"
+  45      53656350 
+  45      756D7020 
+  45      73657276 
+  45      69636520 
+  46 0121 000000   		.align	2
+  47              	.LC10:
+  48 0124 5B215D20 		.ascii	"[!] Error while adding pump service.\015\000"
+  48      4572726F 
+  48      72207768 
+  48      696C6520 
+  48      61646469 
+  49              		.section	.text.MX_BlueNRG_MS_Init,"ax",%progbits
+  50              		.align	1
+  51              		.p2align 2,,3
+  52              		.global	MX_BlueNRG_MS_Init
+  53              		.arch armv7e-m
+  54              		.syntax unified
+  55              		.thumb
+  56              		.thumb_func
+  57              		.fpu fpv4-sp-d16
+  59              	MX_BlueNRG_MS_Init:
+  60              	.LFB133:
+  61              		.file 1 "Src/app_x-cube-ble1.c"
+   1:Src/app_x-cube-ble1.c **** /**
+   2:Src/app_x-cube-ble1.c ****  ******************************************************************************
+   3:Src/app_x-cube-ble1.c ****  * File Name          : app_x-cube-ble1.c
+   4:Src/app_x-cube-ble1.c ****  * Description        : Implementation file
+   5:Src/app_x-cube-ble1.c ****  *
+   6:Src/app_x-cube-ble1.c ****  ******************************************************************************
+   7:Src/app_x-cube-ble1.c ****  *
+   8:Src/app_x-cube-ble1.c ****  * COPYRIGHT 2020 STMicroelectronics
+   9:Src/app_x-cube-ble1.c ****  *
+  10:Src/app_x-cube-ble1.c ****  * Licensed under MCD-ST Liberty SW License Agreement V2, (the "License");
+  11:Src/app_x-cube-ble1.c ****  * You may not use this file except in compliance with the License.
+  12:Src/app_x-cube-ble1.c ****  * You may obtain a copy of the License at:
+  13:Src/app_x-cube-ble1.c ****  *
+ARM GAS  /tmp/ccRIn438.s 			page 3
+
+
+  14:Src/app_x-cube-ble1.c ****  *        http://www.st.com/software_license_agreement_liberty_v2
+  15:Src/app_x-cube-ble1.c ****  *
+  16:Src/app_x-cube-ble1.c ****  * Unless required by applicable law or agreed to in writing, software
+  17:Src/app_x-cube-ble1.c ****  * distributed under the License is distributed on an "AS IS" BASIS,
+  18:Src/app_x-cube-ble1.c ****  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  19:Src/app_x-cube-ble1.c ****  * See the License for the specific language governing permissions and
+  20:Src/app_x-cube-ble1.c ****  * limitations under the License.
+  21:Src/app_x-cube-ble1.c ****  ******************************************************************************
+  22:Src/app_x-cube-ble1.c ****  */
+  23:Src/app_x-cube-ble1.c **** 
+  24:Src/app_x-cube-ble1.c **** /* Define to prevent recursive inclusion -------------------------------------*/
+  25:Src/app_x-cube-ble1.c **** #ifndef __APP_X_CUBE_BLE1_C
+  26:Src/app_x-cube-ble1.c **** #define __APP_X_CUBE_BLE1_C
+  27:Src/app_x-cube-ble1.c **** #ifdef __cplusplus
+  28:Src/app_x-cube-ble1.c **** extern "C" {
+  29:Src/app_x-cube-ble1.c **** #endif
+  30:Src/app_x-cube-ble1.c **** 
+  31:Src/app_x-cube-ble1.c **** /* Includes ------------------------------------------------------------------*/
+  32:Src/app_x-cube-ble1.c **** #include "app_x-cube-ble1.h"
+  33:Src/app_x-cube-ble1.c **** 
+  34:Src/app_x-cube-ble1.c **** #include "hci_tl.h"
+  35:Src/app_x-cube-ble1.c **** // #include "sensor_service.h"
+  36:Src/app_x-cube-ble1.c **** #include "PumpService.h"
+  37:Src/app_x-cube-ble1.c **** #include "bluenrg_gap_aci.h"
+  38:Src/app_x-cube-ble1.c **** #include "bluenrg_gatt_aci.h"
+  39:Src/app_x-cube-ble1.c **** #include "bluenrg_utils.h"
+  40:Src/app_x-cube-ble1.c **** #include "stm32f4xx_nucleo.h"
+  41:Src/app_x-cube-ble1.c **** 
+  42:Src/app_x-cube-ble1.c **** /* USER CODE BEGIN Includes */
+  43:Src/app_x-cube-ble1.c **** 
+  44:Src/app_x-cube-ble1.c **** /* USER CODE END Includes */
+  45:Src/app_x-cube-ble1.c **** 
+  46:Src/app_x-cube-ble1.c **** /* Private defines -----------------------------------------------------------*/
+  47:Src/app_x-cube-ble1.c **** #define BDADDR_SIZE 6
+  48:Src/app_x-cube-ble1.c **** 
+  49:Src/app_x-cube-ble1.c **** /* Private macros ------------------------------------------------------------*/
+  50:Src/app_x-cube-ble1.c **** 
+  51:Src/app_x-cube-ble1.c **** /* Private variables ---------------------------------------------------------*/
+  52:Src/app_x-cube-ble1.c **** extern volatile uint8_t set_connectable;
+  53:Src/app_x-cube-ble1.c **** extern volatile int connected;
+  54:Src/app_x-cube-ble1.c **** // extern AxesRaw_t        axes_data;
+  55:Src/app_x-cube-ble1.c **** uint8_t bnrg_expansion_board =
+  56:Src/app_x-cube-ble1.c ****     IDB04A1; /* at startup, suppose the X-NUCLEO-IDB04A1 is used */
+  57:Src/app_x-cube-ble1.c **** static volatile uint8_t user_button_init_state = 1;
+  58:Src/app_x-cube-ble1.c **** static volatile uint8_t user_button_pressed = 0;
+  59:Src/app_x-cube-ble1.c **** 
+  60:Src/app_x-cube-ble1.c **** /* USER CODE BEGIN PV */
+  61:Src/app_x-cube-ble1.c **** 
+  62:Src/app_x-cube-ble1.c **** /* USER CODE END PV */
+  63:Src/app_x-cube-ble1.c **** 
+  64:Src/app_x-cube-ble1.c **** /* Private function prototypes -----------------------------------------------*/
+  65:Src/app_x-cube-ble1.c **** // static void User_Process(AxesRaw_t* p_axes);
+  66:Src/app_x-cube-ble1.c **** static void User_Process();
+  67:Src/app_x-cube-ble1.c **** static void User_Init(void);
+  68:Src/app_x-cube-ble1.c **** 
+  69:Src/app_x-cube-ble1.c **** /* USER CODE BEGIN PFP */
+  70:Src/app_x-cube-ble1.c **** 
+ARM GAS  /tmp/ccRIn438.s 			page 4
+
+
+  71:Src/app_x-cube-ble1.c **** /* USER CODE END PFP */
+  72:Src/app_x-cube-ble1.c **** 
+  73:Src/app_x-cube-ble1.c **** #if PRINT_CSV_FORMAT
+  74:Src/app_x-cube-ble1.c **** extern volatile uint32_t ms_counter;
+  75:Src/app_x-cube-ble1.c **** /**
+  76:Src/app_x-cube-ble1.c ****  * @brief  This function is a utility to print the log time
+  77:Src/app_x-cube-ble1.c ****  *         in the format HH:MM:SS:MSS (DK GUI time format)
+  78:Src/app_x-cube-ble1.c ****  * @param  None
+  79:Src/app_x-cube-ble1.c ****  * @retval None
+  80:Src/app_x-cube-ble1.c ****  */
+  81:Src/app_x-cube-ble1.c **** void print_csv_time(void) {
+  82:Src/app_x-cube-ble1.c ****   uint32_t ms = HAL_GetTick();
+  83:Src/app_x-cube-ble1.c ****   PRINT_CSV("%02d:%02d:%02d.%03d", ms / (60 * 60 * 1000) % 24,
+  84:Src/app_x-cube-ble1.c ****             ms / (60 * 1000) % 60, (ms / 1000) % 60, ms % 1000);
+  85:Src/app_x-cube-ble1.c **** }
+  86:Src/app_x-cube-ble1.c **** #endif
+  87:Src/app_x-cube-ble1.c **** 
+  88:Src/app_x-cube-ble1.c **** void MX_BlueNRG_MS_Init(void) {
+  62              		.loc 1 88 31 view -0
+  63              		.cfi_startproc
+  64              		@ args = 0, pretend = 0, frame = 32
+  65              		@ frame_needed = 0, uses_anonymous_args = 0
+  89:Src/app_x-cube-ble1.c ****   /* USER CODE BEGIN SV */
+  90:Src/app_x-cube-ble1.c **** 
+  91:Src/app_x-cube-ble1.c ****   /* USER CODE END SV */
+  92:Src/app_x-cube-ble1.c **** 
+  93:Src/app_x-cube-ble1.c ****   /* USER CODE BEGIN BlueNRG_MS_Init_PreTreatment */
+  94:Src/app_x-cube-ble1.c **** 
+  95:Src/app_x-cube-ble1.c ****   /* USER CODE END BlueNRG_MS_Init_PreTreatment */
+  96:Src/app_x-cube-ble1.c **** 
+  97:Src/app_x-cube-ble1.c ****   /* Initialize the peripherals and the BLE Stack */
+  98:Src/app_x-cube-ble1.c ****   const char *name = "BlueNRG";
+  66              		.loc 1 98 3 view .LVU1
+  67              	.LVL0:
+  99:Src/app_x-cube-ble1.c ****   uint8_t SERVER_BDADDR[] = {0x12, 0x34, 0x00, 0xE1, 0x80, 0x03};
+  68              		.loc 1 99 3 view .LVU2
+  88:Src/app_x-cube-ble1.c ****   /* USER CODE BEGIN SV */
+  69              		.loc 1 88 31 is_stmt 0 view .LVU3
+  70 0000 10B5     		push	{r4, lr}
+  71              	.LCFI0:
+  72              		.cfi_def_cfa_offset 8
+  73              		.cfi_offset 4, -8
+  74              		.cfi_offset 14, -4
+  75              		.loc 1 99 11 view .LVU4
+  76 0002 524B     		ldr	r3, .L31
+ 100:Src/app_x-cube-ble1.c ****   uint8_t bdaddr[BDADDR_SIZE];
+ 101:Src/app_x-cube-ble1.c ****   uint16_t service_handle, dev_name_char_handle, appearance_char_handle;
+ 102:Src/app_x-cube-ble1.c **** 
+ 103:Src/app_x-cube-ble1.c ****   uint8_t hwVersion;
+ 104:Src/app_x-cube-ble1.c ****   uint16_t fwVersion;
+ 105:Src/app_x-cube-ble1.c ****   int ret;
+ 106:Src/app_x-cube-ble1.c **** 
+ 107:Src/app_x-cube-ble1.c ****   User_Init();
+ 108:Src/app_x-cube-ble1.c **** 
+ 109:Src/app_x-cube-ble1.c ****   /* Get the User Button initial state */
+ 110:Src/app_x-cube-ble1.c ****   user_button_init_state = BSP_PB_GetState(BUTTON_KEY);
+ 111:Src/app_x-cube-ble1.c **** 
+ARM GAS  /tmp/ccRIn438.s 			page 5
+
+
+ 112:Src/app_x-cube-ble1.c ****   hci_init(user_notify, NULL);
+ 113:Src/app_x-cube-ble1.c **** 
+ 114:Src/app_x-cube-ble1.c ****   /* get the BlueNRG HW and FW versions */
+ 115:Src/app_x-cube-ble1.c ****   getBlueNRGVersion(&hwVersion, &fwVersion);
+ 116:Src/app_x-cube-ble1.c **** 
+ 117:Src/app_x-cube-ble1.c ****   /*
+ 118:Src/app_x-cube-ble1.c ****    * Reset BlueNRG again otherwise we won't
+ 119:Src/app_x-cube-ble1.c ****    * be able to change its MAC address.
+ 120:Src/app_x-cube-ble1.c ****    * aci_hal_write_config_data() must be the first
+ 121:Src/app_x-cube-ble1.c ****    * command after reset otherwise it will fail.
+ 122:Src/app_x-cube-ble1.c ****    */
+ 123:Src/app_x-cube-ble1.c ****   hci_reset();
+ 124:Src/app_x-cube-ble1.c **** 
+ 125:Src/app_x-cube-ble1.c ****   HAL_Delay(100);
+ 126:Src/app_x-cube-ble1.c **** 
+ 127:Src/app_x-cube-ble1.c ****   printf("\n\n==== SECPUMP INIT====\r\nHardware version: %d\r\nFirmware "
+ 128:Src/app_x-cube-ble1.c ****          "version: %d\r\n\n",
+ 129:Src/app_x-cube-ble1.c ****          hwVersion, fwVersion);
+ 130:Src/app_x-cube-ble1.c **** 
+ 131:Src/app_x-cube-ble1.c ****   if (hwVersion > 0x30) { /* X-NUCLEO-IDB05A1 expansion board is used */
+ 132:Src/app_x-cube-ble1.c ****     bnrg_expansion_board = IDB05A1;
+  77              		.loc 1 132 26 view .LVU5
+  78 0004 524C     		ldr	r4, .L31+4
+  99:Src/app_x-cube-ble1.c ****   uint8_t bdaddr[BDADDR_SIZE];
+  79              		.loc 1 99 11 view .LVU6
+  80 0006 93E80300 		ldm	r3, {r0, r1}
+  88:Src/app_x-cube-ble1.c ****   /* USER CODE BEGIN SV */
+  81              		.loc 1 88 31 view .LVU7
+  82 000a 8CB0     		sub	sp, sp, #48
+  83              	.LCFI1:
+  84              		.cfi_def_cfa_offset 56
+  99:Src/app_x-cube-ble1.c ****   uint8_t bdaddr[BDADDR_SIZE];
+  85              		.loc 1 99 11 view .LVU8
+  86 000c 0890     		str	r0, [sp, #32]
+  87 000e ADF82410 		strh	r1, [sp, #36]	@ movhi
+  88              	.LVL1:
+ 100:Src/app_x-cube-ble1.c ****   uint8_t bdaddr[BDADDR_SIZE];
+  89              		.loc 1 100 3 is_stmt 1 view .LVU9
+ 101:Src/app_x-cube-ble1.c **** 
+  90              		.loc 1 101 3 view .LVU10
+ 103:Src/app_x-cube-ble1.c ****   uint16_t fwVersion;
+  91              		.loc 1 103 3 view .LVU11
+ 104:Src/app_x-cube-ble1.c ****   int ret;
+  92              		.loc 1 104 3 view .LVU12
+ 105:Src/app_x-cube-ble1.c **** 
+  93              		.loc 1 105 3 view .LVU13
+ 107:Src/app_x-cube-ble1.c **** 
+  94              		.loc 1 107 3 view .LVU14
+  95              	.LBB6:
+  96              	.LBI6:
+ 133:Src/app_x-cube-ble1.c ****     /*
+ 134:Src/app_x-cube-ble1.c ****      * Change the MAC address to avoid issues with Android cache:
+ 135:Src/app_x-cube-ble1.c ****      * if different boards have the same MAC address, Android
+ 136:Src/app_x-cube-ble1.c ****      * applications unless you restart Bluetooth on tablet/phone
+ 137:Src/app_x-cube-ble1.c ****      */
+ 138:Src/app_x-cube-ble1.c ****     SERVER_BDADDR[5] = 0x02;
+ 139:Src/app_x-cube-ble1.c ****   }
+ARM GAS  /tmp/ccRIn438.s 			page 6
+
+
+ 140:Src/app_x-cube-ble1.c **** 
+ 141:Src/app_x-cube-ble1.c ****   /* The Nucleo board must be configured as SERVER */
+ 142:Src/app_x-cube-ble1.c ****   BLUENRG_memcpy(bdaddr, SERVER_BDADDR, sizeof(SERVER_BDADDR));
+ 143:Src/app_x-cube-ble1.c **** 
+ 144:Src/app_x-cube-ble1.c ****   ret = aci_hal_write_config_data(CONFIG_DATA_PUBADDR_OFFSET,
+ 145:Src/app_x-cube-ble1.c ****                                   CONFIG_DATA_PUBADDR_LEN, bdaddr);
+ 146:Src/app_x-cube-ble1.c ****   if (ret) {
+ 147:Src/app_x-cube-ble1.c ****     printf("Setting BD_ADDR failed.\r\n");
+ 148:Src/app_x-cube-ble1.c ****   }
+ 149:Src/app_x-cube-ble1.c **** 
+ 150:Src/app_x-cube-ble1.c ****   ret = aci_gatt_init();
+ 151:Src/app_x-cube-ble1.c ****   if (ret) {
+ 152:Src/app_x-cube-ble1.c ****     printf("GATT_Init failed.\r\n");
+ 153:Src/app_x-cube-ble1.c ****   }
+ 154:Src/app_x-cube-ble1.c **** 
+ 155:Src/app_x-cube-ble1.c ****   if (bnrg_expansion_board == IDB05A1) {
+ 156:Src/app_x-cube-ble1.c ****     ret = aci_gap_init_IDB05A1(GAP_PERIPHERAL_ROLE_IDB05A1, 0, 0x07,
+ 157:Src/app_x-cube-ble1.c ****                                &service_handle, &dev_name_char_handle,
+ 158:Src/app_x-cube-ble1.c ****                                &appearance_char_handle);
+ 159:Src/app_x-cube-ble1.c ****   } else {
+ 160:Src/app_x-cube-ble1.c ****     ret = aci_gap_init_IDB04A1(GAP_PERIPHERAL_ROLE_IDB04A1, &service_handle,
+ 161:Src/app_x-cube-ble1.c ****                                &dev_name_char_handle, &appearance_char_handle);
+ 162:Src/app_x-cube-ble1.c ****   }
+ 163:Src/app_x-cube-ble1.c **** 
+ 164:Src/app_x-cube-ble1.c ****   if (ret != BLE_STATUS_SUCCESS) {
+ 165:Src/app_x-cube-ble1.c ****     printf("GAP_Init failed.\r\n");
+ 166:Src/app_x-cube-ble1.c ****   }
+ 167:Src/app_x-cube-ble1.c **** 
+ 168:Src/app_x-cube-ble1.c ****   ret = aci_gatt_update_char_value(service_handle, dev_name_char_handle, 0,
+ 169:Src/app_x-cube-ble1.c ****                                    strlen(name), (uint8_t *)name);
+ 170:Src/app_x-cube-ble1.c **** 
+ 171:Src/app_x-cube-ble1.c ****   if (ret) {
+ 172:Src/app_x-cube-ble1.c ****     printf("aci_gatt_update_char_value failed.\r\n");
+ 173:Src/app_x-cube-ble1.c ****     while (1)
+ 174:Src/app_x-cube-ble1.c ****       ;
+ 175:Src/app_x-cube-ble1.c ****   }
+ 176:Src/app_x-cube-ble1.c **** 
+ 177:Src/app_x-cube-ble1.c ****   ret = aci_gap_set_auth_requirement(
+ 178:Src/app_x-cube-ble1.c ****       MITM_PROTECTION_REQUIRED, OOB_AUTH_DATA_ABSENT, NULL, 7, 16,
+ 179:Src/app_x-cube-ble1.c ****       USE_FIXED_PIN_FOR_PAIRING, 123456, BONDING);
+ 180:Src/app_x-cube-ble1.c ****   if (ret == BLE_STATUS_SUCCESS) {
+ 181:Src/app_x-cube-ble1.c ****     printf("[*] BLE Stack Initialized.\r\n");
+ 182:Src/app_x-cube-ble1.c ****   }
+ 183:Src/app_x-cube-ble1.c **** 
+ 184:Src/app_x-cube-ble1.c ****   printf("[*] SERVER: BLE Stack Initialized.\r\n");
+ 185:Src/app_x-cube-ble1.c **** 
+ 186:Src/app_x-cube-ble1.c ****   /* USER CODE BEGIN BlueNRG_MS_Init_PostTreatment */
+ 187:Src/app_x-cube-ble1.c ****   ret = Add_Pump_Service();
+ 188:Src/app_x-cube-ble1.c **** 
+ 189:Src/app_x-cube-ble1.c ****   if (ret == BLE_STATUS_SUCCESS)
+ 190:Src/app_x-cube-ble1.c ****     printf("[*] SecPump service added successfully.\r\n");
+ 191:Src/app_x-cube-ble1.c ****   else
+ 192:Src/app_x-cube-ble1.c ****     printf("[!] Error while adding pump service.\r\n");
+ 193:Src/app_x-cube-ble1.c **** 
+ 194:Src/app_x-cube-ble1.c ****   /* USER CODE END BlueNRG_MS_Init_PostTreatment */
+ 195:Src/app_x-cube-ble1.c **** 
+ 196:Src/app_x-cube-ble1.c ****   /* Set output power level */
+ARM GAS  /tmp/ccRIn438.s 			page 7
+
+
+ 197:Src/app_x-cube-ble1.c ****   ret = aci_hal_set_tx_power_level(1, 4);
+ 198:Src/app_x-cube-ble1.c **** }
+ 199:Src/app_x-cube-ble1.c **** 
+ 200:Src/app_x-cube-ble1.c **** /*
+ 201:Src/app_x-cube-ble1.c ****  * BlueNRG-MS background task
+ 202:Src/app_x-cube-ble1.c ****  */
+ 203:Src/app_x-cube-ble1.c **** void MX_BlueNRG_MS_Process(void) {
+ 204:Src/app_x-cube-ble1.c ****   /* USER CODE BEGIN BlueNRG_MS_Process_PreTreatment */
+ 205:Src/app_x-cube-ble1.c **** 
+ 206:Src/app_x-cube-ble1.c ****   /* USER CODE END BlueNRG_MS_Process_PreTreatment */
+ 207:Src/app_x-cube-ble1.c **** 
+ 208:Src/app_x-cube-ble1.c ****   // User_Process(&axes_data);
+ 209:Src/app_x-cube-ble1.c ****   User_Process();
+ 210:Src/app_x-cube-ble1.c ****   hci_user_evt_proc();
+ 211:Src/app_x-cube-ble1.c **** 
+ 212:Src/app_x-cube-ble1.c ****   /* USER CODE BEGIN BlueNRG_MS_Process_PostTreatment */
+ 213:Src/app_x-cube-ble1.c **** 
+ 214:Src/app_x-cube-ble1.c ****   /* USER CODE END BlueNRG_MS_Process_PostTreatment */
+ 215:Src/app_x-cube-ble1.c **** }
+ 216:Src/app_x-cube-ble1.c **** 
+ 217:Src/app_x-cube-ble1.c **** /**
+ 218:Src/app_x-cube-ble1.c ****  * @brief  Initialize User process.
+ 219:Src/app_x-cube-ble1.c ****  *
+ 220:Src/app_x-cube-ble1.c ****  * @param  None
+ 221:Src/app_x-cube-ble1.c ****  * @retval None
+ 222:Src/app_x-cube-ble1.c ****  */
+ 223:Src/app_x-cube-ble1.c **** static void User_Init(void) {
+  97              		.loc 1 223 13 view .LVU15
+  98              	.LBB7:
+ 224:Src/app_x-cube-ble1.c ****   BSP_PB_Init(BUTTON_KEY, BUTTON_MODE_EXTI);
+  99              		.loc 1 224 3 view .LVU16
+ 100 0012 0020     		movs	r0, #0
+ 101 0014 0121     		movs	r1, #1
+ 102 0016 FFF7FEFF 		bl	BSP_PB_Init
+ 103              	.LVL2:
+ 225:Src/app_x-cube-ble1.c ****   BSP_LED_Init(LED2);
+ 104              		.loc 1 225 3 view .LVU17
+ 105 001a 0020     		movs	r0, #0
+ 106 001c FFF7FEFF 		bl	BSP_LED_Init
+ 107              	.LVL3:
+ 226:Src/app_x-cube-ble1.c **** 
+ 227:Src/app_x-cube-ble1.c ****   BSP_COM_Init(COM1);
+ 108              		.loc 1 227 3 view .LVU18
+ 109 0020 0020     		movs	r0, #0
+ 110 0022 FFF7FEFF 		bl	BSP_COM_Init
+ 111              	.LVL4:
+ 112              	.LBE7:
+ 113              	.LBE6:
+ 110:Src/app_x-cube-ble1.c **** 
+ 114              		.loc 1 110 3 view .LVU19
+ 110:Src/app_x-cube-ble1.c **** 
+ 115              		.loc 1 110 28 is_stmt 0 view .LVU20
+ 116 0026 0020     		movs	r0, #0
+ 117 0028 FFF7FEFF 		bl	BSP_PB_GetState
+ 118              	.LVL5:
+ 110:Src/app_x-cube-ble1.c **** 
+ 119              		.loc 1 110 26 view .LVU21
+ARM GAS  /tmp/ccRIn438.s 			page 8
+
+
+ 120 002c 494A     		ldr	r2, .L31+8
+ 110:Src/app_x-cube-ble1.c **** 
+ 121              		.loc 1 110 28 view .LVU22
+ 122 002e 0346     		mov	r3, r0
+ 110:Src/app_x-cube-ble1.c **** 
+ 123              		.loc 1 110 26 view .LVU23
+ 124 0030 DBB2     		uxtb	r3, r3
+ 112:Src/app_x-cube-ble1.c **** 
+ 125              		.loc 1 112 3 view .LVU24
+ 126 0032 4948     		ldr	r0, .L31+12
+ 110:Src/app_x-cube-ble1.c **** 
+ 127              		.loc 1 110 26 view .LVU25
+ 128 0034 1370     		strb	r3, [r2]
+ 112:Src/app_x-cube-ble1.c **** 
+ 129              		.loc 1 112 3 is_stmt 1 view .LVU26
+ 130 0036 0021     		movs	r1, #0
+ 131 0038 FFF7FEFF 		bl	hci_init
+ 132              	.LVL6:
+ 115:Src/app_x-cube-ble1.c **** 
+ 133              		.loc 1 115 3 view .LVU27
+ 134 003c 0DF11E01 		add	r1, sp, #30
+ 135 0040 0DF11700 		add	r0, sp, #23
+ 136 0044 FFF7FEFF 		bl	getBlueNRGVersion
+ 137              	.LVL7:
+ 123:Src/app_x-cube-ble1.c **** 
+ 138              		.loc 1 123 3 view .LVU28
+ 139 0048 FFF7FEFF 		bl	hci_reset
+ 140              	.LVL8:
+ 125:Src/app_x-cube-ble1.c **** 
+ 141              		.loc 1 125 3 view .LVU29
+ 142 004c 6420     		movs	r0, #100
+ 143 004e FFF7FEFF 		bl	HAL_Delay
+ 144              	.LVL9:
+ 127:Src/app_x-cube-ble1.c ****          "version: %d\r\n\n",
+ 145              		.loc 1 127 3 view .LVU30
+ 146 0052 BDF81E20 		ldrh	r2, [sp, #30]
+ 147 0056 9DF81710 		ldrb	r1, [sp, #23]	@ zero_extendqisi2
+ 148 005a 4048     		ldr	r0, .L31+16
+ 149 005c FFF7FEFF 		bl	printf
+ 150              	.LVL10:
+ 131:Src/app_x-cube-ble1.c ****     bnrg_expansion_board = IDB05A1;
+ 151              		.loc 1 131 3 view .LVU31
+ 131:Src/app_x-cube-ble1.c ****     bnrg_expansion_board = IDB05A1;
+ 152              		.loc 1 131 6 is_stmt 0 view .LVU32
+ 153 0060 9DF81730 		ldrb	r3, [sp, #23]	@ zero_extendqisi2
+ 154 0064 302B     		cmp	r3, #48
+ 132:Src/app_x-cube-ble1.c ****     /*
+ 155              		.loc 1 132 5 is_stmt 1 view .LVU33
+ 132:Src/app_x-cube-ble1.c ****     /*
+ 156              		.loc 1 132 26 is_stmt 0 view .LVU34
+ 157 0066 85BF     		ittet	hi
+ 158 0068 0123     		movhi	r3, #1
+ 159 006a 2370     		strbhi	r3, [r4]
+ 138:Src/app_x-cube-ble1.c ****   }
+ 160              		.loc 1 138 5 is_stmt 1 view .LVU35
+ 161              	.LVL11:
+  99:Src/app_x-cube-ble1.c ****   uint8_t bdaddr[BDADDR_SIZE];
+ARM GAS  /tmp/ccRIn438.s 			page 9
+
+
+ 162              		.loc 1 99 11 is_stmt 0 view .LVU36
+ 163 006c 0323     		movls	r3, #3
+ 138:Src/app_x-cube-ble1.c ****   }
+ 164              		.loc 1 138 22 view .LVU37
+ 165 006e 0223     		movhi	r3, #2
+ 166              	.LVL12:
+ 142:Src/app_x-cube-ble1.c **** 
+ 167              		.loc 1 142 3 is_stmt 1 view .LVU38
+ 142:Src/app_x-cube-ble1.c **** 
+ 168              		.loc 1 142 3 is_stmt 0 view .LVU39
+ 169 0070 8DF82530 		strb	r3, [sp, #37]
+ 170 0074 DDE90801 		ldrd	r0, r1, [sp, #32]
+ 144:Src/app_x-cube-ble1.c ****                                   CONFIG_DATA_PUBADDR_LEN, bdaddr);
+ 171              		.loc 1 144 9 view .LVU40
+ 172 0078 0AAA     		add	r2, sp, #40
+ 142:Src/app_x-cube-ble1.c **** 
+ 173              		.loc 1 142 3 view .LVU41
+ 174 007a ADF82C10 		strh	r1, [sp, #44]	@ movhi
+ 144:Src/app_x-cube-ble1.c ****                                   CONFIG_DATA_PUBADDR_LEN, bdaddr);
+ 175              		.loc 1 144 3 is_stmt 1 view .LVU42
+ 142:Src/app_x-cube-ble1.c **** 
+ 176              		.loc 1 142 3 is_stmt 0 view .LVU43
+ 177 007e 0A90     		str	r0, [sp, #40]
+ 144:Src/app_x-cube-ble1.c ****                                   CONFIG_DATA_PUBADDR_LEN, bdaddr);
+ 178              		.loc 1 144 9 view .LVU44
+ 179 0080 0621     		movs	r1, #6
+ 180 0082 0020     		movs	r0, #0
+ 181 0084 FFF7FEFF 		bl	aci_hal_write_config_data
+ 182              	.LVL13:
+ 146:Src/app_x-cube-ble1.c ****     printf("Setting BD_ADDR failed.\r\n");
+ 183              		.loc 1 146 3 is_stmt 1 view .LVU45
+ 146:Src/app_x-cube-ble1.c ****     printf("Setting BD_ADDR failed.\r\n");
+ 184              		.loc 1 146 6 is_stmt 0 view .LVU46
+ 185 0088 0028     		cmp	r0, #0
+ 186 008a 50D1     		bne	.L25
+ 187              	.LVL14:
+ 188              	.L3:
+ 150:Src/app_x-cube-ble1.c ****   if (ret) {
+ 189              		.loc 1 150 3 is_stmt 1 view .LVU47
+ 150:Src/app_x-cube-ble1.c ****   if (ret) {
+ 190              		.loc 1 150 9 is_stmt 0 view .LVU48
+ 191 008c FFF7FEFF 		bl	aci_gatt_init
+ 192              	.LVL15:
+ 151:Src/app_x-cube-ble1.c ****     printf("GATT_Init failed.\r\n");
+ 193              		.loc 1 151 3 is_stmt 1 view .LVU49
+ 151:Src/app_x-cube-ble1.c ****     printf("GATT_Init failed.\r\n");
+ 194              		.loc 1 151 6 is_stmt 0 view .LVU50
+ 195 0090 0028     		cmp	r0, #0
+ 196 0092 48D1     		bne	.L26
+ 197              	.LVL16:
+ 198              	.L4:
+ 155:Src/app_x-cube-ble1.c ****     ret = aci_gap_init_IDB05A1(GAP_PERIPHERAL_ROLE_IDB05A1, 0, 0x07,
+ 199              		.loc 1 155 3 is_stmt 1 view .LVU51
+ 155:Src/app_x-cube-ble1.c ****     ret = aci_gap_init_IDB05A1(GAP_PERIPHERAL_ROLE_IDB05A1, 0, 0x07,
+ 200              		.loc 1 155 6 is_stmt 0 view .LVU52
+ 201 0094 2078     		ldrb	r0, [r4]	@ zero_extendqisi2
+ 202 0096 0128     		cmp	r0, #1
+ARM GAS  /tmp/ccRIn438.s 			page 10
+
+
+ 203 0098 3AD0     		beq	.L27
+ 160:Src/app_x-cube-ble1.c ****                                &dev_name_char_handle, &appearance_char_handle);
+ 204              		.loc 1 160 5 is_stmt 1 view .LVU53
+ 160:Src/app_x-cube-ble1.c ****                                &dev_name_char_handle, &appearance_char_handle);
+ 205              		.loc 1 160 11 is_stmt 0 view .LVU54
+ 206 009a 07AB     		add	r3, sp, #28
+ 207 009c 0DF11A02 		add	r2, sp, #26
+ 208 00a0 06A9     		add	r1, sp, #24
+ 209 00a2 0120     		movs	r0, #1
+ 210 00a4 FFF7FEFF 		bl	aci_gap_init_IDB04A1
+ 211              	.LVL17:
+ 212              	.L6:
+ 164:Src/app_x-cube-ble1.c ****     printf("GAP_Init failed.\r\n");
+ 213              		.loc 1 164 3 is_stmt 1 view .LVU55
+ 164:Src/app_x-cube-ble1.c ****     printf("GAP_Init failed.\r\n");
+ 214              		.loc 1 164 6 is_stmt 0 view .LVU56
+ 215 00a8 70BB     		cbnz	r0, .L28
+ 216              	.LVL18:
+ 217              	.L7:
+ 168:Src/app_x-cube-ble1.c ****                                    strlen(name), (uint8_t *)name);
+ 218              		.loc 1 168 3 is_stmt 1 view .LVU57
+ 168:Src/app_x-cube-ble1.c ****                                    strlen(name), (uint8_t *)name);
+ 219              		.loc 1 168 9 is_stmt 0 view .LVU58
+ 220 00aa 2D4B     		ldr	r3, .L31+20
+ 221 00ac 0093     		str	r3, [sp]
+ 222 00ae 0022     		movs	r2, #0
+ 223 00b0 BDF81A10 		ldrh	r1, [sp, #26]
+ 224 00b4 BDF81800 		ldrh	r0, [sp, #24]
+ 225 00b8 0723     		movs	r3, #7
+ 226 00ba FFF7FEFF 		bl	aci_gatt_update_char_value
+ 227              	.LVL19:
+ 171:Src/app_x-cube-ble1.c ****     printf("aci_gatt_update_char_value failed.\r\n");
+ 228              		.loc 1 171 3 is_stmt 1 view .LVU59
+ 171:Src/app_x-cube-ble1.c ****     printf("aci_gatt_update_char_value failed.\r\n");
+ 229              		.loc 1 171 6 is_stmt 0 view .LVU60
+ 230 00be 0246     		mov	r2, r0
+ 231 00c0 18B1     		cbz	r0, .L8
+ 172:Src/app_x-cube-ble1.c ****     while (1)
+ 232              		.loc 1 172 5 is_stmt 1 view .LVU61
+ 233 00c2 2848     		ldr	r0, .L31+24
+ 234              	.LVL20:
+ 172:Src/app_x-cube-ble1.c ****     while (1)
+ 235              		.loc 1 172 5 is_stmt 0 view .LVU62
+ 236 00c4 FFF7FEFF 		bl	puts
+ 237              	.LVL21:
+ 238              	.L9:
+ 173:Src/app_x-cube-ble1.c ****       ;
+ 239              		.loc 1 173 5 is_stmt 1 discriminator 1 view .LVU63
+ 174:Src/app_x-cube-ble1.c ****   }
+ 240              		.loc 1 174 7 discriminator 1 view .LVU64
+ 173:Src/app_x-cube-ble1.c ****       ;
+ 241              		.loc 1 173 11 discriminator 1 view .LVU65
+ 173:Src/app_x-cube-ble1.c ****       ;
+ 242              		.loc 1 173 5 discriminator 1 view .LVU66
+ 174:Src/app_x-cube-ble1.c ****   }
+ 243              		.loc 1 174 7 discriminator 1 view .LVU67
+ 173:Src/app_x-cube-ble1.c ****       ;
+ARM GAS  /tmp/ccRIn438.s 			page 11
+
+
+ 244              		.loc 1 173 11 discriminator 1 view .LVU68
+ 245 00c8 FEE7     		b	.L9
+ 246              	.LVL22:
+ 247              	.L8:
+ 177:Src/app_x-cube-ble1.c ****       MITM_PROTECTION_REQUIRED, OOB_AUTH_DATA_ABSENT, NULL, 7, 16,
+ 248              		.loc 1 177 3 view .LVU69
+ 177:Src/app_x-cube-ble1.c ****       MITM_PROTECTION_REQUIRED, OOB_AUTH_DATA_ABSENT, NULL, 7, 16,
+ 249              		.loc 1 177 9 is_stmt 0 view .LVU70
+ 250 00ca 2749     		ldr	r1, .L31+28
+ 251 00cc 0192     		str	r2, [sp, #4]
+ 252 00ce 1023     		movs	r3, #16
+ 253 00d0 0120     		movs	r0, #1
+ 254              	.LVL23:
+ 177:Src/app_x-cube-ble1.c ****       MITM_PROTECTION_REQUIRED, OOB_AUTH_DATA_ABSENT, NULL, 7, 16,
+ 255              		.loc 1 177 9 view .LVU71
+ 256 00d2 CDE90210 		strd	r1, r0, [sp, #8]
+ 257 00d6 0093     		str	r3, [sp]
+ 258 00d8 1146     		mov	r1, r2
+ 259 00da 0723     		movs	r3, #7
+ 260 00dc FFF7FEFF 		bl	aci_gap_set_auth_requirement
+ 261              	.LVL24:
+ 180:Src/app_x-cube-ble1.c ****     printf("[*] BLE Stack Initialized.\r\n");
+ 262              		.loc 1 180 3 is_stmt 1 view .LVU72
+ 180:Src/app_x-cube-ble1.c ****     printf("[*] BLE Stack Initialized.\r\n");
+ 263              		.loc 1 180 6 is_stmt 0 view .LVU73
+ 264 00e0 48B3     		cbz	r0, .L29
+ 184:Src/app_x-cube-ble1.c **** 
+ 265              		.loc 1 184 3 is_stmt 1 view .LVU74
+ 266 00e2 2248     		ldr	r0, .L31+32
+ 267              	.LVL25:
+ 184:Src/app_x-cube-ble1.c **** 
+ 268              		.loc 1 184 3 is_stmt 0 view .LVU75
+ 269 00e4 FFF7FEFF 		bl	puts
+ 270              	.LVL26:
+ 187:Src/app_x-cube-ble1.c **** 
+ 271              		.loc 1 187 3 is_stmt 1 view .LVU76
+ 187:Src/app_x-cube-ble1.c **** 
+ 272              		.loc 1 187 9 is_stmt 0 view .LVU77
+ 273 00e8 FFF7FEFF 		bl	Add_Pump_Service
+ 274              	.LVL27:
+ 189:Src/app_x-cube-ble1.c ****     printf("[*] SecPump service added successfully.\r\n");
+ 275              		.loc 1 189 3 is_stmt 1 view .LVU78
+ 189:Src/app_x-cube-ble1.c ****     printf("[*] SecPump service added successfully.\r\n");
+ 276              		.loc 1 189 6 is_stmt 0 view .LVU79
+ 277 00ec 40B1     		cbz	r0, .L30
+ 278              	.LVL28:
+ 279              	.L11:
+ 192:Src/app_x-cube-ble1.c **** 
+ 280              		.loc 1 192 5 is_stmt 1 view .LVU80
+ 281 00ee 2048     		ldr	r0, .L31+36
+ 282 00f0 FFF7FEFF 		bl	puts
+ 283              	.LVL29:
+ 284              	.L12:
+ 197:Src/app_x-cube-ble1.c **** }
+ 285              		.loc 1 197 3 view .LVU81
+ 197:Src/app_x-cube-ble1.c **** }
+ 286              		.loc 1 197 9 is_stmt 0 view .LVU82
+ARM GAS  /tmp/ccRIn438.s 			page 12
+
+
+ 287 00f4 0421     		movs	r1, #4
+ 288 00f6 0120     		movs	r0, #1
+ 289 00f8 FFF7FEFF 		bl	aci_hal_set_tx_power_level
+ 290              	.LVL30:
+ 198:Src/app_x-cube-ble1.c **** 
+ 291              		.loc 1 198 1 view .LVU83
+ 292 00fc 0CB0     		add	sp, sp, #48
+ 293              	.LCFI2:
+ 294              		.cfi_remember_state
+ 295              		.cfi_def_cfa_offset 8
+ 296              		@ sp needed
+ 297 00fe 10BD     		pop	{r4, pc}
+ 298              	.LVL31:
+ 299              	.L30:
+ 300              	.LCFI3:
+ 301              		.cfi_restore_state
+ 190:Src/app_x-cube-ble1.c ****   else
+ 302              		.loc 1 190 5 is_stmt 1 view .LVU84
+ 303 0100 1C48     		ldr	r0, .L31+40
+ 304 0102 FFF7FEFF 		bl	puts
+ 305              	.LVL32:
+ 306 0106 F5E7     		b	.L12
+ 307              	.LVL33:
+ 308              	.L28:
+ 165:Src/app_x-cube-ble1.c ****   }
+ 309              		.loc 1 165 5 view .LVU85
+ 310 0108 1B48     		ldr	r0, .L31+44
+ 311              	.LVL34:
+ 165:Src/app_x-cube-ble1.c ****   }
+ 312              		.loc 1 165 5 is_stmt 0 view .LVU86
+ 313 010a FFF7FEFF 		bl	puts
+ 314              	.LVL35:
+ 315 010e CCE7     		b	.L7
+ 316              	.L27:
+ 156:Src/app_x-cube-ble1.c ****                                &service_handle, &dev_name_char_handle,
+ 317              		.loc 1 156 5 is_stmt 1 view .LVU87
+ 156:Src/app_x-cube-ble1.c ****                                &service_handle, &dev_name_char_handle,
+ 318              		.loc 1 156 11 is_stmt 0 view .LVU88
+ 319 0110 07AA     		add	r2, sp, #28
+ 320 0112 0DF11A03 		add	r3, sp, #26
+ 321 0116 CDE90032 		strd	r3, r2, [sp]
+ 322 011a 0021     		movs	r1, #0
+ 323 011c 06AB     		add	r3, sp, #24
+ 324 011e 0722     		movs	r2, #7
+ 325 0120 FFF7FEFF 		bl	aci_gap_init_IDB05A1
+ 326              	.LVL36:
+ 156:Src/app_x-cube-ble1.c ****                                &service_handle, &dev_name_char_handle,
+ 327              		.loc 1 156 11 view .LVU89
+ 328 0124 C0E7     		b	.L6
+ 329              	.LVL37:
+ 330              	.L26:
+ 152:Src/app_x-cube-ble1.c ****   }
+ 331              		.loc 1 152 5 is_stmt 1 view .LVU90
+ 332 0126 1548     		ldr	r0, .L31+48
+ 333              	.LVL38:
+ 152:Src/app_x-cube-ble1.c ****   }
+ 334              		.loc 1 152 5 is_stmt 0 view .LVU91
+ARM GAS  /tmp/ccRIn438.s 			page 13
+
+
+ 335 0128 FFF7FEFF 		bl	puts
+ 336              	.LVL39:
+ 337 012c B2E7     		b	.L4
+ 338              	.LVL40:
+ 339              	.L25:
+ 147:Src/app_x-cube-ble1.c ****   }
+ 340              		.loc 1 147 5 is_stmt 1 view .LVU92
+ 341 012e 1448     		ldr	r0, .L31+52
+ 342              	.LVL41:
+ 147:Src/app_x-cube-ble1.c ****   }
+ 343              		.loc 1 147 5 is_stmt 0 view .LVU93
+ 344 0130 FFF7FEFF 		bl	puts
+ 345              	.LVL42:
+ 346 0134 AAE7     		b	.L3
+ 347              	.LVL43:
+ 348              	.L29:
+ 181:Src/app_x-cube-ble1.c ****   }
+ 349              		.loc 1 181 5 is_stmt 1 view .LVU94
+ 350 0136 1348     		ldr	r0, .L31+56
+ 351              	.LVL44:
+ 181:Src/app_x-cube-ble1.c ****   }
+ 352              		.loc 1 181 5 is_stmt 0 view .LVU95
+ 353 0138 FFF7FEFF 		bl	puts
+ 354              	.LVL45:
+ 184:Src/app_x-cube-ble1.c **** 
+ 355              		.loc 1 184 3 is_stmt 1 view .LVU96
+ 356 013c 0B48     		ldr	r0, .L31+32
+ 357 013e FFF7FEFF 		bl	puts
+ 358              	.LVL46:
+ 187:Src/app_x-cube-ble1.c **** 
+ 359              		.loc 1 187 3 view .LVU97
+ 187:Src/app_x-cube-ble1.c **** 
+ 360              		.loc 1 187 9 is_stmt 0 view .LVU98
+ 361 0142 FFF7FEFF 		bl	Add_Pump_Service
+ 362              	.LVL47:
+ 189:Src/app_x-cube-ble1.c ****     printf("[*] SecPump service added successfully.\r\n");
+ 363              		.loc 1 189 3 is_stmt 1 view .LVU99
+ 189:Src/app_x-cube-ble1.c ****     printf("[*] SecPump service added successfully.\r\n");
+ 364              		.loc 1 189 6 is_stmt 0 view .LVU100
+ 365 0146 0028     		cmp	r0, #0
+ 366 0148 D1D1     		bne	.L11
+ 367 014a D9E7     		b	.L30
+ 368              	.L32:
+ 369              		.align	2
+ 370              	.L31:
+ 371 014c 00000000 		.word	.LANCHOR0
+ 372 0150 00000000 		.word	.LANCHOR2
+ 373 0154 00000000 		.word	.LANCHOR1
+ 374 0158 00000000 		.word	user_notify
+ 375 015c 00000000 		.word	.LC1
+ 376 0160 8C000000 		.word	.LC5
+ 377 0164 94000000 		.word	.LC6
+ 378 0168 40E20100 		.word	123456
+ 379 016c D4000000 		.word	.LC8
+ 380 0170 24010000 		.word	.LC10
+ 381 0174 F8000000 		.word	.LC9
+ 382 0178 78000000 		.word	.LC4
+ARM GAS  /tmp/ccRIn438.s 			page 14
+
+
+ 383 017c 64000000 		.word	.LC3
+ 384 0180 48000000 		.word	.LC2
+ 385 0184 B8000000 		.word	.LC7
+ 386              		.cfi_endproc
+ 387              	.LFE133:
+ 389              		.section	.text.MX_BlueNRG_MS_Process,"ax",%progbits
+ 390              		.align	1
+ 391              		.p2align 2,,3
+ 392              		.global	MX_BlueNRG_MS_Process
+ 393              		.syntax unified
+ 394              		.thumb
+ 395              		.thumb_func
+ 396              		.fpu fpv4-sp-d16
+ 398              	MX_BlueNRG_MS_Process:
+ 399              	.LFB134:
+ 203:Src/app_x-cube-ble1.c ****   /* USER CODE BEGIN BlueNRG_MS_Process_PreTreatment */
+ 400              		.loc 1 203 34 is_stmt 1 view -0
+ 401              		.cfi_startproc
+ 402              		@ args = 0, pretend = 0, frame = 0
+ 403              		@ frame_needed = 0, uses_anonymous_args = 0
+ 209:Src/app_x-cube-ble1.c ****   hci_user_evt_proc();
+ 404              		.loc 1 209 3 view .LVU102
+ 405              	.LBB8:
+ 406              	.LBI8:
+ 228:Src/app_x-cube-ble1.c **** }
+ 229:Src/app_x-cube-ble1.c **** 
+ 230:Src/app_x-cube-ble1.c **** /**
+ 231:Src/app_x-cube-ble1.c ****  * @brief  Process user input (i.e. pressing the USER button on Nucleo board)
+ 232:Src/app_x-cube-ble1.c ****  *         and send the updated acceleration data to the remote client.
+ 233:Src/app_x-cube-ble1.c ****  *
+ 234:Src/app_x-cube-ble1.c ****  * @param  AxesRaw_t* p_axes
+ 235:Src/app_x-cube-ble1.c ****  * @retval None
+ 236:Src/app_x-cube-ble1.c ****  */
+ 237:Src/app_x-cube-ble1.c **** // static void User_Process(AxesRaw_t* p_axes)
+ 238:Src/app_x-cube-ble1.c **** static void User_Process() {
+ 407              		.loc 1 238 13 view .LVU103
+ 408              	.LBB9:
+ 239:Src/app_x-cube-ble1.c ****   if (set_connectable) {
+ 409              		.loc 1 239 3 view .LVU104
+ 410              	.LBE9:
+ 411              	.LBE8:
+ 203:Src/app_x-cube-ble1.c ****   /* USER CODE BEGIN BlueNRG_MS_Process_PreTreatment */
+ 412              		.loc 1 203 34 is_stmt 0 view .LVU105
+ 413 0000 10B5     		push	{r4, lr}
+ 414              	.LCFI4:
+ 415              		.cfi_def_cfa_offset 8
+ 416              		.cfi_offset 4, -8
+ 417              		.cfi_offset 14, -4
+ 418              	.LBB12:
+ 419              	.LBB10:
+ 420              		.loc 1 239 7 view .LVU106
+ 421 0002 074C     		ldr	r4, .L40
+ 422 0004 2378     		ldrb	r3, [r4]	@ zero_extendqisi2
+ 423              		.loc 1 239 6 view .LVU107
+ 424 0006 1BB9     		cbnz	r3, .L39
+ 425              	.LBE10:
+ 426              	.LBE12:
+ARM GAS  /tmp/ccRIn438.s 			page 15
+
+
+ 210:Src/app_x-cube-ble1.c **** 
+ 427              		.loc 1 210 3 is_stmt 1 view .LVU108
+ 215:Src/app_x-cube-ble1.c **** 
+ 428              		.loc 1 215 1 is_stmt 0 view .LVU109
+ 429 0008 BDE81040 		pop	{r4, lr}
+ 430              	.LCFI5:
+ 431              		.cfi_remember_state
+ 432              		.cfi_restore 14
+ 433              		.cfi_restore 4
+ 434              		.cfi_def_cfa_offset 0
+ 210:Src/app_x-cube-ble1.c **** 
+ 435              		.loc 1 210 3 view .LVU110
+ 436 000c FFF7FEBF 		b	hci_user_evt_proc
+ 437              	.LVL48:
+ 438              	.L39:
+ 439              	.LCFI6:
+ 440              		.cfi_restore_state
+ 441              	.LBB13:
+ 442              	.LBB11:
+ 240:Src/app_x-cube-ble1.c ****     setConnectable();
+ 443              		.loc 1 240 5 is_stmt 1 view .LVU111
+ 444 0010 FFF7FEFF 		bl	setConnectable
+ 445              	.LVL49:
+ 241:Src/app_x-cube-ble1.c ****     set_connectable = FALSE;
+ 446              		.loc 1 241 5 view .LVU112
+ 447              		.loc 1 241 21 is_stmt 0 view .LVU113
+ 448 0014 0023     		movs	r3, #0
+ 449 0016 2370     		strb	r3, [r4]
+ 450              	.LBE11:
+ 451              	.LBE13:
+ 210:Src/app_x-cube-ble1.c **** 
+ 452              		.loc 1 210 3 is_stmt 1 view .LVU114
+ 215:Src/app_x-cube-ble1.c **** 
+ 453              		.loc 1 215 1 is_stmt 0 view .LVU115
+ 454 0018 BDE81040 		pop	{r4, lr}
+ 455              	.LCFI7:
+ 456              		.cfi_restore 14
+ 457              		.cfi_restore 4
+ 458              		.cfi_def_cfa_offset 0
+ 210:Src/app_x-cube-ble1.c **** 
+ 459              		.loc 1 210 3 view .LVU116
+ 460 001c FFF7FEBF 		b	hci_user_evt_proc
+ 461              	.LVL50:
+ 462              	.L41:
+ 463              		.align	2
+ 464              	.L40:
+ 465 0020 00000000 		.word	set_connectable
+ 466              		.cfi_endproc
+ 467              	.LFE134:
+ 469              		.section	.text.BSP_PB_Callback,"ax",%progbits
+ 470              		.align	1
+ 471              		.p2align 2,,3
+ 472              		.global	BSP_PB_Callback
+ 473              		.syntax unified
+ 474              		.thumb
+ 475              		.thumb_func
+ 476              		.fpu fpv4-sp-d16
+ARM GAS  /tmp/ccRIn438.s 			page 16
+
+
+ 478              	BSP_PB_Callback:
+ 479              	.LVL51:
+ 480              	.LFB137:
+ 242:Src/app_x-cube-ble1.c ****   }
+ 243:Src/app_x-cube-ble1.c **** }
+ 244:Src/app_x-cube-ble1.c **** 
+ 245:Src/app_x-cube-ble1.c **** /**
+ 246:Src/app_x-cube-ble1.c ****  * @brief  BSP Push Button callback
+ 247:Src/app_x-cube-ble1.c ****  * @param  Button Specifies the pin connected EXTI line
+ 248:Src/app_x-cube-ble1.c ****  * @retval None.
+ 249:Src/app_x-cube-ble1.c ****  */
+ 250:Src/app_x-cube-ble1.c **** void BSP_PB_Callback(Button_TypeDef Button) {
+ 481              		.loc 1 250 45 is_stmt 1 view -0
+ 482              		.cfi_startproc
+ 483              		@ args = 0, pretend = 0, frame = 0
+ 484              		@ frame_needed = 0, uses_anonymous_args = 0
+ 485              		@ link register save eliminated.
+ 251:Src/app_x-cube-ble1.c ****   /* Set the User Button flag */
+ 252:Src/app_x-cube-ble1.c ****   user_button_pressed = 1;
+ 486              		.loc 1 252 3 view .LVU118
+ 487              		.loc 1 252 23 is_stmt 0 view .LVU119
+ 488 0000 014B     		ldr	r3, .L43
+ 489 0002 0122     		movs	r2, #1
+ 490 0004 1A70     		strb	r2, [r3]
+ 253:Src/app_x-cube-ble1.c **** }
+ 491              		.loc 1 253 1 view .LVU120
+ 492 0006 7047     		bx	lr
+ 493              	.L44:
+ 494              		.align	2
+ 495              	.L43:
+ 496 0008 00000000 		.word	.LANCHOR3
+ 497              		.cfi_endproc
+ 498              	.LFE137:
+ 500              		.global	bnrg_expansion_board
+ 501              		.section	.rodata
+ 502              		.align	2
+ 503              		.set	.LANCHOR0,. + 0
+ 504              	.LC0:
+ 505 0000 123400E1 		.ascii	"\0224\000\341\200\003"
+ 505      8003
+ 506              		.section	.bss.bnrg_expansion_board,"aw",%nobits
+ 507              		.set	.LANCHOR2,. + 0
+ 510              	bnrg_expansion_board:
+ 511 0000 00       		.space	1
+ 512              		.section	.bss.user_button_pressed,"aw",%nobits
+ 513              		.set	.LANCHOR3,. + 0
+ 516              	user_button_pressed:
+ 517 0000 00       		.space	1
+ 518              		.section	.data.user_button_init_state,"aw"
+ 519              		.set	.LANCHOR1,. + 0
+ 522              	user_button_init_state:
+ 523 0000 01       		.byte	1
+ 524              		.text
+ 525              	.Letext0:
+ 526              		.file 2 "/usr/lib/gcc/arm-none-eabi/9.2.1/include/stdint.h"
+ 527              		.file 3 "Drivers/CMSIS/Include/core_cm4.h"
+ 528              		.file 4 "Drivers/CMSIS/Device/ST/STM32F4xx/Include/system_stm32f4xx.h"
+ARM GAS  /tmp/ccRIn438.s 			page 17
+
+
+ 529              		.file 5 "Drivers/CMSIS/Device/ST/STM32F4xx/Include/stm32f446xx.h"
+ 530              		.file 6 "Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_def.h"
+ 531              		.file 7 "Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_exti.h"
+ 532              		.file 8 "Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_dma.h"
+ 533              		.file 9 "Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_spi.h"
+ 534              		.file 10 "Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_uart.h"
+ 535              		.file 11 "Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h"
+ 536              		.file 12 "Inc/stm32f4xx_nucleo_bus.h"
+ 537              		.file 13 "Inc/hci_tl_interface.h"
+ 538              		.file 14 "/usr/lib/gcc/arm-none-eabi/9.2.1/include/stddef.h"
+ 539              		.file 15 "/usr/include/newlib/sys/_types.h"
+ 540              		.file 16 "/usr/include/newlib/sys/reent.h"
+ 541              		.file 17 "/usr/include/newlib/sys/lock.h"
+ 542              		.file 18 "Drivers/BSP/STM32F4xx_Nucleo/stm32f4xx_nucleo.h"
+ 543              		.file 19 "/usr/include/newlib/stdlib.h"
+ 544              		.file 20 "Middlewares/ST/BlueNRG-MS/includes/bluenrg_utils.h"
+ 545              		.file 21 "Inc/PumpService.h"
+ 546              		.file 22 "Middlewares/ST/BlueNRG-MS/includes/hci.h"
+ 547              		.file 23 "Middlewares/ST/BlueNRG-MS/includes/hci_le.h"
+ 548              		.file 24 "/usr/include/newlib/stdio.h"
+ 549              		.file 25 "Middlewares/ST/BlueNRG-MS/includes/bluenrg_hal_aci.h"
+ 550              		.file 26 "Middlewares/ST/BlueNRG-MS/includes/bluenrg_gatt_aci.h"
+ 551              		.file 27 "Middlewares/ST/BlueNRG-MS/includes/bluenrg_gap_aci.h"
+ 552              		.file 28 "<built-in>"
+ARM GAS  /tmp/ccRIn438.s 			page 18
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 app_x-cube-ble1.c
+     /tmp/ccRIn438.s:18     .rodata.MX_BlueNRG_MS_Init.str1.4:0000000000000000 $d
+     /tmp/ccRIn438.s:50     .text.MX_BlueNRG_MS_Init:0000000000000000 $t
+     /tmp/ccRIn438.s:59     .text.MX_BlueNRG_MS_Init:0000000000000000 MX_BlueNRG_MS_Init
+     /tmp/ccRIn438.s:371    .text.MX_BlueNRG_MS_Init:000000000000014c $d
+     /tmp/ccRIn438.s:390    .text.MX_BlueNRG_MS_Process:0000000000000000 $t
+     /tmp/ccRIn438.s:398    .text.MX_BlueNRG_MS_Process:0000000000000000 MX_BlueNRG_MS_Process
+     /tmp/ccRIn438.s:465    .text.MX_BlueNRG_MS_Process:0000000000000020 $d
+     /tmp/ccRIn438.s:470    .text.BSP_PB_Callback:0000000000000000 $t
+     /tmp/ccRIn438.s:478    .text.BSP_PB_Callback:0000000000000000 BSP_PB_Callback
+     /tmp/ccRIn438.s:496    .text.BSP_PB_Callback:0000000000000008 $d
+     /tmp/ccRIn438.s:510    .bss.bnrg_expansion_board:0000000000000000 bnrg_expansion_board
+     /tmp/ccRIn438.s:502    .rodata:0000000000000000 $d
+     /tmp/ccRIn438.s:511    .bss.bnrg_expansion_board:0000000000000000 $d
+     /tmp/ccRIn438.s:516    .bss.user_button_pressed:0000000000000000 user_button_pressed
+     /tmp/ccRIn438.s:517    .bss.user_button_pressed:0000000000000000 $d
+     /tmp/ccRIn438.s:522    .data.user_button_init_state:0000000000000000 user_button_init_state
+
+UNDEFINED SYMBOLS
+BSP_PB_Init
+BSP_LED_Init
+BSP_COM_Init
+BSP_PB_GetState
+hci_init
+getBlueNRGVersion
+hci_reset
+HAL_Delay
+printf
+aci_hal_write_config_data
+aci_gatt_init
+aci_gap_init_IDB04A1
+aci_gatt_update_char_value
+puts
+aci_gap_set_auth_requirement
+Add_Pump_Service
+aci_hal_set_tx_power_level
+aci_gap_init_IDB05A1
+user_notify
+hci_user_evt_proc
+setConnectable
+set_connectable

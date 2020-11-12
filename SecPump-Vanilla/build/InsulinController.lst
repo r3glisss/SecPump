@@ -1,0 +1,1126 @@
+ARM GAS  /tmp/ccfDRRom.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.eabi_attribute 27, 1
+   3              		.eabi_attribute 28, 1
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 2
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"InsulinController.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.global	__aeabi_d2f
+  18              		.global	__aeabi_f2d
+  19              		.section	.rodata.InsulinController.str1.4,"aMS",%progbits,1
+  20              		.align	2
+  21              	.LC0:
+  22 0000 5B475D3A 		.ascii	"[G]:%.4f\012\015\000"
+  22      252E3466 
+  22      0A0D00
+  23 000b 00       		.align	2
+  24              	.LC1:
+  25 000c 5B755D3A 		.ascii	"[u]:%.4f\012\015\000"
+  25      252E3466 
+  25      0A0D00
+  26              		.section	.text.InsulinController,"ax",%progbits
+  27              		.align	1
+  28              		.p2align 2,,3
+  29              		.global	InsulinController
+  30              		.arch armv7e-m
+  31              		.syntax unified
+  32              		.thumb
+  33              		.thumb_func
+  34              		.fpu fpv4-sp-d16
+  36              	InsulinController:
+  37              	.LVL0:
+  38              	.LFB133:
+  39              		.file 1 "Src/InsulinController.c"
+   1:Src/InsulinController.c **** // Copyright (C) 2019 LCIS Laboratory - Cyril Bresch
+   2:Src/InsulinController.c **** // This program is free software: you can redistribute it and/or modify
+   3:Src/InsulinController.c **** // it under the terms of the GNU General Public License as published by
+   4:Src/InsulinController.c **** // the Free Software Foundation, in version 3.
+   5:Src/InsulinController.c **** // This program is distributed in the hope that it will be useful,
+   6:Src/InsulinController.c **** // but WITHOUT ANY WARRANTY; without even the implied warranty of
+   7:Src/InsulinController.c **** // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+   8:Src/InsulinController.c **** // GNU General Public License for more details.
+   9:Src/InsulinController.c **** // You should have received a copy of the GNU General Public License
+  10:Src/InsulinController.c **** // along with this program. If not, see <http://www.gnu.org/licenses/>.
+  11:Src/InsulinController.c **** // This program is part of the SecPump @https://github.com/r3glisss/SecPump
+  12:Src/InsulinController.c **** 
+  13:Src/InsulinController.c **** /// Insulin injection controller
+  14:Src/InsulinController.c **** #include "InsulinController.h"
+  15:Src/InsulinController.c **** 
+ARM GAS  /tmp/ccfDRRom.s 			page 2
+
+
+  16:Src/InsulinController.c **** /// Sample simulation and time frame of the controller
+  17:Src/InsulinController.c **** #define SIMULATION_TIME 24
+  18:Src/InsulinController.c **** #define SAMPLE_TIME 145
+  19:Src/InsulinController.c **** 
+  20:Src/InsulinController.c **** /// System Target
+  21:Src/InsulinController.c **** #define TARGET 85
+  22:Src/InsulinController.c **** 
+  23:Src/InsulinController.c **** /// PID bias
+  24:Src/InsulinController.c **** #define BIAS 0
+  25:Src/InsulinController.c **** 
+  26:Src/InsulinController.c **** /// PID upper and lower limits
+  27:Src/InsulinController.c **** #define OP_HI 100.0
+  28:Src/InsulinController.c **** #define OP_LO 0.0
+  29:Src/InsulinController.c **** 
+  30:Src/InsulinController.c **** /// Controller output
+  31:Src/InsulinController.c **** static float op[SAMPLE_TIME];
+  32:Src/InsulinController.c **** 
+  33:Src/InsulinController.c **** /// Process Variable
+  34:Src/InsulinController.c **** static float pv[SAMPLE_TIME];
+  35:Src/InsulinController.c **** 
+  36:Src/InsulinController.c **** /// Error
+  37:Src/InsulinController.c **** static float e[SAMPLE_TIME];
+  38:Src/InsulinController.c **** 
+  39:Src/InsulinController.c **** /// Error integral
+  40:Src/InsulinController.c **** static float ie[SAMPLE_TIME];
+  41:Src/InsulinController.c **** 
+  42:Src/InsulinController.c **** /// Derivative of the error
+  43:Src/InsulinController.c **** static float dpv[SAMPLE_TIME];
+  44:Src/InsulinController.c **** 
+  45:Src/InsulinController.c **** /// Proportional
+  46:Src/InsulinController.c **** static float P[SAMPLE_TIME];
+  47:Src/InsulinController.c **** 
+  48:Src/InsulinController.c **** /// Integral
+  49:Src/InsulinController.c **** static float IT[SAMPLE_TIME];
+  50:Src/InsulinController.c **** 
+  51:Src/InsulinController.c **** /// Derivative
+  52:Src/InsulinController.c **** static float D[SAMPLE_TIME];
+  53:Src/InsulinController.c **** 
+  54:Src/InsulinController.c **** /// Set Point
+  55:Src/InsulinController.c **** static float sp[SAMPLE_TIME];
+  56:Src/InsulinController.c **** 
+  57:Src/InsulinController.c **** /// Time
+  58:Src/InsulinController.c **** static float t[SAMPLE_TIME] = {
+  59:Src/InsulinController.c ****     0.0,  0.16666667,  0.33333333,  0.5,  0.66666667,  0.83333333,
+  60:Src/InsulinController.c ****     1.0,  1.16666667,  1.33333333,  1.5,  1.66666667,  1.83333333,
+  61:Src/InsulinController.c ****     2.0,  2.16666667,  2.33333333,  2.5,  2.66666667,  2.83333333,
+  62:Src/InsulinController.c ****     3.0,  3.16666667,  3.33333333,  3.5,  3.66666667,  3.83333333,
+  63:Src/InsulinController.c ****     4.0,  4.16666667,  4.33333333,  4.5,  4.66666667,  4.83333333,
+  64:Src/InsulinController.c ****     5.0,  5.16666667,  5.33333333,  5.5,  5.66666667,  5.83333333,
+  65:Src/InsulinController.c ****     6.0,  6.16666667,  6.33333333,  6.5,  6.66666667,  6.83333333,
+  66:Src/InsulinController.c ****     7.0,  7.16666667,  7.33333333,  7.5,  7.66666667,  7.83333333,
+  67:Src/InsulinController.c ****     8.0,  8.16666667,  8.33333333,  8.5,  8.66666667,  8.83333333,
+  68:Src/InsulinController.c ****     9.0,  9.16666667,  9.33333333,  9.5,  9.66666667,  9.83333333,
+  69:Src/InsulinController.c ****     10.0, 10.16666667, 10.33333333, 10.5, 10.66666667, 10.83333333,
+  70:Src/InsulinController.c ****     11.0, 11.16666667, 11.33333333, 11.5, 11.66666667, 11.83333333,
+  71:Src/InsulinController.c ****     12.0, 12.16666667, 12.33333333, 12.5, 12.66666667, 12.83333333,
+  72:Src/InsulinController.c ****     13.0, 13.16666667, 13.33333333, 13.5, 13.66666667, 13.83333333,
+ARM GAS  /tmp/ccfDRRom.s 			page 3
+
+
+  73:Src/InsulinController.c ****     14.0, 14.16666667, 14.33333333, 14.5, 14.66666667, 14.83333333,
+  74:Src/InsulinController.c ****     15.0, 15.16666667, 15.33333333, 15.5, 15.66666667, 15.83333333,
+  75:Src/InsulinController.c ****     16.0, 16.16666667, 16.33333333, 16.5, 16.66666667, 16.83333333,
+  76:Src/InsulinController.c ****     17.0, 17.16666667, 17.33333333, 17.5, 17.66666667, 17.83333333,
+  77:Src/InsulinController.c ****     18.0, 18.16666667, 18.33333333, 18.5, 18.66666667, 18.83333333,
+  78:Src/InsulinController.c ****     19.0, 19.16666667, 19.33333333, 19.5, 19.66666667, 19.83333333,
+  79:Src/InsulinController.c ****     20.0, 20.16666667, 20.33333333, 20.5, 20.66666667, 20.83333333,
+  80:Src/InsulinController.c ****     21.0, 21.16666667, 21.33333333, 21.5, 21.66666667, 21.83333333,
+  81:Src/InsulinController.c ****     22.0, 22.16666667, 22.33333333, 22.5, 22.66666667, 22.83333333,
+  82:Src/InsulinController.c ****     23.0, 23.16666667, 23.33333333, 23.5, 23.66666667, 23.83333333,
+  83:Src/InsulinController.c ****     24.0};
+  84:Src/InsulinController.c **** 
+  85:Src/InsulinController.c **** /// Time value iterator
+  86:Src/InsulinController.c **** uint32_t T_iterator = 0;
+  87:Src/InsulinController.c **** 
+  88:Src/InsulinController.c **** /// Manual Configurable Bolus
+  89:Src/InsulinController.c **** float BolusConfig = 0;
+  90:Src/InsulinController.c **** 
+  91:Src/InsulinController.c **** /// Configurable Controller PID Value
+  92:Src/InsulinController.c **** /// Proportionnal
+  93:Src/InsulinController.c **** static float Kc = -0.07;
+  94:Src/InsulinController.c **** 
+  95:Src/InsulinController.c **** /// Integration
+  96:Src/InsulinController.c **** static float Tau_I = 1;
+  97:Src/InsulinController.c **** 
+  98:Src/InsulinController.c **** /// Derivative
+  99:Src/InsulinController.c **** static float Tau_D = 1.2;
+ 100:Src/InsulinController.c **** 
+ 101:Src/InsulinController.c **** /// Controller
+ 102:Src/InsulinController.c **** void InsulinController(uint8_t *GlucoseBuffer) {
+  40              		.loc 1 102 48 view -0
+  41              		.cfi_startproc
+  42              		@ args = 0, pretend = 0, frame = 0
+  43              		@ frame_needed = 0, uses_anonymous_args = 0
+ 103:Src/InsulinController.c ****   float MeasuredGlucose;
+  44              		.loc 1 103 3 view .LVU1
+ 104:Src/InsulinController.c ****   float DeltaT;
+  45              		.loc 1 104 3 view .LVU2
+ 105:Src/InsulinController.c **** 
+ 106:Src/InsulinController.c ****   /// Iterator Modulo
+ 107:Src/InsulinController.c ****   T_iterator = T_iterator % SAMPLE_TIME;
+  46              		.loc 1 107 3 view .LVU3
+ 102:Src/InsulinController.c ****   float MeasuredGlucose;
+  47              		.loc 1 102 48 is_stmt 0 view .LVU4
+  48 0000 2DE9F84F 		push	{r3, r4, r5, r6, r7, r8, r9, r10, fp, lr}
+  49              	.LCFI0:
+  50              		.cfi_def_cfa_offset 40
+  51              		.cfi_offset 3, -40
+  52              		.cfi_offset 4, -36
+  53              		.cfi_offset 5, -32
+  54              		.cfi_offset 6, -28
+  55              		.cfi_offset 7, -24
+  56              		.cfi_offset 8, -20
+  57              		.cfi_offset 9, -16
+  58              		.cfi_offset 10, -12
+  59              		.cfi_offset 11, -8
+  60              		.cfi_offset 14, -4
+ARM GAS  /tmp/ccfDRRom.s 			page 4
+
+
+  61              		.loc 1 107 27 view .LVU5
+  62 0004 5C4C     		ldr	r4, .L20
+  63 0006 5D4B     		ldr	r3, .L20+4
+  64 0008 2268     		ldr	r2, [r4]
+  65 000a 5D4E     		ldr	r6, .L20+8
+  66 000c 5D4F     		ldr	r7, .L20+12
+  67 000e DFF8A081 		ldr	r8, .L20+56
+  68 0012 DFF8A091 		ldr	r9, .L20+60
+  69 0016 5C4D     		ldr	r5, .L20+16
+  70 0018 A3FB0213 		umull	r1, r3, r3, r2
+  71 001c DB09     		lsrs	r3, r3, #7
+  72 001e 03EBC301 		add	r1, r3, r3, lsl #3
+  73 0022 03EB0113 		add	r3, r3, r1, lsl #4
+  74 0026 D31A     		subs	r3, r2, r3
+ 102:Src/InsulinController.c ****   float MeasuredGlucose;
+  75              		.loc 1 102 48 view .LVU6
+  76 0028 2DED028B 		vpush.64	{d8}
+  77              	.LCFI1:
+  78              		.cfi_def_cfa_offset 48
+  79              		.cfi_offset 80, -48
+  80              		.cfi_offset 81, -44
+  81              		.loc 1 107 14 view .LVU7
+  82 002c 2360     		str	r3, [r4]
+ 108:Src/InsulinController.c **** 
+ 109:Src/InsulinController.c ****   if (T_iterator == 0) {
+  83              		.loc 1 109 3 is_stmt 1 view .LVU8
+  84              		.loc 1 109 6 is_stmt 0 view .LVU9
+  85 002e ABB9     		cbnz	r3, .L6
+  86              	.LBB4:
+  87              	.LBB5:
+ 110:Src/InsulinController.c ****     ResetController();
+ 111:Src/InsulinController.c ****   }
+ 112:Src/InsulinController.c **** 
+ 113:Src/InsulinController.c ****   /// scanf("%255s", FloatBuffer);
+ 114:Src/InsulinController.c ****   MeasuredGlucose = atof((char *)GlucoseBuffer);
+ 115:Src/InsulinController.c ****   printf("[G]:%.4f\n\r", MeasuredGlucose);
+ 116:Src/InsulinController.c **** 
+ 117:Src/InsulinController.c ****   /// The delta is always the same, it is for purpose
+ 118:Src/InsulinController.c ****   if (T_iterator > 0) {
+ 119:Src/InsulinController.c ****     DeltaT = t[T_iterator] - t[T_iterator - 1];
+ 120:Src/InsulinController.c ****   } else {
+ 121:Src/InsulinController.c ****     DeltaT = t[1] - t[0];
+ 122:Src/InsulinController.c ****   }
+ 123:Src/InsulinController.c **** 
+ 124:Src/InsulinController.c ****   pv[T_iterator] = MeasuredGlucose;
+ 125:Src/InsulinController.c ****   e[T_iterator] = sp[T_iterator] - pv[T_iterator];
+ 126:Src/InsulinController.c **** 
+ 127:Src/InsulinController.c ****   if (T_iterator > 0) {
+ 128:Src/InsulinController.c ****     dpv[T_iterator] = (pv[T_iterator] - pv[T_iterator - 1]) / DeltaT;
+ 129:Src/InsulinController.c ****     ie[T_iterator] = ie[T_iterator - 1] + e[T_iterator] * DeltaT;
+ 130:Src/InsulinController.c ****   }
+ 131:Src/InsulinController.c **** 
+ 132:Src/InsulinController.c ****   /// PID Tuning
+ 133:Src/InsulinController.c ****   P[T_iterator] = Kc * e[T_iterator];
+ 134:Src/InsulinController.c ****   IT[T_iterator] = Kc / Tau_I * ie[T_iterator];
+ 135:Src/InsulinController.c ****   D[T_iterator] = -Kc * Tau_D * dpv[T_iterator];
+ 136:Src/InsulinController.c ****   op[T_iterator] = op[0] + P[T_iterator] + IT[T_iterator] + D[T_iterator];
+ARM GAS  /tmp/ccfDRRom.s 			page 5
+
+
+ 137:Src/InsulinController.c **** 
+ 138:Src/InsulinController.c ****   /// DEBUG:PID
+ 139:Src/InsulinController.c ****   //   printf("P: %.4f\r\nI: %.4f\r\nD: %.4f\r\nDelta: %.4f\r\n", P[T_iterator],
+ 140:Src/InsulinController.c ****   //          IT[T_iterator], D[T_iterator], DeltaT);
+ 141:Src/InsulinController.c **** 
+ 142:Src/InsulinController.c ****   /// Anti-reset windup
+ 143:Src/InsulinController.c ****   if (op[T_iterator] > OP_HI) {
+ 144:Src/InsulinController.c ****     op[T_iterator] = OP_HI;
+ 145:Src/InsulinController.c ****     ie[T_iterator] = ie[T_iterator] - e[T_iterator] * DeltaT;
+ 146:Src/InsulinController.c ****   } else if (op[T_iterator] < OP_LO) {
+ 147:Src/InsulinController.c ****     op[T_iterator] = OP_LO;
+ 148:Src/InsulinController.c ****     ie[T_iterator] = ie[T_iterator] - e[T_iterator] * DeltaT;
+ 149:Src/InsulinController.c ****   }
+ 150:Src/InsulinController.c **** 
+ 151:Src/InsulinController.c ****   /// Send the amount of insulin to inject
+ 152:Src/InsulinController.c ****   printf("[u]:%.4f\n\r", op[T_iterator]);
+ 153:Src/InsulinController.c **** 
+ 154:Src/InsulinController.c ****   /// Iterate the time
+ 155:Src/InsulinController.c ****   T_iterator++;
+ 156:Src/InsulinController.c **** }
+ 157:Src/InsulinController.c **** 
+ 158:Src/InsulinController.c **** /// Manual Controller
+ 159:Src/InsulinController.c **** void InsulinManualController(uint8_t *GlucoseBuffer) {
+ 160:Src/InsulinController.c ****   float MeasuredGlucose;
+ 161:Src/InsulinController.c **** 
+ 162:Src/InsulinController.c ****   MeasuredGlucose = atof((char *)GlucoseBuffer);
+ 163:Src/InsulinController.c ****   printf("[G]:%.4f\n\r", MeasuredGlucose);
+ 164:Src/InsulinController.c **** 
+ 165:Src/InsulinController.c ****   /// Send the amount of insulin to inject
+ 166:Src/InsulinController.c ****   printf("[u]:%.4f\n\r", BolusConfig);
+ 167:Src/InsulinController.c **** }
+ 168:Src/InsulinController.c **** 
+ 169:Src/InsulinController.c **** /// Controller Reset
+ 170:Src/InsulinController.c **** void ResetController() {
+ 171:Src/InsulinController.c ****   int i;
+ 172:Src/InsulinController.c **** 
+ 173:Src/InsulinController.c ****   /// Reset tables
+ 174:Src/InsulinController.c ****   for (i = 0; i < SAMPLE_TIME; ++i) {
+ 175:Src/InsulinController.c ****     pv[i] = 0;
+ 176:Src/InsulinController.c ****     e[i] = 0;
+ 177:Src/InsulinController.c ****     ie[i] = 0;
+ 178:Src/InsulinController.c ****     dpv[i] = 0;
+ 179:Src/InsulinController.c ****     P[i] = 0;
+ 180:Src/InsulinController.c ****     IT[i] = 0;
+ 181:Src/InsulinController.c ****     D[i] = 0;
+ 182:Src/InsulinController.c ****     sp[i] = TARGET;
+  88              		.loc 1 182 11 view .LVU10
+  89 0030 DFED567A 		vldr.32	s15, .L20+20
+ 175:Src/InsulinController.c ****     e[i] = 0;
+  90              		.loc 1 175 11 view .LVU11
+  91 0034 0023     		movs	r3, #0
+  92 0036 3246     		mov	r2, r6
+  93 0038 06F5117B 		add	fp, r6, #580
+  94 003c BA46     		mov	r10, r7
+  95 003e C646     		mov	lr, r8
+  96 0040 CC46     		mov	ip, r9
+  97 0042 2946     		mov	r1, r5
+ARM GAS  /tmp/ccfDRRom.s 			page 6
+
+
+  98              	.L5:
+ 175:Src/InsulinController.c ****     e[i] = 0;
+  99              		.loc 1 175 5 is_stmt 1 view .LVU12
+ 175:Src/InsulinController.c ****     e[i] = 0;
+ 100              		.loc 1 175 11 is_stmt 0 view .LVU13
+ 101 0044 42F8043B 		str	r3, [r2], #4	@ float
+ 176:Src/InsulinController.c ****     ie[i] = 0;
+ 102              		.loc 1 176 5 is_stmt 1 view .LVU14
+ 177:Src/InsulinController.c ****     dpv[i] = 0;
+ 103              		.loc 1 177 5 view .LVU15
+ 174:Src/InsulinController.c ****     pv[i] = 0;
+ 104              		.loc 1 174 3 is_stmt 0 view .LVU16
+ 105 0048 5A45     		cmp	r2, fp
+ 177:Src/InsulinController.c ****     dpv[i] = 0;
+ 106              		.loc 1 177 11 view .LVU17
+ 107 004a 4AF8043B 		str	r3, [r10], #4	@ float
+ 178:Src/InsulinController.c ****     P[i] = 0;
+ 108              		.loc 1 178 5 is_stmt 1 view .LVU18
+ 178:Src/InsulinController.c ****     P[i] = 0;
+ 109              		.loc 1 178 12 is_stmt 0 view .LVU19
+ 110 004e 4EF8043B 		str	r3, [lr], #4	@ float
+ 179:Src/InsulinController.c ****     IT[i] = 0;
+ 111              		.loc 1 179 5 is_stmt 1 view .LVU20
+ 180:Src/InsulinController.c ****     D[i] = 0;
+ 112              		.loc 1 180 5 view .LVU21
+ 181:Src/InsulinController.c ****     sp[i] = TARGET;
+ 113              		.loc 1 181 5 view .LVU22
+ 114              		.loc 1 182 5 view .LVU23
+ 183:Src/InsulinController.c ****     op[i] = BIAS;
+ 115              		.loc 1 183 11 is_stmt 0 view .LVU24
+ 116 0052 41F8043B 		str	r3, [r1], #4	@ float
+ 182:Src/InsulinController.c ****     op[i] = BIAS;
+ 117              		.loc 1 182 11 view .LVU25
+ 118 0056 ECEC017A 		vstmia.32	ip!, {s15}
+ 119              		.loc 1 183 5 is_stmt 1 view .LVU26
+ 174:Src/InsulinController.c ****     pv[i] = 0;
+ 120              		.loc 1 174 32 view .LVU27
+ 174:Src/InsulinController.c ****     pv[i] = 0;
+ 121              		.loc 1 174 15 view .LVU28
+ 174:Src/InsulinController.c ****     pv[i] = 0;
+ 122              		.loc 1 174 3 is_stmt 0 view .LVU29
+ 123 005a F3D1     		bne	.L5
+ 124              	.L6:
+ 125              	.LBE5:
+ 126              	.LBE4:
+ 114:Src/InsulinController.c ****   printf("[G]:%.4f\n\r", MeasuredGlucose);
+ 127              		.loc 1 114 3 is_stmt 1 view .LVU30
+ 114:Src/InsulinController.c ****   printf("[G]:%.4f\n\r", MeasuredGlucose);
+ 128              		.loc 1 114 21 is_stmt 0 view .LVU31
+ 129 005c FFF7FEFF 		bl	atof
+ 130              	.LVL1:
+ 114:Src/InsulinController.c ****   printf("[G]:%.4f\n\r", MeasuredGlucose);
+ 131              		.loc 1 114 21 view .LVU32
+ 132 0060 51EC100B 		vmov	r0, r1, d0
+ 114:Src/InsulinController.c ****   printf("[G]:%.4f\n\r", MeasuredGlucose);
+ 133              		.loc 1 114 19 view .LVU33
+ 134 0064 FFF7FEFF 		bl	__aeabi_d2f
+ARM GAS  /tmp/ccfDRRom.s 			page 7
+
+
+ 135              	.LVL2:
+ 136 0068 08EE100A 		vmov	s16, r0
+ 137              	.LVL3:
+ 115:Src/InsulinController.c **** 
+ 138              		.loc 1 115 3 is_stmt 1 view .LVU34
+ 139 006c FFF7FEFF 		bl	__aeabi_f2d
+ 140              	.LVL4:
+ 115:Src/InsulinController.c **** 
+ 141              		.loc 1 115 3 is_stmt 0 view .LVU35
+ 142 0070 0246     		mov	r2, r0
+ 143 0072 0B46     		mov	r3, r1
+ 144 0074 4648     		ldr	r0, .L20+24
+ 145 0076 FFF7FEFF 		bl	printf
+ 146              	.LVL5:
+ 118:Src/InsulinController.c ****     DeltaT = t[T_iterator] - t[T_iterator - 1];
+ 147              		.loc 1 118 3 is_stmt 1 view .LVU36
+ 118:Src/InsulinController.c ****     DeltaT = t[T_iterator] - t[T_iterator - 1];
+ 148              		.loc 1 118 18 is_stmt 0 view .LVU37
+ 149 007a 2368     		ldr	r3, [r4]
+ 118:Src/InsulinController.c ****     DeltaT = t[T_iterator] - t[T_iterator - 1];
+ 150              		.loc 1 118 6 view .LVU38
+ 151 007c 002B     		cmp	r3, #0
+ 152 007e 53D0     		beq	.L19
+ 119:Src/InsulinController.c ****   } else {
+ 153              		.loc 1 119 5 is_stmt 1 view .LVU39
+ 119:Src/InsulinController.c ****   } else {
+ 154              		.loc 1 119 15 is_stmt 0 view .LVU40
+ 155 0080 4449     		ldr	r1, .L20+28
+ 119:Src/InsulinController.c ****   } else {
+ 156              		.loc 1 119 43 view .LVU41
+ 157 0082 5A1E     		subs	r2, r3, #1
+ 119:Src/InsulinController.c ****   } else {
+ 158              		.loc 1 119 15 view .LVU42
+ 159 0084 01EB8300 		add	r0, r1, r3, lsl #2
+ 119:Src/InsulinController.c ****   } else {
+ 160              		.loc 1 119 31 view .LVU43
+ 161 0088 01EB8201 		add	r1, r1, r2, lsl #2
+ 119:Src/InsulinController.c ****   } else {
+ 162              		.loc 1 119 12 view .LVU44
+ 163 008c 91ED007A 		vldr.32	s14, [r1]
+ 164 0090 D0ED006A 		vldr.32	s13, [r0]
+ 124:Src/InsulinController.c ****   e[T_iterator] = sp[T_iterator] - pv[T_iterator];
+ 165              		.loc 1 124 18 view .LVU45
+ 166 0094 06EB8301 		add	r1, r6, r3, lsl #2
+ 167 0098 81ED008A 		vstr.32	s16, [r1]
+ 128:Src/InsulinController.c ****     ie[T_iterator] = ie[T_iterator - 1] + e[T_iterator] * DeltaT;
+ 168              		.loc 1 128 43 view .LVU46
+ 169 009c 06EB8206 		add	r6, r6, r2, lsl #2
+ 128:Src/InsulinController.c ****     ie[T_iterator] = ie[T_iterator - 1] + e[T_iterator] * DeltaT;
+ 170              		.loc 1 128 39 view .LVU47
+ 171 00a0 D6ED007A 		vldr.32	s15, [r6]
+ 119:Src/InsulinController.c ****   } else {
+ 172              		.loc 1 119 12 view .LVU48
+ 173 00a4 76EEC76A 		vsub.f32	s13, s13, s14
+ 174              	.LVL6:
+ 124:Src/InsulinController.c ****   e[T_iterator] = sp[T_iterator] - pv[T_iterator];
+ 175              		.loc 1 124 3 is_stmt 1 view .LVU49
+ARM GAS  /tmp/ccfDRRom.s 			page 8
+
+
+ 125:Src/InsulinController.c **** 
+ 176              		.loc 1 125 3 view .LVU50
+ 128:Src/InsulinController.c ****     ie[T_iterator] = ie[T_iterator - 1] + e[T_iterator] * DeltaT;
+ 177              		.loc 1 128 39 is_stmt 0 view .LVU51
+ 178 00a8 78EE677A 		vsub.f32	s15, s16, s15
+ 125:Src/InsulinController.c **** 
+ 179              		.loc 1 125 21 view .LVU52
+ 180 00ac 09EB8309 		add	r9, r9, r3, lsl #2
+ 128:Src/InsulinController.c ****     ie[T_iterator] = ie[T_iterator - 1] + e[T_iterator] * DeltaT;
+ 181              		.loc 1 128 61 view .LVU53
+ 182 00b0 C7EEA65A 		vdiv.f32	s11, s15, s13
+ 129:Src/InsulinController.c ****   }
+ 183              		.loc 1 129 24 view .LVU54
+ 184 00b4 07EB8202 		add	r2, r7, r2, lsl #2
+ 128:Src/InsulinController.c ****     ie[T_iterator] = ie[T_iterator - 1] + e[T_iterator] * DeltaT;
+ 185              		.loc 1 128 21 view .LVU55
+ 186 00b8 08EB8308 		add	r8, r8, r3, lsl #2
+ 129:Src/InsulinController.c ****   }
+ 187              		.loc 1 129 20 view .LVU56
+ 188 00bc 07EB8301 		add	r1, r7, r3, lsl #2
+ 119:Src/InsulinController.c ****   } else {
+ 189              		.loc 1 119 15 view .LVU57
+ 190 00c0 9B00     		lsls	r3, r3, #2
+ 125:Src/InsulinController.c **** 
+ 191              		.loc 1 125 34 view .LVU58
+ 192 00c2 D9ED007A 		vldr.32	s15, [r9]
+ 129:Src/InsulinController.c ****   }
+ 193              		.loc 1 129 41 view .LVU59
+ 194 00c6 92ED007A 		vldr.32	s14, [r2]
+ 128:Src/InsulinController.c ****     ie[T_iterator] = ie[T_iterator - 1] + e[T_iterator] * DeltaT;
+ 195              		.loc 1 128 21 view .LVU60
+ 196 00ca C8ED005A 		vstr.32	s11, [r8]
+ 125:Src/InsulinController.c **** 
+ 197              		.loc 1 125 34 view .LVU61
+ 198 00ce 37EEC88A 		vsub.f32	s16, s15, s16
+ 199              	.LVL7:
+ 127:Src/InsulinController.c ****     dpv[T_iterator] = (pv[T_iterator] - pv[T_iterator - 1]) / DeltaT;
+ 200              		.loc 1 127 3 is_stmt 1 view .LVU62
+ 128:Src/InsulinController.c ****     ie[T_iterator] = ie[T_iterator - 1] + e[T_iterator] * DeltaT;
+ 201              		.loc 1 128 5 view .LVU63
+ 129:Src/InsulinController.c ****   }
+ 202              		.loc 1 129 5 view .LVU64
+ 129:Src/InsulinController.c ****   }
+ 203              		.loc 1 129 41 is_stmt 0 view .LVU65
+ 204 00d2 A8EE267A 		vfma.f32	s14, s16, s13
+ 129:Src/InsulinController.c ****   }
+ 205              		.loc 1 129 20 view .LVU66
+ 206 00d6 81ED007A 		vstr.32	s14, [r1]
+ 207              	.LVL8:
+ 208              	.L11:
+ 133:Src/InsulinController.c ****   IT[T_iterator] = Kc / Tau_I * ie[T_iterator];
+ 209              		.loc 1 133 3 is_stmt 1 view .LVU67
+ 134:Src/InsulinController.c ****   D[T_iterator] = -Kc * Tau_D * dpv[T_iterator];
+ 210              		.loc 1 134 3 view .LVU68
+ 135:Src/InsulinController.c ****   op[T_iterator] = op[0] + P[T_iterator] + IT[T_iterator] + D[T_iterator];
+ 211              		.loc 1 135 3 view .LVU69
+ 136:Src/InsulinController.c **** 
+ARM GAS  /tmp/ccfDRRom.s 			page 9
+
+
+ 212              		.loc 1 136 3 view .LVU70
+ 136:Src/InsulinController.c **** 
+ 213              		.loc 1 136 26 is_stmt 0 view .LVU71
+ 214 00da 9FED2F6A 		vldr.32	s12, .L20+32
+ 215 00de D5ED007A 		vldr.32	s15, [r5]
+ 136:Src/InsulinController.c **** 
+ 216              		.loc 1 136 59 view .LVU72
+ 217 00e2 DFED2E4A 		vldr.32	s9, .L20+36
+ 143:Src/InsulinController.c ****     op[T_iterator] = OP_HI;
+ 218              		.loc 1 143 6 view .LVU73
+ 219 00e6 9FED2E5A 		vldr.32	s10, .L20+40
+ 136:Src/InsulinController.c **** 
+ 220              		.loc 1 136 26 view .LVU74
+ 221 00ea E8EE067A 		vfma.f32	s15, s16, s12
+ 136:Src/InsulinController.c **** 
+ 222              		.loc 1 136 42 view .LVU75
+ 223 00ee E7EE067A 		vfma.f32	s15, s14, s12
+ 136:Src/InsulinController.c **** 
+ 224              		.loc 1 136 59 view .LVU76
+ 225 00f2 E5EEA47A 		vfma.f32	s15, s11, s9
+ 143:Src/InsulinController.c ****     op[T_iterator] = OP_HI;
+ 226              		.loc 1 143 3 is_stmt 1 view .LVU77
+ 143:Src/InsulinController.c ****     op[T_iterator] = OP_HI;
+ 227              		.loc 1 143 6 is_stmt 0 view .LVU78
+ 228 00f6 F4EEC57A 		vcmpe.f32	s15, s10
+ 229 00fa F1EE10FA 		vmrs	APSR_nzcv, FPSCR
+ 230 00fe 20DD     		ble	.L15
+ 144:Src/InsulinController.c ****     ie[T_iterator] = ie[T_iterator] - e[T_iterator] * DeltaT;
+ 231              		.loc 1 144 5 is_stmt 1 view .LVU79
+ 145:Src/InsulinController.c ****   } else if (op[T_iterator] < OP_LO) {
+ 232              		.loc 1 145 37 is_stmt 0 view .LVU80
+ 233 0100 A6EEC87A 		vfms.f32	s14, s13, s16
+ 144:Src/InsulinController.c ****     ie[T_iterator] = ie[T_iterator] - e[T_iterator] * DeltaT;
+ 234              		.loc 1 144 20 view .LVU81
+ 235 0104 1D44     		add	r5, r5, r3
+ 145:Src/InsulinController.c ****   } else if (op[T_iterator] < OP_LO) {
+ 236              		.loc 1 145 20 view .LVU82
+ 237 0106 3B44     		add	r3, r3, r7
+ 144:Src/InsulinController.c ****     ie[T_iterator] = ie[T_iterator] - e[T_iterator] * DeltaT;
+ 238              		.loc 1 144 20 view .LVU83
+ 239 0108 85ED005A 		vstr.32	s10, [r5]
+ 145:Src/InsulinController.c ****   } else if (op[T_iterator] < OP_LO) {
+ 240              		.loc 1 145 5 is_stmt 1 view .LVU84
+ 145:Src/InsulinController.c ****   } else if (op[T_iterator] < OP_LO) {
+ 241              		.loc 1 145 20 is_stmt 0 view .LVU85
+ 242 010c 83ED007A 		vstr.32	s14, [r3]
+ 243 0110 244B     		ldr	r3, .L20+44
+ 244 0112 0022     		movs	r2, #0
+ 245              	.L9:
+ 152:Src/InsulinController.c **** 
+ 246              		.loc 1 152 3 is_stmt 1 view .LVU86
+ 247 0114 2448     		ldr	r0, .L20+48
+ 248 0116 FFF7FEFF 		bl	printf
+ 249              	.LVL9:
+ 155:Src/InsulinController.c **** }
+ 250              		.loc 1 155 3 view .LVU87
+ 156:Src/InsulinController.c **** 
+ARM GAS  /tmp/ccfDRRom.s 			page 10
+
+
+ 251              		.loc 1 156 1 is_stmt 0 view .LVU88
+ 252 011a BDEC028B 		vldm	sp!, {d8}
+ 253              	.LCFI2:
+ 254              		.cfi_remember_state
+ 255              		.cfi_restore 80
+ 256              		.cfi_restore 81
+ 257              		.cfi_def_cfa_offset 40
+ 155:Src/InsulinController.c **** }
+ 258              		.loc 1 155 13 view .LVU89
+ 259 011e 2368     		ldr	r3, [r4]
+ 260 0120 0133     		adds	r3, r3, #1
+ 261 0122 2360     		str	r3, [r4]
+ 156:Src/InsulinController.c **** 
+ 262              		.loc 1 156 1 view .LVU90
+ 263 0124 BDE8F88F 		pop	{r3, r4, r5, r6, r7, r8, r9, r10, fp, pc}
+ 264              	.LVL10:
+ 265              	.L19:
+ 266              	.LCFI3:
+ 267              		.cfi_restore_state
+ 124:Src/InsulinController.c ****   e[T_iterator] = sp[T_iterator] - pv[T_iterator];
+ 268              		.loc 1 124 3 is_stmt 1 view .LVU91
+ 125:Src/InsulinController.c **** 
+ 269              		.loc 1 125 34 is_stmt 0 view .LVU92
+ 270 0128 D9ED007A 		vldr.32	s15, [r9]
+ 124:Src/InsulinController.c ****   e[T_iterator] = sp[T_iterator] - pv[T_iterator];
+ 271              		.loc 1 124 18 view .LVU93
+ 272 012c 86ED008A 		vstr.32	s16, [r6]
+ 125:Src/InsulinController.c **** 
+ 273              		.loc 1 125 3 is_stmt 1 view .LVU94
+ 274 0130 97ED007A 		vldr.32	s14, [r7]
+ 275 0134 D8ED005A 		vldr.32	s11, [r8]
+ 121:Src/InsulinController.c ****   }
+ 276              		.loc 1 121 12 is_stmt 0 view .LVU95
+ 277 0138 DFED1C6A 		vldr.32	s13, .L20+52
+ 125:Src/InsulinController.c **** 
+ 278              		.loc 1 125 34 view .LVU96
+ 279 013c 37EEC88A 		vsub.f32	s16, s15, s16
+ 280              	.LVL11:
+ 127:Src/InsulinController.c ****     dpv[T_iterator] = (pv[T_iterator] - pv[T_iterator - 1]) / DeltaT;
+ 281              		.loc 1 127 3 is_stmt 1 view .LVU97
+ 282 0140 CBE7     		b	.L11
+ 283              	.LVL12:
+ 284              	.L15:
+ 146:Src/InsulinController.c ****     op[T_iterator] = OP_LO;
+ 285              		.loc 1 146 10 view .LVU98
+ 146:Src/InsulinController.c ****     op[T_iterator] = OP_LO;
+ 286              		.loc 1 146 13 is_stmt 0 view .LVU99
+ 287 0142 F5EEC07A 		vcmpe.f32	s15, #0
+ 288 0146 F1EE10FA 		vmrs	APSR_nzcv, FPSCR
+ 289 014a 4FF00001 		mov	r1, #0
+ 290 014e 09D4     		bmi	.L10
+ 136:Src/InsulinController.c **** 
+ 291              		.loc 1 136 18 view .LVU100
+ 292 0150 2B44     		add	r3, r3, r5
+ 293 0152 C3ED007A 		vstr.32	s15, [r3]
+ 294 0156 17EE900A 		vmov	r0, s15
+ 295 015a FFF7FEFF 		bl	__aeabi_f2d
+ARM GAS  /tmp/ccfDRRom.s 			page 11
+
+
+ 296              	.LVL13:
+ 297 015e 0246     		mov	r2, r0
+ 298 0160 0B46     		mov	r3, r1
+ 299 0162 D7E7     		b	.L9
+ 300              	.L10:
+ 147:Src/InsulinController.c ****     ie[T_iterator] = ie[T_iterator] - e[T_iterator] * DeltaT;
+ 301              		.loc 1 147 5 is_stmt 1 view .LVU101
+ 148:Src/InsulinController.c ****   }
+ 302              		.loc 1 148 37 is_stmt 0 view .LVU102
+ 303 0164 A6EEC87A 		vfms.f32	s14, s13, s16
+ 147:Src/InsulinController.c ****     ie[T_iterator] = ie[T_iterator] - e[T_iterator] * DeltaT;
+ 304              		.loc 1 147 20 view .LVU103
+ 305 0168 1D44     		add	r5, r5, r3
+ 148:Src/InsulinController.c ****   }
+ 306              		.loc 1 148 20 view .LVU104
+ 307 016a F818     		adds	r0, r7, r3
+ 308 016c 0022     		movs	r2, #0
+ 309 016e 0023     		movs	r3, #0
+ 147:Src/InsulinController.c ****     ie[T_iterator] = ie[T_iterator] - e[T_iterator] * DeltaT;
+ 310              		.loc 1 147 20 view .LVU105
+ 311 0170 2960     		str	r1, [r5]	@ float
+ 148:Src/InsulinController.c ****   }
+ 312              		.loc 1 148 5 is_stmt 1 view .LVU106
+ 148:Src/InsulinController.c ****   }
+ 313              		.loc 1 148 20 is_stmt 0 view .LVU107
+ 314 0172 80ED007A 		vstr.32	s14, [r0]
+ 315 0176 CDE7     		b	.L9
+ 316              	.L21:
+ 317              		.align	2
+ 318              	.L20:
+ 319 0178 00000000 		.word	.LANCHOR0
+ 320 017c 0F78FCE1 		.word	-503547889
+ 321 0180 00000000 		.word	.LANCHOR1
+ 322 0184 00000000 		.word	.LANCHOR2
+ 323 0188 00000000 		.word	.LANCHOR5
+ 324 018c 0000AA42 		.word	1118437376
+ 325 0190 00000000 		.word	.LC0
+ 326 0194 00000000 		.word	.LANCHOR6
+ 327 0198 295C8FBD 		.word	3180289065
+ 328 019c 3208AC3D 		.word	1034684466
+ 329 01a0 0000C842 		.word	1120403456
+ 330 01a4 00005940 		.word	1079574528
+ 331 01a8 0C000000 		.word	.LC1
+ 332 01ac ABAA2A3E 		.word	1042983595
+ 333 01b0 00000000 		.word	.LANCHOR3
+ 334 01b4 00000000 		.word	.LANCHOR4
+ 335              		.cfi_endproc
+ 336              	.LFE133:
+ 338              		.section	.text.InsulinManualController,"ax",%progbits
+ 339              		.align	1
+ 340              		.p2align 2,,3
+ 341              		.global	InsulinManualController
+ 342              		.syntax unified
+ 343              		.thumb
+ 344              		.thumb_func
+ 345              		.fpu fpv4-sp-d16
+ 347              	InsulinManualController:
+ARM GAS  /tmp/ccfDRRom.s 			page 12
+
+
+ 348              	.LVL14:
+ 349              	.LFB134:
+ 159:Src/InsulinController.c ****   float MeasuredGlucose;
+ 350              		.loc 1 159 54 is_stmt 1 view -0
+ 351              		.cfi_startproc
+ 352              		@ args = 0, pretend = 0, frame = 0
+ 353              		@ frame_needed = 0, uses_anonymous_args = 0
+ 160:Src/InsulinController.c **** 
+ 354              		.loc 1 160 3 view .LVU109
+ 162:Src/InsulinController.c ****   printf("[G]:%.4f\n\r", MeasuredGlucose);
+ 355              		.loc 1 162 3 view .LVU110
+ 159:Src/InsulinController.c ****   float MeasuredGlucose;
+ 356              		.loc 1 159 54 is_stmt 0 view .LVU111
+ 357 0000 10B5     		push	{r4, lr}
+ 358              	.LCFI4:
+ 359              		.cfi_def_cfa_offset 8
+ 360              		.cfi_offset 4, -8
+ 361              		.cfi_offset 14, -4
+ 162:Src/InsulinController.c ****   printf("[G]:%.4f\n\r", MeasuredGlucose);
+ 362              		.loc 1 162 21 view .LVU112
+ 363 0002 FFF7FEFF 		bl	atof
+ 364              	.LVL15:
+ 162:Src/InsulinController.c ****   printf("[G]:%.4f\n\r", MeasuredGlucose);
+ 365              		.loc 1 162 21 view .LVU113
+ 366 0006 51EC100B 		vmov	r0, r1, d0
+ 367              	.LVL16:
+ 163:Src/InsulinController.c **** 
+ 368              		.loc 1 163 3 is_stmt 1 view .LVU114
+ 162:Src/InsulinController.c ****   printf("[G]:%.4f\n\r", MeasuredGlucose);
+ 369              		.loc 1 162 19 is_stmt 0 view .LVU115
+ 370 000a FFF7FEFF 		bl	__aeabi_d2f
+ 371              	.LVL17:
+ 163:Src/InsulinController.c **** 
+ 372              		.loc 1 163 3 view .LVU116
+ 373 000e FFF7FEFF 		bl	__aeabi_f2d
+ 374              	.LVL18:
+ 375 0012 0246     		mov	r2, r0
+ 376 0014 0B46     		mov	r3, r1
+ 377 0016 0748     		ldr	r0, .L24
+ 378 0018 FFF7FEFF 		bl	printf
+ 379              	.LVL19:
+ 166:Src/InsulinController.c **** }
+ 380              		.loc 1 166 3 is_stmt 1 view .LVU117
+ 381 001c 064B     		ldr	r3, .L24+4
+ 382 001e 1868     		ldr	r0, [r3]	@ float
+ 383 0020 FFF7FEFF 		bl	__aeabi_f2d
+ 384              	.LVL20:
+ 167:Src/InsulinController.c **** 
+ 385              		.loc 1 167 1 is_stmt 0 view .LVU118
+ 386 0024 BDE81040 		pop	{r4, lr}
+ 387              	.LCFI5:
+ 388              		.cfi_restore 14
+ 389              		.cfi_restore 4
+ 390              		.cfi_def_cfa_offset 0
+ 166:Src/InsulinController.c **** }
+ 391              		.loc 1 166 3 view .LVU119
+ 392 0028 0246     		mov	r2, r0
+ARM GAS  /tmp/ccfDRRom.s 			page 13
+
+
+ 393 002a 0B46     		mov	r3, r1
+ 394 002c 0348     		ldr	r0, .L24+8
+ 395 002e FFF7FEBF 		b	printf
+ 396              	.LVL21:
+ 397              	.L25:
+ 398 0032 00BF     		.align	2
+ 399              	.L24:
+ 400 0034 00000000 		.word	.LC0
+ 401 0038 00000000 		.word	.LANCHOR7
+ 402 003c 0C000000 		.word	.LC1
+ 403              		.cfi_endproc
+ 404              	.LFE134:
+ 406              		.section	.text.ResetController,"ax",%progbits
+ 407              		.align	1
+ 408              		.p2align 2,,3
+ 409              		.global	ResetController
+ 410              		.syntax unified
+ 411              		.thumb
+ 412              		.thumb_func
+ 413              		.fpu fpv4-sp-d16
+ 415              	ResetController:
+ 416              	.LFB135:
+ 170:Src/InsulinController.c ****   int i;
+ 417              		.loc 1 170 24 is_stmt 1 view -0
+ 418              		.cfi_startproc
+ 419              		@ args = 0, pretend = 0, frame = 0
+ 420              		@ frame_needed = 0, uses_anonymous_args = 0
+ 421              		@ link register save eliminated.
+ 171:Src/InsulinController.c **** 
+ 422              		.loc 1 171 3 view .LVU121
+ 174:Src/InsulinController.c ****     pv[i] = 0;
+ 423              		.loc 1 174 3 view .LVU122
+ 424              	.LVL22:
+ 174:Src/InsulinController.c ****     pv[i] = 0;
+ 425              		.loc 1 174 15 view .LVU123
+ 426 0000 0B4A     		ldr	r2, .L30
+ 427 0002 0C48     		ldr	r0, .L30+4
+ 428 0004 0C49     		ldr	r1, .L30+8
+ 170:Src/InsulinController.c ****   int i;
+ 429              		.loc 1 170 24 is_stmt 0 view .LVU124
+ 430 0006 F0B4     		push	{r4, r5, r6, r7}
+ 431              	.LCFI6:
+ 432              		.cfi_def_cfa_offset 16
+ 433              		.cfi_offset 4, -16
+ 434              		.cfi_offset 5, -12
+ 435              		.cfi_offset 6, -8
+ 436              		.cfi_offset 7, -4
+ 437 0008 0C4D     		ldr	r5, .L30+12
+ 438 000a 0D4C     		ldr	r4, .L30+16
+ 182:Src/InsulinController.c ****     op[i] = BIAS;
+ 439              		.loc 1 182 11 view .LVU125
+ 440 000c 0D4F     		ldr	r7, .L30+20
+ 175:Src/InsulinController.c ****     e[i] = 0;
+ 441              		.loc 1 175 11 view .LVU126
+ 442 000e 0023     		movs	r3, #0
+ 443 0010 02F51176 		add	r6, r2, #580
+ 444              	.LVL23:
+ARM GAS  /tmp/ccfDRRom.s 			page 14
+
+
+ 445              	.L27:
+ 175:Src/InsulinController.c ****     e[i] = 0;
+ 446              		.loc 1 175 5 is_stmt 1 discriminator 3 view .LVU127
+ 175:Src/InsulinController.c ****     e[i] = 0;
+ 447              		.loc 1 175 11 is_stmt 0 discriminator 3 view .LVU128
+ 448 0014 42F8043B 		str	r3, [r2], #4	@ float
+ 176:Src/InsulinController.c ****     ie[i] = 0;
+ 449              		.loc 1 176 5 is_stmt 1 discriminator 3 view .LVU129
+ 177:Src/InsulinController.c ****     dpv[i] = 0;
+ 450              		.loc 1 177 5 discriminator 3 view .LVU130
+ 174:Src/InsulinController.c ****     pv[i] = 0;
+ 451              		.loc 1 174 3 is_stmt 0 discriminator 3 view .LVU131
+ 452 0018 B242     		cmp	r2, r6
+ 177:Src/InsulinController.c ****     dpv[i] = 0;
+ 453              		.loc 1 177 11 discriminator 3 view .LVU132
+ 454 001a 45F8043B 		str	r3, [r5], #4	@ float
+ 178:Src/InsulinController.c ****     P[i] = 0;
+ 455              		.loc 1 178 5 is_stmt 1 discriminator 3 view .LVU133
+ 178:Src/InsulinController.c ****     P[i] = 0;
+ 456              		.loc 1 178 12 is_stmt 0 discriminator 3 view .LVU134
+ 457 001e 44F8043B 		str	r3, [r4], #4	@ float
+ 179:Src/InsulinController.c ****     IT[i] = 0;
+ 458              		.loc 1 179 5 is_stmt 1 discriminator 3 view .LVU135
+ 180:Src/InsulinController.c ****     D[i] = 0;
+ 459              		.loc 1 180 5 discriminator 3 view .LVU136
+ 181:Src/InsulinController.c ****     sp[i] = TARGET;
+ 460              		.loc 1 181 5 discriminator 3 view .LVU137
+ 182:Src/InsulinController.c ****     op[i] = BIAS;
+ 461              		.loc 1 182 5 discriminator 3 view .LVU138
+ 182:Src/InsulinController.c ****     op[i] = BIAS;
+ 462              		.loc 1 182 11 is_stmt 0 discriminator 3 view .LVU139
+ 463 0022 40F8047B 		str	r7, [r0], #4	@ float
+ 464              		.loc 1 183 5 is_stmt 1 discriminator 3 view .LVU140
+ 465              		.loc 1 183 11 is_stmt 0 discriminator 3 view .LVU141
+ 466 0026 41F8043B 		str	r3, [r1], #4	@ float
+ 174:Src/InsulinController.c ****     pv[i] = 0;
+ 467              		.loc 1 174 32 is_stmt 1 discriminator 3 view .LVU142
+ 174:Src/InsulinController.c ****     pv[i] = 0;
+ 468              		.loc 1 174 15 discriminator 3 view .LVU143
+ 174:Src/InsulinController.c ****     pv[i] = 0;
+ 469              		.loc 1 174 3 is_stmt 0 discriminator 3 view .LVU144
+ 470 002a F3D1     		bne	.L27
+ 184:Src/InsulinController.c ****   }
+ 185:Src/InsulinController.c **** }...
+ 471              		.loc 1 185 1 view .LVU145
+ 472 002c F0BC     		pop	{r4, r5, r6, r7}
+ 473              	.LCFI7:
+ 474              		.cfi_restore 7
+ 475              		.cfi_restore 6
+ 476              		.cfi_restore 5
+ 477              		.cfi_restore 4
+ 478              		.cfi_def_cfa_offset 0
+ 479 002e 7047     		bx	lr
+ 480              	.L31:
+ 481              		.align	2
+ 482              	.L30:
+ 483 0030 00000000 		.word	.LANCHOR1
+ARM GAS  /tmp/ccfDRRom.s 			page 15
+
+
+ 484 0034 00000000 		.word	.LANCHOR4
+ 485 0038 00000000 		.word	.LANCHOR5
+ 486 003c 00000000 		.word	.LANCHOR2
+ 487 0040 00000000 		.word	.LANCHOR3
+ 488 0044 0000AA42 		.word	1118437376
+ 489              		.cfi_endproc
+ 490              	.LFE135:
+ 492              		.global	BolusConfig
+ 493              		.global	T_iterator
+ 494              		.section	.bss.BolusConfig,"aw",%nobits
+ 495              		.align	2
+ 496              		.set	.LANCHOR7,. + 0
+ 499              	BolusConfig:
+ 500 0000 00000000 		.space	4
+ 501              		.section	.bss.T_iterator,"aw",%nobits
+ 502              		.align	2
+ 503              		.set	.LANCHOR0,. + 0
+ 506              	T_iterator:
+ 507 0000 00000000 		.space	4
+ 508              		.section	.bss.dpv,"aw",%nobits
+ 509              		.align	2
+ 510              		.set	.LANCHOR3,. + 0
+ 513              	dpv:
+ 514 0000 00000000 		.space	580
+ 514      00000000 
+ 514      00000000 
+ 514      00000000 
+ 514      00000000 
+ 515              		.section	.bss.ie,"aw",%nobits
+ 516              		.align	2
+ 517              		.set	.LANCHOR2,. + 0
+ 520              	ie:
+ 521 0000 00000000 		.space	580
+ 521      00000000 
+ 521      00000000 
+ 521      00000000 
+ 521      00000000 
+ 522              		.section	.bss.op,"aw",%nobits
+ 523              		.align	2
+ 524              		.set	.LANCHOR5,. + 0
+ 527              	op:
+ 528 0000 00000000 		.space	580
+ 528      00000000 
+ 528      00000000 
+ 528      00000000 
+ 528      00000000 
+ 529              		.section	.bss.pv,"aw",%nobits
+ 530              		.align	2
+ 531              		.set	.LANCHOR1,. + 0
+ 534              	pv:
+ 535 0000 00000000 		.space	580
+ 535      00000000 
+ 535      00000000 
+ 535      00000000 
+ 535      00000000 
+ 536              		.section	.bss.sp,"aw",%nobits
+ 537              		.align	2
+ARM GAS  /tmp/ccfDRRom.s 			page 16
+
+
+ 538              		.set	.LANCHOR4,. + 0
+ 541              	sp:
+ 542 0000 00000000 		.space	580
+ 542      00000000 
+ 542      00000000 
+ 542      00000000 
+ 542      00000000 
+ 543              		.section	.rodata.t,"a"
+ 544              		.align	2
+ 545              		.set	.LANCHOR6,. + 0
+ 548              	t:
+ 549 0000 00000000 		.word	0
+ 550 0004 ABAA2A3E 		.word	1042983595
+ 551 0008 ABAAAA3E 		.word	1051372203
+ 552 000c 0000003F 		.word	1056964608
+ 553 0010 ABAA2A3F 		.word	1059760811
+ 554 0014 5555553F 		.word	1062557013
+ 555 0018 0000803F 		.word	1065353216
+ 556 001c 5555953F 		.word	1066751317
+ 557 0020 ABAAAA3F 		.word	1068149419
+ 558 0024 0000C03F 		.word	1069547520
+ 559 0028 5555D53F 		.word	1070945621
+ 560 002c ABAAEA3F 		.word	1072343723
+ 561 0030 00000040 		.word	1073741824
+ 562 0034 ABAA0A40 		.word	1074440875
+ 563 0038 55551540 		.word	1075139925
+ 564 003c 00002040 		.word	1075838976
+ 565 0040 ABAA2A40 		.word	1076538027
+ 566 0044 55553540 		.word	1077237077
+ 567 0048 00004040 		.word	1077936128
+ 568 004c ABAA4A40 		.word	1078635179
+ 569 0050 55555540 		.word	1079334229
+ 570 0054 00006040 		.word	1080033280
+ 571 0058 ABAA6A40 		.word	1080732331
+ 572 005c 55557540 		.word	1081431381
+ 573 0060 00008040 		.word	1082130432
+ 574 0064 55558540 		.word	1082479957
+ 575 0068 ABAA8A40 		.word	1082829483
+ 576 006c 00009040 		.word	1083179008
+ 577 0070 55559540 		.word	1083528533
+ 578 0074 ABAA9A40 		.word	1083878059
+ 579 0078 0000A040 		.word	1084227584
+ 580 007c 5555A540 		.word	1084577109
+ 581 0080 ABAAAA40 		.word	1084926635
+ 582 0084 0000B040 		.word	1085276160
+ 583 0088 5555B540 		.word	1085625685
+ 584 008c ABAABA40 		.word	1085975211
+ 585 0090 0000C040 		.word	1086324736
+ 586 0094 5555C540 		.word	1086674261
+ 587 0098 ABAACA40 		.word	1087023787
+ 588 009c 0000D040 		.word	1087373312
+ 589 00a0 5555D540 		.word	1087722837
+ 590 00a4 ABAADA40 		.word	1088072363
+ 591 00a8 0000E040 		.word	1088421888
+ 592 00ac 5555E540 		.word	1088771413
+ 593 00b0 ABAAEA40 		.word	1089120939
+ 594 00b4 0000F040 		.word	1089470464
+ARM GAS  /tmp/ccfDRRom.s 			page 17
+
+
+ 595 00b8 5555F540 		.word	1089819989
+ 596 00bc ABAAFA40 		.word	1090169515
+ 597 00c0 00000041 		.word	1090519040
+ 598 00c4 ABAA0241 		.word	1090693803
+ 599 00c8 55550541 		.word	1090868565
+ 600 00cc 00000841 		.word	1091043328
+ 601 00d0 ABAA0A41 		.word	1091218091
+ 602 00d4 55550D41 		.word	1091392853
+ 603 00d8 00001041 		.word	1091567616
+ 604 00dc ABAA1241 		.word	1091742379
+ 605 00e0 55551541 		.word	1091917141
+ 606 00e4 00001841 		.word	1092091904
+ 607 00e8 ABAA1A41 		.word	1092266667
+ 608 00ec 55551D41 		.word	1092441429
+ 609 00f0 00002041 		.word	1092616192
+ 610 00f4 ABAA2241 		.word	1092790955
+ 611 00f8 55552541 		.word	1092965717
+ 612 00fc 00002841 		.word	1093140480
+ 613 0100 ABAA2A41 		.word	1093315243
+ 614 0104 55552D41 		.word	1093490005
+ 615 0108 00003041 		.word	1093664768
+ 616 010c ABAA3241 		.word	1093839531
+ 617 0110 55553541 		.word	1094014293
+ 618 0114 00003841 		.word	1094189056
+ 619 0118 ABAA3A41 		.word	1094363819
+ 620 011c 55553D41 		.word	1094538581
+ 621 0120 00004041 		.word	1094713344
+ 622 0124 ABAA4241 		.word	1094888107
+ 623 0128 55554541 		.word	1095062869
+ 624 012c 00004841 		.word	1095237632
+ 625 0130 ABAA4A41 		.word	1095412395
+ 626 0134 55554D41 		.word	1095587157
+ 627 0138 00005041 		.word	1095761920
+ 628 013c ABAA5241 		.word	1095936683
+ 629 0140 55555541 		.word	1096111445
+ 630 0144 00005841 		.word	1096286208
+ 631 0148 ABAA5A41 		.word	1096460971
+ 632 014c 55555D41 		.word	1096635733
+ 633 0150 00006041 		.word	1096810496
+ 634 0154 ABAA6241 		.word	1096985259
+ 635 0158 55556541 		.word	1097160021
+ 636 015c 00006841 		.word	1097334784
+ 637 0160 ABAA6A41 		.word	1097509547
+ 638 0164 55556D41 		.word	1097684309
+ 639 0168 00007041 		.word	1097859072
+ 640 016c ABAA7241 		.word	1098033835
+ 641 0170 55557541 		.word	1098208597
+ 642 0174 00007841 		.word	1098383360
+ 643 0178 ABAA7A41 		.word	1098558123
+ 644 017c 55557D41 		.word	1098732885
+ 645 0180 00008041 		.word	1098907648
+ 646 0184 55558141 		.word	1098995029
+ 647 0188 ABAA8241 		.word	1099082411
+ 648 018c 00008441 		.word	1099169792
+ 649 0190 55558541 		.word	1099257173
+ 650 0194 ABAA8641 		.word	1099344555
+ 651 0198 00008841 		.word	1099431936
+ARM GAS  /tmp/ccfDRRom.s 			page 18
+
+
+ 652 019c 55558941 		.word	1099519317
+ 653 01a0 ABAA8A41 		.word	1099606699
+ 654 01a4 00008C41 		.word	1099694080
+ 655 01a8 55558D41 		.word	1099781461
+ 656 01ac ABAA8E41 		.word	1099868843
+ 657 01b0 00009041 		.word	1099956224
+ 658 01b4 55559141 		.word	1100043605
+ 659 01b8 ABAA9241 		.word	1100130987
+ 660 01bc 00009441 		.word	1100218368
+ 661 01c0 55559541 		.word	1100305749
+ 662 01c4 ABAA9641 		.word	1100393131
+ 663 01c8 00009841 		.word	1100480512
+ 664 01cc 55559941 		.word	1100567893
+ 665 01d0 ABAA9A41 		.word	1100655275
+ 666 01d4 00009C41 		.word	1100742656
+ 667 01d8 55559D41 		.word	1100830037
+ 668 01dc ABAA9E41 		.word	1100917419
+ 669 01e0 0000A041 		.word	1101004800
+ 670 01e4 5555A141 		.word	1101092181
+ 671 01e8 ABAAA241 		.word	1101179563
+ 672 01ec 0000A441 		.word	1101266944
+ 673 01f0 5555A541 		.word	1101354325
+ 674 01f4 ABAAA641 		.word	1101441707
+ 675 01f8 0000A841 		.word	1101529088
+ 676 01fc 5555A941 		.word	1101616469
+ 677 0200 ABAAAA41 		.word	1101703851
+ 678 0204 0000AC41 		.word	1101791232
+ 679 0208 5555AD41 		.word	1101878613
+ 680 020c ABAAAE41 		.word	1101965995
+ 681 0210 0000B041 		.word	1102053376
+ 682 0214 5555B141 		.word	1102140757
+ 683 0218 ABAAB241 		.word	1102228139
+ 684 021c 0000B441 		.word	1102315520
+ 685 0220 5555B541 		.word	1102402901
+ 686 0224 ABAAB641 		.word	1102490283
+ 687 0228 0000B841 		.word	1102577664
+ 688 022c 5555B941 		.word	1102665045
+ 689 0230 ABAABA41 		.word	1102752427
+ 690 0234 0000BC41 		.word	1102839808
+ 691 0238 5555BD41 		.word	1102927189
+ 692 023c ABAABE41 		.word	1103014571
+ 693 0240 0000C041 		.word	1103101952
+ 694              		.text
+ 695              	.Letext0:
+ 696              		.file 2 "/usr/lib/gcc/arm-none-eabi/9.2.1/include/stdint.h"
+ 697              		.file 3 "Drivers/CMSIS/Include/core_cm4.h"
+ 698              		.file 4 "Drivers/CMSIS/Device/ST/STM32F4xx/Include/system_stm32f4xx.h"
+ 699              		.file 5 "Drivers/CMSIS/Device/ST/STM32F4xx/Include/stm32f446xx.h"
+ 700              		.file 6 "Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_def.h"
+ 701              		.file 7 "Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_exti.h"
+ 702              		.file 8 "Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_dma.h"
+ 703              		.file 9 "Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_spi.h"
+ 704              		.file 10 "Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_uart.h"
+ 705              		.file 11 "Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h"
+ 706              		.file 12 "Inc/stm32f4xx_nucleo_bus.h"
+ 707              		.file 13 "Inc/hci_tl_interface.h"
+ 708              		.file 14 "Drivers/BSP/STM32F4xx_Nucleo/stm32f4xx_nucleo.h"
+ARM GAS  /tmp/ccfDRRom.s 			page 19
+
+
+ 709              		.file 15 "/usr/lib/gcc/arm-none-eabi/9.2.1/include/stddef.h"
+ 710              		.file 16 "/usr/include/newlib/sys/_types.h"
+ 711              		.file 17 "/usr/include/newlib/sys/reent.h"
+ 712              		.file 18 "/usr/include/newlib/sys/lock.h"
+ 713              		.file 19 "/usr/include/newlib/stdlib.h"
+ 714              		.file 20 "/usr/include/newlib/stdio.h"
+ARM GAS  /tmp/ccfDRRom.s 			page 20
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 InsulinController.c
+     /tmp/ccfDRRom.s:20     .rodata.InsulinController.str1.4:0000000000000000 $d
+     /tmp/ccfDRRom.s:27     .text.InsulinController:0000000000000000 $t
+     /tmp/ccfDRRom.s:36     .text.InsulinController:0000000000000000 InsulinController
+     /tmp/ccfDRRom.s:319    .text.InsulinController:0000000000000178 $d
+     /tmp/ccfDRRom.s:339    .text.InsulinManualController:0000000000000000 $t
+     /tmp/ccfDRRom.s:347    .text.InsulinManualController:0000000000000000 InsulinManualController
+     /tmp/ccfDRRom.s:400    .text.InsulinManualController:0000000000000034 $d
+     /tmp/ccfDRRom.s:407    .text.ResetController:0000000000000000 $t
+     /tmp/ccfDRRom.s:415    .text.ResetController:0000000000000000 ResetController
+     /tmp/ccfDRRom.s:483    .text.ResetController:0000000000000030 $d
+     /tmp/ccfDRRom.s:499    .bss.BolusConfig:0000000000000000 BolusConfig
+     /tmp/ccfDRRom.s:506    .bss.T_iterator:0000000000000000 T_iterator
+     /tmp/ccfDRRom.s:495    .bss.BolusConfig:0000000000000000 $d
+     /tmp/ccfDRRom.s:502    .bss.T_iterator:0000000000000000 $d
+     /tmp/ccfDRRom.s:509    .bss.dpv:0000000000000000 $d
+     /tmp/ccfDRRom.s:513    .bss.dpv:0000000000000000 dpv
+     /tmp/ccfDRRom.s:516    .bss.ie:0000000000000000 $d
+     /tmp/ccfDRRom.s:520    .bss.ie:0000000000000000 ie
+     /tmp/ccfDRRom.s:523    .bss.op:0000000000000000 $d
+     /tmp/ccfDRRom.s:527    .bss.op:0000000000000000 op
+     /tmp/ccfDRRom.s:530    .bss.pv:0000000000000000 $d
+     /tmp/ccfDRRom.s:534    .bss.pv:0000000000000000 pv
+     /tmp/ccfDRRom.s:537    .bss.sp:0000000000000000 $d
+     /tmp/ccfDRRom.s:541    .bss.sp:0000000000000000 sp
+     /tmp/ccfDRRom.s:544    .rodata.t:0000000000000000 $d
+     /tmp/ccfDRRom.s:548    .rodata.t:0000000000000000 t
+
+UNDEFINED SYMBOLS
+__aeabi_d2f
+__aeabi_f2d
+atof
+printf

@@ -1,6 +1,6 @@
 # SecPump :syringe: 
 
-SecPump is an open wireless insulin pump system workbench that models the insulin kinetics based on the modified Bergman's minimal model. The system workbench is primarily tailored for security assessments and countermeasures development against the numerous security flaws related to wearable medical devices. The platform is open-source and free from commercials constraints making it a suitable target to perform both hardware and software security demonstrations. SecPump aims at being straightforward to use, it only requires an inexpensive Nucleo F401-RE STM32 board with the BlueNRG extension.
+SecPump is an open wireless insulin pump system workbench that models the insulin kinetics based on the modified Bergman's minimal model. The system workbench is primarily tailored for security assessments and countermeasures development against the numerous security flaws related to wearable medical devices. The platform is open-source and free from commercials constraints making it a suitable target to perform both hardware and software security demonstrations. SecPump aims at being straightforward to use, it only requires an inexpensive Nucleo F446-RE STM32 board with the BlueNRG extension.
 
 <p align="center">
     <img src="https://github.com/r3glisss/SecPump/blob/master/Img/SecPump_Overview.JPG">
@@ -28,7 +28,7 @@ The repository contains three folders: "Scripts" contains the human body simulat
 
 ### Requirements
 
-To run the vanilla system it is mandatory to have a Nucleo F401-RE STM32 board with the BlueNRG extension, a Linux computer with a BLE connection (if possible). 
+To run the vanilla system it is mandatory to have a Nucleo F446-RE STM32 board with the BlueNRG extension, a Linux computer with a BLE connection (if possible). 
 
 To replay the attack it is preferable to have two computers available both based on Linux, one of which should include a functional BLE stack.
 

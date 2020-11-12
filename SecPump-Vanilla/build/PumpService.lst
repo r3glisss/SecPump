@@ -1,0 +1,1898 @@
+ARM GAS  /tmp/ccThnICr.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.eabi_attribute 27, 1
+   3              		.eabi_attribute 28, 1
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 2
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"PumpService.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.section	.rodata.Add_Pump_Service.str1.4,"aMS",%progbits,1
+  18              		.align	2
+  19              	.LC0:
+  20 0000 5B2B5D20 		.ascii	"[+] SecPump Service Created. Handle 0x%04X\015\012["
+  20      53656350 
+  20      756D7020 
+  20      53657276 
+  20      69636520 
+  21 002d 2B5D204D 		.ascii	"+] MODE Charac handle: 0x%04X\015\012\000"
+  21      4F444520 
+  21      43686172 
+  21      61632068 
+  21      616E646C 
+  22 004d 000000   		.align	2
+  23              	.LC1:
+  24 0050 5B2B5D20 		.ascii	"[+] BOLUS Charac handle: 0x%04X\012\015\000"
+  24      424F4C55 
+  24      53204368 
+  24      61726163 
+  24      2068616E 
+  25 0072 0000     		.align	2
+  26              	.LC2:
+  27 0074 5B215D20 		.ascii	"[!] Error while adding PUMP service.\015\000"
+  27      4572726F 
+  27      72207768 
+  27      696C6520 
+  27      61646469 
+  28              		.section	.text.Add_Pump_Service,"ax",%progbits
+  29              		.align	1
+  30              		.p2align 2,,3
+  31              		.global	Add_Pump_Service
+  32              		.arch armv7e-m
+  33              		.syntax unified
+  34              		.thumb
+  35              		.thumb_func
+  36              		.fpu fpv4-sp-d16
+  38              	Add_Pump_Service:
+  39              	.LFB133:
+  40              		.file 1 "Src/PumpService.c"
+   1:Src/PumpService.c **** // Copyright (C) 2019 LCIS Laboratory - Cyril Bresch
+   2:Src/PumpService.c **** // This program is free software: you can redistribute it and/or modify
+ARM GAS  /tmp/ccThnICr.s 			page 2
+
+
+   3:Src/PumpService.c **** // it under the terms of the GNU General Public License as published by
+   4:Src/PumpService.c **** // the Free Software Foundation, in version 3.
+   5:Src/PumpService.c **** // This program is distributed in the hope that it will be useful,
+   6:Src/PumpService.c **** // but WITHOUT ANY WARRANTY; without even the implied warranty of
+   7:Src/PumpService.c **** // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+   8:Src/PumpService.c **** // GNU General Public License for more details.
+   9:Src/PumpService.c **** // You should have received a copy of the GNU General Public License
+  10:Src/PumpService.c **** // along with this program. If not, see <http://www.gnu.org/licenses/>.
+  11:Src/PumpService.c **** // This program is part of the SecPump @https://github.com/r3glisss/SecPump
+  12:Src/PumpService.c **** 
+  13:Src/PumpService.c **** /******************************************************************************
+  14:Src/PumpService.c ****  * @file    sensor_service.c
+  15:Src/PumpService.c ****  * @version V1.0.0
+  16:Src/PumpService.c ****  ******************************************************************************
+  17:Src/PumpService.c ****  */
+  18:Src/PumpService.c **** 
+  19:Src/PumpService.c **** #include "PumpService.h"
+  20:Src/PumpService.c **** #include "bluenrg_gap_aci.h"
+  21:Src/PumpService.c **** #include "bluenrg_gatt_aci.h"
+  22:Src/PumpService.c **** 
+  23:Src/PumpService.c **** /** @addtogroup Applications
+  24:Src/PumpService.c ****  *  @{
+  25:Src/PumpService.c ****  */
+  26:Src/PumpService.c **** 
+  27:Src/PumpService.c **** /** @addtogroup PumpDemo
+  28:Src/PumpService.c ****  *  @{
+  29:Src/PumpService.c ****  */
+  30:Src/PumpService.c **** 
+  31:Src/PumpService.c **** /** @defgroup PUMP_SERVICE
+  32:Src/PumpService.c ****  * @{
+  33:Src/PumpService.c ****  */
+  34:Src/PumpService.c **** 
+  35:Src/PumpService.c **** /** @defgroup PUMP_SERVICE_Private_Variables
+  36:Src/PumpService.c ****  * @{
+  37:Src/PumpService.c ****  */
+  38:Src/PumpService.c **** /* Private variables ---------------------------------------------------------*/
+  39:Src/PumpService.c **** __IO uint32_t connected = FALSE;
+  40:Src/PumpService.c **** __IO uint8_t set_connectable = 1;
+  41:Src/PumpService.c **** __IO uint16_t connection_handle = 0;
+  42:Src/PumpService.c **** __IO uint8_t notification_enabled = FALSE;
+  43:Src/PumpService.c **** uint16_t pumpServHandle, bolusCharHandle, modeCharHandle;
+  44:Src/PumpService.c **** /**
+  45:Src/PumpService.c ****  * @}
+  46:Src/PumpService.c ****  */
+  47:Src/PumpService.c **** 
+  48:Src/PumpService.c **** /** @defgroup PUMP_SERVICE_Private_Macros
+  49:Src/PumpService.c ****  * @{
+  50:Src/PumpService.c ****  */
+  51:Src/PumpService.c **** /* Private macros ------------------------------------------------------------*/
+  52:Src/PumpService.c **** #define COPY_UUID_128(uuid_struct, uuid_15, uuid_14, uuid_13, uuid_12,         \
+  53:Src/PumpService.c ****                       uuid_11, uuid_10, uuid_9, uuid_8, uuid_7, uuid_6,        \
+  54:Src/PumpService.c ****                       uuid_5, uuid_4, uuid_3, uuid_2, uuid_1, uuid_0)          \
+  55:Src/PumpService.c ****   do {                                                                         \
+  56:Src/PumpService.c ****     uuid_struct[0] = uuid_0;                                                   \
+  57:Src/PumpService.c ****     uuid_struct[1] = uuid_1;                                                   \
+  58:Src/PumpService.c ****     uuid_struct[2] = uuid_2;                                                   \
+  59:Src/PumpService.c ****     uuid_struct[3] = uuid_3;                                                   \
+ARM GAS  /tmp/ccThnICr.s 			page 3
+
+
+  60:Src/PumpService.c ****     uuid_struct[4] = uuid_4;                                                   \
+  61:Src/PumpService.c ****     uuid_struct[5] = uuid_5;                                                   \
+  62:Src/PumpService.c ****     uuid_struct[6] = uuid_6;                                                   \
+  63:Src/PumpService.c ****     uuid_struct[7] = uuid_7;                                                   \
+  64:Src/PumpService.c ****     uuid_struct[8] = uuid_8;                                                   \
+  65:Src/PumpService.c ****     uuid_struct[9] = uuid_9;                                                   \
+  66:Src/PumpService.c ****     uuid_struct[10] = uuid_10;                                                 \
+  67:Src/PumpService.c ****     uuid_struct[11] = uuid_11;                                                 \
+  68:Src/PumpService.c ****     uuid_struct[12] = uuid_12;                                                 \
+  69:Src/PumpService.c ****     uuid_struct[13] = uuid_13;                                                 \
+  70:Src/PumpService.c ****     uuid_struct[14] = uuid_14;                                                 \
+  71:Src/PumpService.c ****     uuid_struct[15] = uuid_15;                                                 \
+  72:Src/PumpService.c ****   } while (0)
+  73:Src/PumpService.c **** 
+  74:Src/PumpService.c **** #define COPY_PUMP_SERVICE_UUID(uuid_struct)                                    \
+  75:Src/PumpService.c ****   COPY_UUID_128(uuid_struct, 0x42, 0x82, 0x1a, 0x40, 0xe4, 0x77, 0x11, 0xe2,   \
+  76:Src/PumpService.c ****                 0x82, 0xd0, 0x00, 0x02, 0xa5, 0xd5, 0xc5, 0x1b)
+  77:Src/PumpService.c **** #define COPY_BOLUS_CHAR_UUID(uuid_struct)                                      \
+  78:Src/PumpService.c ****   COPY_UUID_128(uuid_struct, 0xa3, 0x2e, 0x55, 0x20, 0xe4, 0x77, 0x11, 0xe2,   \
+  79:Src/PumpService.c ****                 0xa9, 0xe3, 0x00, 0x02, 0xa5, 0xd5, 0xc5, 0x1b)
+  80:Src/PumpService.c **** #define COPY_MODE_CHAR_UUID(uuid_struct)                                       \
+  81:Src/PumpService.c ****   COPY_UUID_128(uuid_struct, 0xcd, 0x20, 0xc4, 0x80, 0xe4, 0x8b, 0x11, 0xe2,   \
+  82:Src/PumpService.c ****                 0x84, 0x0b, 0x00, 0x02, 0xa5, 0xd5, 0xc5, 0x1b)
+  83:Src/PumpService.c **** 
+  84:Src/PumpService.c **** /* Store Value into a buffer in Little Endian Format */
+  85:Src/PumpService.c **** #define STORE_LE_16(buf, val)                                                  \
+  86:Src/PumpService.c ****   (((buf)[0] = (uint8_t)(val)), ((buf)[1] = (uint8_t)(val >> 8)))
+  87:Src/PumpService.c **** /**
+  88:Src/PumpService.c ****  * @}
+  89:Src/PumpService.c ****  */
+  90:Src/PumpService.c **** 
+  91:Src/PumpService.c **** /** @defgroup PUMP_SERVICE_Exported_Functions
+  92:Src/PumpService.c ****  * @{
+  93:Src/PumpService.c ****  */
+  94:Src/PumpService.c **** 
+  95:Src/PumpService.c **** /**
+  96:Src/PumpService.c ****  * @brief  Add the Pump service.
+  97:Src/PumpService.c ****  *
+  98:Src/PumpService.c ****  * @param  None
+  99:Src/PumpService.c ****  * @retval Status
+ 100:Src/PumpService.c ****  */
+ 101:Src/PumpService.c **** tBleStatus Add_Pump_Service(void) {
+  41              		.loc 1 101 35 view -0
+  42              		.cfi_startproc
+  43              		@ args = 0, pretend = 0, frame = 40
+  44              		@ frame_needed = 0, uses_anonymous_args = 0
+ 102:Src/PumpService.c ****   tBleStatus ret;
+  45              		.loc 1 102 3 view .LVU1
+ 103:Src/PumpService.c ****   uint8_t uuid[16];
+  46              		.loc 1 103 3 view .LVU2
+ 104:Src/PumpService.c ****   uint16_t uuid16;
+  47              		.loc 1 104 3 view .LVU3
+ 105:Src/PumpService.c ****   charactFormat charFormat;
+  48              		.loc 1 105 3 view .LVU4
+ 106:Src/PumpService.c ****   uint16_t descHandle;
+  49              		.loc 1 106 3 view .LVU5
+ 107:Src/PumpService.c **** 
+ARM GAS  /tmp/ccThnICr.s 			page 4
+
+
+ 108:Src/PumpService.c ****   COPY_PUMP_SERVICE_UUID(uuid);
+  50              		.loc 1 108 3 view .LVU6
+  51              		.loc 1 108 3 view .LVU7
+  52              		.loc 1 108 3 view .LVU8
+  53              		.loc 1 108 3 view .LVU9
+  54              		.loc 1 108 3 view .LVU10
+  55              		.loc 1 108 3 view .LVU11
+  56              		.loc 1 108 3 view .LVU12
+  57              		.loc 1 108 3 view .LVU13
+  58              		.loc 1 108 3 view .LVU14
+  59              		.loc 1 108 3 view .LVU15
+  60              		.loc 1 108 3 view .LVU16
+  61              		.loc 1 108 3 view .LVU17
+  62              		.loc 1 108 3 view .LVU18
+  63              		.loc 1 108 3 view .LVU19
+  64              		.loc 1 108 3 view .LVU20
+  65              		.loc 1 108 3 view .LVU21
+  66              		.loc 1 108 3 view .LVU22
+ 101:Src/PumpService.c ****   tBleStatus ret;
+  67              		.loc 1 101 35 is_stmt 0 view .LVU23
+  68 0000 2DE9F04F 		push	{r4, r5, r6, r7, r8, r9, r10, fp, lr}
+  69              	.LCFI0:
+  70              		.cfi_def_cfa_offset 36
+  71              		.cfi_offset 4, -36
+  72              		.cfi_offset 5, -32
+  73              		.cfi_offset 6, -28
+  74              		.cfi_offset 7, -24
+  75              		.cfi_offset 8, -20
+  76              		.cfi_offset 9, -16
+  77              		.cfi_offset 10, -12
+  78              		.cfi_offset 11, -8
+  79              		.cfi_offset 14, -4
+  80 0004 95B0     		sub	sp, sp, #84
+  81              	.LCFI1:
+  82              		.cfi_def_cfa_offset 120
+  83              		.loc 1 108 3 view .LVU24
+  84 0006 5548     		ldr	r0, .L6
+ 109:Src/PumpService.c ****   ret = aci_gatt_add_serv(UUID_TYPE_128, uuid, PRIMARY_SERVICE, 10,
+  85              		.loc 1 109 9 view .LVU25
+  86 0008 554C     		ldr	r4, .L6+4
+ 108:Src/PumpService.c ****   ret = aci_gatt_add_serv(UUID_TYPE_128, uuid, PRIMARY_SERVICE, 10,
+  87              		.loc 1 108 3 view .LVU26
+  88 000a DFF87881 		ldr	r8, .L6+40
+  89 000e 554E     		ldr	r6, .L6+8
+  90 0010 554D     		ldr	r5, .L6+12
+  91 0012 1190     		str	r0, [sp, #68]
+  92              		.loc 1 109 9 view .LVU27
+  93 0014 0094     		str	r4, [sp]
+  94 0016 10A9     		add	r1, sp, #64
+  95 0018 0A23     		movs	r3, #10
+  96 001a 0122     		movs	r2, #1
+  97 001c 0220     		movs	r0, #2
+ 108:Src/PumpService.c ****   ret = aci_gatt_add_serv(UUID_TYPE_128, uuid, PRIMARY_SERVICE, 10,
+  98              		.loc 1 108 3 view .LVU28
+  99 001e CDE91286 		strd	r8, r6, [sp, #72]
+ 108:Src/PumpService.c ****   ret = aci_gatt_add_serv(UUID_TYPE_128, uuid, PRIMARY_SERVICE, 10,
+ 100              		.loc 1 108 3 is_stmt 1 view .LVU29
+ARM GAS  /tmp/ccThnICr.s 			page 5
+
+
+ 101              		.loc 1 109 3 view .LVU30
+ 108:Src/PumpService.c ****   ret = aci_gatt_add_serv(UUID_TYPE_128, uuid, PRIMARY_SERVICE, 10,
+ 102              		.loc 1 108 3 is_stmt 0 view .LVU31
+ 103 0022 1095     		str	r5, [sp, #64]
+ 104              		.loc 1 109 9 view .LVU32
+ 105 0024 FFF7FEFF 		bl	aci_gatt_add_serv
+ 106              	.LVL0:
+ 110:Src/PumpService.c ****                           &pumpServHandle);
+ 111:Src/PumpService.c ****   if (ret != BLE_STATUS_SUCCESS)
+ 107              		.loc 1 111 3 is_stmt 1 view .LVU33
+ 108              		.loc 1 111 6 is_stmt 0 view .LVU34
+ 109 0028 0028     		cmp	r0, #0
+ 110 002a 40F08F80 		bne	.L2
+ 112:Src/PumpService.c ****     goto fail;
+ 113:Src/PumpService.c **** 
+ 114:Src/PumpService.c ****   /* MODE Characteristic */
+ 115:Src/PumpService.c ****   COPY_MODE_CHAR_UUID(uuid);
+ 111              		.loc 1 115 3 is_stmt 1 view .LVU35
+ 112              		.loc 1 115 3 view .LVU36
+ 113              		.loc 1 115 3 view .LVU37
+ 114              		.loc 1 115 3 view .LVU38
+ 115              		.loc 1 115 3 view .LVU39
+ 116              		.loc 1 115 3 view .LVU40
+ 117              		.loc 1 115 3 view .LVU41
+ 118              		.loc 1 115 3 view .LVU42
+ 119              		.loc 1 115 3 view .LVU43
+ 120              		.loc 1 115 3 view .LVU44
+ 121              		.loc 1 115 3 view .LVU45
+ 122              		.loc 1 115 3 view .LVU46
+ 123              		.loc 1 115 3 view .LVU47
+ 124              		.loc 1 115 3 view .LVU48
+ 125              		.loc 1 115 3 view .LVU49
+ 126              		.loc 1 115 3 view .LVU50
+ 127              		.loc 1 115 3 view .LVU51
+ 128 002e 4F4A     		ldr	r2, .L6+16
+ 116:Src/PumpService.c ****   ret = aci_gatt_add_char(pumpServHandle, UUID_TYPE_128, uuid, 1,
+ 129              		.loc 1 116 9 is_stmt 0 view .LVU52
+ 130 0030 DFF85491 		ldr	r9, .L6+44
+ 115:Src/PumpService.c ****   ret = aci_gatt_add_char(pumpServHandle, UUID_TYPE_128, uuid, 1,
+ 131              		.loc 1 115 3 view .LVU53
+ 132 0034 4E49     		ldr	r1, .L6+20
+ 133              		.loc 1 116 9 view .LVU54
+ 134 0036 0490     		str	r0, [sp, #16]
+ 135 0038 0123     		movs	r3, #1
+ 136 003a 1027     		movs	r7, #16
+ 137 003c 4FF0080B 		mov	fp, #8
+ 138 0040 0190     		str	r0, [sp, #4]
+ 139 0042 CDF81490 		str	r9, [sp, #20]
+ 140 0046 0397     		str	r7, [sp, #12]
+ 141 0048 0293     		str	r3, [sp, #8]
+ 142 004a CDF800B0 		str	fp, [sp]
+ 115:Src/PumpService.c ****   ret = aci_gatt_add_char(pumpServHandle, UUID_TYPE_128, uuid, 1,
+ 143              		.loc 1 115 3 view .LVU55
+ 144 004e DFF83CC1 		ldr	ip, .L6+48
+ 145 0052 1291     		str	r1, [sp, #72]
+ 146 0054 CDE91052 		strd	r5, r2, [sp, #64]
+ 147              		.loc 1 116 9 view .LVU56
+ARM GAS  /tmp/ccThnICr.s 			page 6
+
+
+ 148 0058 2088     		ldrh	r0, [r4]
+ 149              	.LVL1:
+ 115:Src/PumpService.c ****   ret = aci_gatt_add_char(pumpServHandle, UUID_TYPE_128, uuid, 1,
+ 150              		.loc 1 115 3 view .LVU57
+ 151 005a CDF84CC0 		str	ip, [sp, #76]
+ 115:Src/PumpService.c ****   ret = aci_gatt_add_char(pumpServHandle, UUID_TYPE_128, uuid, 1,
+ 152              		.loc 1 115 3 is_stmt 1 view .LVU58
+ 153              		.loc 1 116 3 view .LVU59
+ 154              		.loc 1 116 9 is_stmt 0 view .LVU60
+ 155 005e 10AA     		add	r2, sp, #64
+ 156 0060 0221     		movs	r1, #2
+ 157 0062 FFF7FEFF 		bl	aci_gatt_add_char
+ 158              	.LVL2:
+ 117:Src/PumpService.c ****                           CHAR_PROP_WRITE, ATTR_PERMISSION_NONE,
+ 118:Src/PumpService.c ****                           GATT_NOTIFY_ATTRIBUTE_WRITE, 16, 0, &modeCharHandle);
+ 119:Src/PumpService.c **** 
+ 120:Src/PumpService.c ****   if (ret != BLE_STATUS_SUCCESS)
+ 159              		.loc 1 120 3 is_stmt 1 view .LVU61
+ 160              		.loc 1 120 6 is_stmt 0 view .LVU62
+ 161 0066 8446     		mov	ip, r0
+ 162 0068 0028     		cmp	r0, #0
+ 163 006a 6FD1     		bne	.L2
+ 121:Src/PumpService.c ****     goto fail;
+ 122:Src/PumpService.c **** 
+ 123:Src/PumpService.c ****   charFormat.format = FORMAT_UINT8;
+ 164              		.loc 1 123 3 is_stmt 1 view .LVU63
+ 124:Src/PumpService.c ****   charFormat.exp = -1;
+ 165              		.loc 1 124 3 view .LVU64
+ 125:Src/PumpService.c ****   charFormat.unit = UNIT_UNITLESS;
+ 166              		.loc 1 125 3 view .LVU65
+ 126:Src/PumpService.c ****   charFormat.name_space = 0;
+ 167              		.loc 1 126 3 view .LVU66
+ 127:Src/PumpService.c ****   charFormat.desc = 0;
+ 168              		.loc 1 127 3 view .LVU67
+ 128:Src/PumpService.c **** 
+ 129:Src/PumpService.c ****   uuid16 = CHAR_FORMAT_DESC_UUID;
+ 130:Src/PumpService.c **** 
+ 131:Src/PumpService.c ****   ret = aci_gatt_add_char_desc(pumpServHandle, modeCharHandle, UUID_TYPE_16,
+ 169              		.loc 1 131 9 is_stmt 0 view .LVU68
+ 170 006c 0DF13602 		add	r2, sp, #54
+ 171 0070 0892     		str	r2, [sp, #32]
+ 172 0072 0322     		movs	r2, #3
+ 173 0074 0492     		str	r2, [sp, #16]
+ 174 0076 4FF0070A 		mov	r10, #7
+ 175 007a 0EAA     		add	r2, sp, #56
+ 176 007c CDE901A2 		strd	r10, r2, [sp, #4]
+ 177 0080 CDE90670 		strd	r7, r0, [sp, #24]
+ 178 0084 0590     		str	r0, [sp, #20]
+ 179 0086 0390     		str	r0, [sp, #12]
+ 180 0088 CDF800A0 		str	r10, [sp]
+ 126:Src/PumpService.c ****   charFormat.desc = 0;
+ 181              		.loc 1 126 25 view .LVU69
+ 182 008c ADF83CC0 		strh	ip, [sp, #60]	@ movhi
+ 127:Src/PumpService.c ****   charFormat.desc = 0;
+ 183              		.loc 1 127 19 view .LVU70
+ 184 0090 8DF83EC0 		strb	ip, [sp, #62]
+ 129:Src/PumpService.c **** 
+ARM GAS  /tmp/ccThnICr.s 			page 7
+
+
+ 185              		.loc 1 129 3 is_stmt 1 view .LVU71
+ 186              		.loc 1 131 9 is_stmt 0 view .LVU72
+ 187 0094 B9F80010 		ldrh	r1, [r9]
+ 188 0098 2088     		ldrh	r0, [r4]
+ 189              	.LVL3:
+ 123:Src/PumpService.c ****   charFormat.exp = -1;
+ 190              		.loc 1 123 21 view .LVU73
+ 191 009a 364E     		ldr	r6, .L6+24
+ 192 009c 0E96     		str	r6, [sp, #56]
+ 129:Src/PumpService.c **** 
+ 193              		.loc 1 129 10 view .LVU74
+ 194 009e 42F6041C 		movw	ip, 10500	@ movhi
+ 195              		.loc 1 131 9 view .LVU75
+ 196 00a2 0DAB     		add	r3, sp, #52
+ 197 00a4 0122     		movs	r2, #1
+ 129:Src/PumpService.c **** 
+ 198              		.loc 1 129 10 view .LVU76
+ 199 00a6 ADF834C0 		strh	ip, [sp, #52]	@ movhi
+ 200              		.loc 1 131 3 is_stmt 1 view .LVU77
+ 201              		.loc 1 131 9 is_stmt 0 view .LVU78
+ 202 00aa FFF7FEFF 		bl	aci_gatt_add_char_desc
+ 203              	.LVL4:
+ 132:Src/PumpService.c ****                                (uint8_t *)&uuid16, 7, 7, (void *)&charFormat,
+ 133:Src/PumpService.c ****                                ATTR_PERMISSION_NONE, ATTR_ACCESS_READ_WRITE, 0,
+ 134:Src/PumpService.c ****                                16, FALSE, &descHandle);
+ 135:Src/PumpService.c **** 
+ 136:Src/PumpService.c ****   if (ret != BLE_STATUS_SUCCESS)
+ 204              		.loc 1 136 3 is_stmt 1 view .LVU79
+ 205              		.loc 1 136 6 is_stmt 0 view .LVU80
+ 206 00ae 0B90     		str	r0, [sp, #44]
+ 207 00b0 0028     		cmp	r0, #0
+ 208 00b2 4BD1     		bne	.L2
+ 137:Src/PumpService.c ****     goto fail;
+ 138:Src/PumpService.c ****   printf(
+ 209              		.loc 1 138 3 is_stmt 1 view .LVU81
+ 210 00b4 B9F80020 		ldrh	r2, [r9]
+ 211 00b8 2188     		ldrh	r1, [r4]
+ 212 00ba 2F48     		ldr	r0, .L6+28
+ 213              	.LVL5:
+ 139:Src/PumpService.c ****       "[+] SecPump Service Created. Handle 0x%04X\r\n[+] MODE Charac handle: "
+ 140:Src/PumpService.c ****       "0x%04X\r\n",
+ 141:Src/PumpService.c ****       pumpServHandle, modeCharHandle);
+ 142:Src/PumpService.c **** 
+ 143:Src/PumpService.c ****   /* Bolus Characteristic */
+ 144:Src/PumpService.c ****   COPY_BOLUS_CHAR_UUID(uuid);
+ 145:Src/PumpService.c ****   ret = aci_gatt_add_char(pumpServHandle, UUID_TYPE_128, uuid, 16,
+ 214              		.loc 1 145 9 is_stmt 0 view .LVU82
+ 215 00bc DFF8D090 		ldr	r9, .L6+52
+ 138:Src/PumpService.c ****       "[+] SecPump Service Created. Handle 0x%04X\r\n[+] MODE Charac handle: "
+ 216              		.loc 1 138 3 view .LVU83
+ 217 00c0 FFF7FEFF 		bl	printf
+ 218              	.LVL6:
+ 144:Src/PumpService.c ****   ret = aci_gatt_add_char(pumpServHandle, UUID_TYPE_128, uuid, 16,
+ 219              		.loc 1 144 3 is_stmt 1 view .LVU84
+ 144:Src/PumpService.c ****   ret = aci_gatt_add_char(pumpServHandle, UUID_TYPE_128, uuid, 16,
+ 220              		.loc 1 144 3 view .LVU85
+ 144:Src/PumpService.c ****   ret = aci_gatt_add_char(pumpServHandle, UUID_TYPE_128, uuid, 16,
+ARM GAS  /tmp/ccThnICr.s 			page 8
+
+
+ 221              		.loc 1 144 3 view .LVU86
+ 144:Src/PumpService.c ****   ret = aci_gatt_add_char(pumpServHandle, UUID_TYPE_128, uuid, 16,
+ 222              		.loc 1 144 3 view .LVU87
+ 144:Src/PumpService.c ****   ret = aci_gatt_add_char(pumpServHandle, UUID_TYPE_128, uuid, 16,
+ 223              		.loc 1 144 3 view .LVU88
+ 144:Src/PumpService.c ****   ret = aci_gatt_add_char(pumpServHandle, UUID_TYPE_128, uuid, 16,
+ 224              		.loc 1 144 3 view .LVU89
+ 144:Src/PumpService.c ****   ret = aci_gatt_add_char(pumpServHandle, UUID_TYPE_128, uuid, 16,
+ 225              		.loc 1 144 3 view .LVU90
+ 144:Src/PumpService.c ****   ret = aci_gatt_add_char(pumpServHandle, UUID_TYPE_128, uuid, 16,
+ 226              		.loc 1 144 3 view .LVU91
+ 144:Src/PumpService.c ****   ret = aci_gatt_add_char(pumpServHandle, UUID_TYPE_128, uuid, 16,
+ 227              		.loc 1 144 3 view .LVU92
+ 144:Src/PumpService.c ****   ret = aci_gatt_add_char(pumpServHandle, UUID_TYPE_128, uuid, 16,
+ 228              		.loc 1 144 3 view .LVU93
+ 144:Src/PumpService.c ****   ret = aci_gatt_add_char(pumpServHandle, UUID_TYPE_128, uuid, 16,
+ 229              		.loc 1 144 3 view .LVU94
+ 144:Src/PumpService.c ****   ret = aci_gatt_add_char(pumpServHandle, UUID_TYPE_128, uuid, 16,
+ 230              		.loc 1 144 3 view .LVU95
+ 144:Src/PumpService.c ****   ret = aci_gatt_add_char(pumpServHandle, UUID_TYPE_128, uuid, 16,
+ 231              		.loc 1 144 3 view .LVU96
+ 144:Src/PumpService.c ****   ret = aci_gatt_add_char(pumpServHandle, UUID_TYPE_128, uuid, 16,
+ 232              		.loc 1 144 3 view .LVU97
+ 144:Src/PumpService.c ****   ret = aci_gatt_add_char(pumpServHandle, UUID_TYPE_128, uuid, 16,
+ 233              		.loc 1 144 3 view .LVU98
+ 144:Src/PumpService.c ****   ret = aci_gatt_add_char(pumpServHandle, UUID_TYPE_128, uuid, 16,
+ 234              		.loc 1 144 3 view .LVU99
+ 144:Src/PumpService.c ****   ret = aci_gatt_add_char(pumpServHandle, UUID_TYPE_128, uuid, 16,
+ 235              		.loc 1 144 3 view .LVU100
+ 236              		.loc 1 145 9 is_stmt 0 view .LVU101
+ 237 00c4 0B9B     		ldr	r3, [sp, #44]
+ 144:Src/PumpService.c ****   ret = aci_gatt_add_char(pumpServHandle, UUID_TYPE_128, uuid, 16,
+ 238              		.loc 1 144 3 view .LVU102
+ 239 00c6 DFF8CCE0 		ldr	lr, .L6+56
+ 240              		.loc 1 145 9 view .LVU103
+ 241 00ca CDF800B0 		str	fp, [sp]
+ 242 00ce 0122     		movs	r2, #1
+ 243 00d0 CDE90132 		strd	r3, r2, [sp, #4]
+ 244 00d4 CDE90373 		strd	r7, r3, [sp, #12]
+ 245 00d8 CDF81490 		str	r9, [sp, #20]
+ 144:Src/PumpService.c ****   ret = aci_gatt_add_char(pumpServHandle, UUID_TYPE_128, uuid, 16,
+ 246              		.loc 1 144 3 view .LVU104
+ 247 00dc DFF8B8C0 		ldr	ip, .L6+60
+ 248              		.loc 1 145 9 view .LVU105
+ 249 00e0 2088     		ldrh	r0, [r4]
+ 144:Src/PumpService.c ****   ret = aci_gatt_add_char(pumpServHandle, UUID_TYPE_128, uuid, 16,
+ 250              		.loc 1 144 3 view .LVU106
+ 251 00e2 1095     		str	r5, [sp, #64]
+ 252              		.loc 1 145 9 view .LVU107
+ 253 00e4 10AA     		add	r2, sp, #64
+ 254 00e6 3B46     		mov	r3, r7
+ 255 00e8 0221     		movs	r1, #2
+ 144:Src/PumpService.c ****   ret = aci_gatt_add_char(pumpServHandle, UUID_TYPE_128, uuid, 16,
+ 256              		.loc 1 144 3 view .LVU108
+ 257 00ea CDE911E8 		strd	lr, r8, [sp, #68]
+ 258 00ee CDF84CC0 		str	ip, [sp, #76]
+ 144:Src/PumpService.c ****   ret = aci_gatt_add_char(pumpServHandle, UUID_TYPE_128, uuid, 16,
+ARM GAS  /tmp/ccThnICr.s 			page 9
+
+
+ 259              		.loc 1 144 3 is_stmt 1 view .LVU109
+ 260              		.loc 1 145 3 view .LVU110
+ 261              		.loc 1 145 9 is_stmt 0 view .LVU111
+ 262 00f2 FFF7FEFF 		bl	aci_gatt_add_char
+ 263              	.LVL7:
+ 146:Src/PumpService.c ****                           CHAR_PROP_WRITE, ATTR_PERMISSION_NONE,
+ 147:Src/PumpService.c ****                           GATT_NOTIFY_ATTRIBUTE_WRITE, 16, 0, &bolusCharHandle);
+ 148:Src/PumpService.c ****   if (ret != BLE_STATUS_SUCCESS)
+ 264              		.loc 1 148 3 is_stmt 1 view .LVU112
+ 265              		.loc 1 148 6 is_stmt 0 view .LVU113
+ 266 00f6 0546     		mov	r5, r0
+ 267 00f8 40BB     		cbnz	r0, .L2
+ 149:Src/PumpService.c ****     goto fail;
+ 150:Src/PumpService.c **** 
+ 151:Src/PumpService.c ****   charFormat.format = FORMAT_UINT8;
+ 268              		.loc 1 151 3 is_stmt 1 view .LVU114
+ 152:Src/PumpService.c ****   charFormat.exp = -1;
+ 269              		.loc 1 152 3 view .LVU115
+ 153:Src/PumpService.c ****   charFormat.unit = UNIT_UNITLESS;
+ 270              		.loc 1 153 3 view .LVU116
+ 154:Src/PumpService.c ****   charFormat.name_space = 0;
+ 271              		.loc 1 154 3 view .LVU117
+ 155:Src/PumpService.c ****   charFormat.desc = 0;
+ 272              		.loc 1 155 3 view .LVU118
+ 156:Src/PumpService.c **** 
+ 157:Src/PumpService.c ****   uuid16 = CHAR_FORMAT_DESC_UUID;
+ 158:Src/PumpService.c **** 
+ 159:Src/PumpService.c ****   ret = aci_gatt_add_char_desc(pumpServHandle, bolusCharHandle, UUID_TYPE_16,
+ 273              		.loc 1 159 9 is_stmt 0 view .LVU119
+ 274 00fa 0DF13603 		add	r3, sp, #54
+ 275 00fe CDE90703 		strd	r0, r3, [sp, #28]
+ 276 0102 0323     		movs	r3, #3
+ 277 0104 CDE90303 		strd	r0, r3, [sp, #12]
+ 278 0108 0EAB     		add	r3, sp, #56
+ 279 010a CDE901A3 		strd	r10, r3, [sp, #4]
+ 280 010e CDE90507 		strd	r0, r7, [sp, #20]
+ 281 0112 CDF800A0 		str	r10, [sp]
+ 282 0116 2088     		ldrh	r0, [r4]
+ 283              	.LVL8:
+ 284              		.loc 1 159 9 view .LVU120
+ 285 0118 B9F80010 		ldrh	r1, [r9]
+ 151:Src/PumpService.c ****   charFormat.exp = -1;
+ 286              		.loc 1 151 21 view .LVU121
+ 287 011c 0E96     		str	r6, [sp, #56]
+ 157:Src/PumpService.c **** 
+ 288              		.loc 1 157 10 view .LVU122
+ 289 011e 42F6041C 		movw	ip, 10500	@ movhi
+ 290              		.loc 1 159 9 view .LVU123
+ 291 0122 0DAB     		add	r3, sp, #52
+ 292 0124 0122     		movs	r2, #1
+ 154:Src/PumpService.c ****   charFormat.desc = 0;
+ 293              		.loc 1 154 25 view .LVU124
+ 294 0126 ADF83C50 		strh	r5, [sp, #60]	@ movhi
+ 155:Src/PumpService.c **** 
+ 295              		.loc 1 155 19 view .LVU125
+ 296 012a 8DF83E50 		strb	r5, [sp, #62]
+ 157:Src/PumpService.c **** 
+ARM GAS  /tmp/ccThnICr.s 			page 10
+
+
+ 297              		.loc 1 157 3 is_stmt 1 view .LVU126
+ 157:Src/PumpService.c **** 
+ 298              		.loc 1 157 10 is_stmt 0 view .LVU127
+ 299 012e ADF834C0 		strh	ip, [sp, #52]	@ movhi
+ 300              		.loc 1 159 3 is_stmt 1 view .LVU128
+ 301              		.loc 1 159 9 is_stmt 0 view .LVU129
+ 302 0132 FFF7FEFF 		bl	aci_gatt_add_char_desc
+ 303              	.LVL9:
+ 160:Src/PumpService.c ****                                (uint8_t *)&uuid16, 7, 7, (void *)&charFormat,
+ 161:Src/PumpService.c ****                                ATTR_PERMISSION_NONE, ATTR_ACCESS_READ_WRITE, 0,
+ 162:Src/PumpService.c ****                                16, FALSE, &descHandle);
+ 163:Src/PumpService.c ****   if (ret != BLE_STATUS_SUCCESS)
+ 304              		.loc 1 163 3 is_stmt 1 view .LVU130
+ 305              		.loc 1 163 6 is_stmt 0 view .LVU131
+ 306 0136 0446     		mov	r4, r0
+ 307 0138 40B9     		cbnz	r0, .L2
+ 164:Src/PumpService.c ****     goto fail;
+ 165:Src/PumpService.c ****   printf("[+] BOLUS Charac handle: 0x%04X\n\r", bolusCharHandle);
+ 308              		.loc 1 165 3 is_stmt 1 view .LVU132
+ 309 013a B9F80010 		ldrh	r1, [r9]
+ 310 013e 0F48     		ldr	r0, .L6+32
+ 311              	.LVL10:
+ 312              		.loc 1 165 3 is_stmt 0 view .LVU133
+ 313 0140 FFF7FEFF 		bl	printf
+ 314              	.LVL11:
+ 166:Src/PumpService.c **** 
+ 167:Src/PumpService.c ****   return BLE_STATUS_SUCCESS;
+ 315              		.loc 1 167 3 is_stmt 1 view .LVU134
+ 168:Src/PumpService.c **** 
+ 169:Src/PumpService.c **** fail:
+ 170:Src/PumpService.c ****   printf("[!] Error while adding PUMP service.\r\n");
+ 171:Src/PumpService.c ****   return BLE_STATUS_ERROR;
+ 172:Src/PumpService.c **** }
+ 316              		.loc 1 172 1 is_stmt 0 view .LVU135
+ 317 0144 2046     		mov	r0, r4
+ 318 0146 15B0     		add	sp, sp, #84
+ 319              	.LCFI2:
+ 320              		.cfi_remember_state
+ 321              		.cfi_def_cfa_offset 36
+ 322              		@ sp needed
+ 323 0148 BDE8F08F 		pop	{r4, r5, r6, r7, r8, r9, r10, fp, pc}
+ 324              	.LVL12:
+ 325              	.L2:
+ 326              	.LCFI3:
+ 327              		.cfi_restore_state
+ 328              	.LDL1:
+ 170:Src/PumpService.c ****   return BLE_STATUS_ERROR;
+ 329              		.loc 1 170 3 is_stmt 1 view .LVU136
+ 330 014c 0C48     		ldr	r0, .L6+36
+ 331              	.LVL13:
+ 170:Src/PumpService.c ****   return BLE_STATUS_ERROR;
+ 332              		.loc 1 170 3 is_stmt 0 view .LVU137
+ 333 014e FFF7FEFF 		bl	puts
+ 334              	.LVL14:
+ 171:Src/PumpService.c **** }
+ 335              		.loc 1 171 3 is_stmt 1 view .LVU138
+ 171:Src/PumpService.c **** }
+ARM GAS  /tmp/ccThnICr.s 			page 11
+
+
+ 336              		.loc 1 171 10 is_stmt 0 view .LVU139
+ 337 0152 4724     		movs	r4, #71
+ 338              		.loc 1 172 1 view .LVU140
+ 339 0154 2046     		mov	r0, r4
+ 340 0156 15B0     		add	sp, sp, #84
+ 341              	.LCFI4:
+ 342              		.cfi_def_cfa_offset 36
+ 343              		@ sp needed
+ 344 0158 BDE8F08F 		pop	{r4, r5, r6, r7, r8, r9, r10, fp, pc}
+ 345              	.L7:
+ 346              		.align	2
+ 347              	.L6:
+ 348 015c 0200D082 		.word	-2100297726
+ 349 0160 00000000 		.word	pumpServHandle
+ 350 0164 401A8242 		.word	1115822656
+ 351 0168 1BC5D5A5 		.word	-1512717029
+ 352 016c 02000B84 		.word	-2079653886
+ 353 0170 E2118BE4 		.word	-460647966
+ 354 0174 04FF0027 		.word	654376708
+ 355 0178 00000000 		.word	.LC0
+ 356 017c 50000000 		.word	.LC1
+ 357 0180 74000000 		.word	.LC2
+ 358 0184 E21177E4 		.word	-461958686
+ 359 0188 00000000 		.word	modeCharHandle
+ 360 018c 80C420CD 		.word	-853490560
+ 361 0190 00000000 		.word	bolusCharHandle
+ 362 0194 0200E3A9 		.word	-1444741118
+ 363 0198 20552EA3 		.word	-1557244640
+ 364              		.cfi_endproc
+ 365              	.LFE133:
+ 367              		.section	.rodata.setConnectable.str1.4,"aMS",%progbits,1
+ 368              		.align	2
+ 369              	.LC4:
+ 370 0000 5B2A5D20 		.ascii	"[*] General Discoverable Mode.\015\000"
+ 370      47656E65 
+ 370      72616C20 
+ 370      44697363 
+ 370      6F766572 
+ 371              		.align	2
+ 372              	.LC5:
+ 373 0020 5B215D20 		.ascii	"[!] Error while setting discoverable mode (%d)\015\012"
+ 373      4572726F 
+ 373      72207768 
+ 373      696C6520 
+ 373      73657474 
+ 374 0050 00       		.ascii	"\000"
+ 375 0051 000000   		.align	2
+ 376              	.LC3:
+ 377 0054 09536563 		.ascii	"\011SecPump\000"
+ 377      50756D70 
+ 377      00
+ 378              		.section	.text.setConnectable,"ax",%progbits
+ 379              		.align	1
+ 380              		.p2align 2,,3
+ 381              		.global	setConnectable
+ 382              		.syntax unified
+ 383              		.thumb
+ARM GAS  /tmp/ccThnICr.s 			page 12
+
+
+ 384              		.thumb_func
+ 385              		.fpu fpv4-sp-d16
+ 387              	setConnectable:
+ 388              	.LFB134:
+ 173:Src/PumpService.c **** 
+ 174:Src/PumpService.c **** /**
+ 175:Src/PumpService.c ****  * @brief  Puts the device in connectable mode.
+ 176:Src/PumpService.c ****  *         If you want to specify a UUID list in the advertising data, those
+ 177:Src/PumpService.c ****  * data can be specified as a parameter in aci_gap_set_discoverable(). For
+ 178:Src/PumpService.c ****  * manufacture data, aci_gap_update_adv_data must be called.
+ 179:Src/PumpService.c ****  * @param  None
+ 180:Src/PumpService.c ****  * @retval None
+ 181:Src/PumpService.c ****  */
+ 182:Src/PumpService.c **** /* Ex.:
+ 183:Src/PumpService.c ****  *
+ 184:Src/PumpService.c ****  *  tBleStatus ret;
+ 185:Src/PumpService.c ****  *  const char local_name[] =
+ 186:Src/PumpService.c ****  * {AD_TYPE_COMPLETE_LOCAL_NAME,'B','l','u','e','N','R','G'}; const uint8_t
+ 187:Src/PumpService.c ****  * serviceUUIDList[] = {AD_TYPE_16_BIT_SERV_UUID,0x34,0x12}; const uint8_t
+ 188:Src/PumpService.c ****  * manuf_data[] = {4, AD_TYPE_MANUFACTURER_SPECIFIC_DATA, 0x05, 0x02, 0x01};
+ 189:Src/PumpService.c ****  *
+ 190:Src/PumpService.c ****  *  ret = aci_gap_set_discoverable(ADV_DATA_TYPE, ADV_INTERV_MIN,
+ 191:Src/PumpService.c ****  * ADV_INTERV_MAX, PUBLIC_ADDR, NO_WHITE_LIST_USE, 8, sizeof(local_name), 3,
+ 192:Src/PumpService.c ****  * serviceUUIDList, 0, 0); ret = aci_gap_update_adv_data(5, manuf_data);
+ 193:Src/PumpService.c ****  *
+ 194:Src/PumpService.c ****  */
+ 195:Src/PumpService.c **** void setConnectable(void) {
+ 389              		.loc 1 195 27 is_stmt 1 view -0
+ 390              		.cfi_startproc
+ 391              		@ args = 0, pretend = 0, frame = 8
+ 392              		@ frame_needed = 0, uses_anonymous_args = 0
+ 196:Src/PumpService.c ****   tBleStatus ret;
+ 393              		.loc 1 196 3 view .LVU142
+ 197:Src/PumpService.c **** 
+ 198:Src/PumpService.c ****   const char local_name[] = {
+ 394              		.loc 1 198 3 view .LVU143
+ 195:Src/PumpService.c ****   tBleStatus ret;
+ 395              		.loc 1 195 27 is_stmt 0 view .LVU144
+ 396 0000 10B5     		push	{r4, lr}
+ 397              	.LCFI5:
+ 398              		.cfi_def_cfa_offset 8
+ 399              		.cfi_offset 4, -8
+ 400              		.cfi_offset 14, -4
+ 401              		.loc 1 198 14 view .LVU145
+ 402 0002 134B     		ldr	r3, .L15
+ 403 0004 93E80300 		ldm	r3, {r0, r1}
+ 195:Src/PumpService.c ****   tBleStatus ret;
+ 404              		.loc 1 195 27 view .LVU146
+ 405 0008 8AB0     		sub	sp, sp, #40
+ 406              	.LCFI6:
+ 407              		.cfi_def_cfa_offset 48
+ 408              		.loc 1 198 14 view .LVU147
+ 409 000a 08AC     		add	r4, sp, #32
+ 410 000c 84E80300 		stm	r4, {r0, r1}
+ 199:Src/PumpService.c ****       AD_TYPE_COMPLETE_LOCAL_NAME, 'S', 'e', 'c', 'P', 'u', 'm', 'p'};
+ 200:Src/PumpService.c **** 
+ 201:Src/PumpService.c ****   /* disable scan response */
+ARM GAS  /tmp/ccThnICr.s 			page 13
+
+
+ 202:Src/PumpService.c ****   hci_le_set_scan_resp_data(0, NULL);
+ 411              		.loc 1 202 3 is_stmt 1 view .LVU148
+ 412 0010 0021     		movs	r1, #0
+ 413 0012 0846     		mov	r0, r1
+ 414 0014 FFF7FEFF 		bl	hci_le_set_scan_resp_data
+ 415              	.LVL15:
+ 203:Src/PumpService.c ****   printf("[*] General Discoverable Mode.\r\n");
+ 416              		.loc 1 203 3 view .LVU149
+ 417 0018 0E48     		ldr	r0, .L15+4
+ 418 001a FFF7FEFF 		bl	puts
+ 419              	.LVL16:
+ 204:Src/PumpService.c **** 
+ 205:Src/PumpService.c ****   ret = aci_gap_set_discoverable(ADV_DATA_TYPE, ADV_INTERV_MIN, ADV_INTERV_MAX,
+ 420              		.loc 1 205 3 view .LVU150
+ 421              		.loc 1 205 9 is_stmt 0 view .LVU151
+ 422 001e 0023     		movs	r3, #0
+ 423 0020 0822     		movs	r2, #8
+ 424 0022 0192     		str	r2, [sp, #4]
+ 425 0024 CDE90533 		strd	r3, r3, [sp, #20]
+ 426 0028 CDE90333 		strd	r3, r3, [sp, #12]
+ 427 002c 0294     		str	r4, [sp, #8]
+ 428 002e 0093     		str	r3, [sp]
+ 429 0030 1846     		mov	r0, r3
+ 430 0032 4FF48052 		mov	r2, #4096
+ 431 0036 4FF40061 		mov	r1, #2048
+ 432 003a FFF7FEFF 		bl	aci_gap_set_discoverable
+ 433              	.LVL17:
+ 206:Src/PumpService.c ****                                  PUBLIC_ADDR, NO_WHITE_LIST_USE,
+ 207:Src/PumpService.c ****                                  sizeof(local_name), local_name, 0, NULL, 0, 0);
+ 208:Src/PumpService.c ****   if (ret != BLE_STATUS_SUCCESS) {
+ 434              		.loc 1 208 3 is_stmt 1 view .LVU152
+ 435              		.loc 1 208 6 is_stmt 0 view .LVU153
+ 436 003e 08B9     		cbnz	r0, .L14
+ 209:Src/PumpService.c ****     printf("[!] Error while setting discoverable mode (%d)\r\n", ret);
+ 210:Src/PumpService.c ****   }
+ 211:Src/PumpService.c **** }
+ 437              		.loc 1 211 1 view .LVU154
+ 438 0040 0AB0     		add	sp, sp, #40
+ 439              	.LCFI7:
+ 440              		.cfi_remember_state
+ 441              		.cfi_def_cfa_offset 8
+ 442              		@ sp needed
+ 443 0042 10BD     		pop	{r4, pc}
+ 444              	.L14:
+ 445              	.LCFI8:
+ 446              		.cfi_restore_state
+ 209:Src/PumpService.c ****     printf("[!] Error while setting discoverable mode (%d)\r\n", ret);
+ 447              		.loc 1 209 5 is_stmt 1 view .LVU155
+ 448 0044 0146     		mov	r1, r0
+ 449 0046 0448     		ldr	r0, .L15+8
+ 450              	.LVL18:
+ 209:Src/PumpService.c ****     printf("[!] Error while setting discoverable mode (%d)\r\n", ret);
+ 451              		.loc 1 209 5 is_stmt 0 view .LVU156
+ 452 0048 FFF7FEFF 		bl	printf
+ 453              	.LVL19:
+ 454              		.loc 1 211 1 view .LVU157
+ 455 004c 0AB0     		add	sp, sp, #40
+ARM GAS  /tmp/ccThnICr.s 			page 14
+
+
+ 456              	.LCFI9:
+ 457              		.cfi_def_cfa_offset 8
+ 458              		@ sp needed
+ 459 004e 10BD     		pop	{r4, pc}
+ 460              	.L16:
+ 461              		.align	2
+ 462              	.L15:
+ 463 0050 54000000 		.word	.LC3
+ 464 0054 00000000 		.word	.LC4
+ 465 0058 20000000 		.word	.LC5
+ 466              		.cfi_endproc
+ 467              	.LFE134:
+ 469              		.section	.rodata.GAP_ConnectionComplete_CB.str1.4,"aMS",%progbits,1
+ 470              		.align	2
+ 471              	.LC6:
+ 472 0000 5B2A5D20 		.ascii	"[*] Connected to device:\000"
+ 472      436F6E6E 
+ 472      65637465 
+ 472      6420746F 
+ 472      20646576 
+ 473 0019 000000   		.align	2
+ 474              	.LC7:
+ 475 001c 25303258 		.ascii	"%02X-\000"
+ 475      2D00
+ 476 0022 0000     		.align	2
+ 477              	.LC8:
+ 478 0024 25303258 		.ascii	"%02X\015\012\000"
+ 478      0D0A00
+ 479              		.section	.text.GAP_ConnectionComplete_CB,"ax",%progbits
+ 480              		.align	1
+ 481              		.p2align 2,,3
+ 482              		.global	GAP_ConnectionComplete_CB
+ 483              		.syntax unified
+ 484              		.thumb
+ 485              		.thumb_func
+ 486              		.fpu fpv4-sp-d16
+ 488              	GAP_ConnectionComplete_CB:
+ 489              	.LVL20:
+ 490              	.LFB135:
+ 212:Src/PumpService.c **** 
+ 213:Src/PumpService.c **** /**
+ 214:Src/PumpService.c ****  * @brief  This function is called when there is a LE Connection Complete event.
+ 215:Src/PumpService.c ****  * @param  uint8_t Address of peer device
+ 216:Src/PumpService.c ****  * @param  uint16_t Connection handle
+ 217:Src/PumpService.c ****  * @retval None
+ 218:Src/PumpService.c ****  */
+ 219:Src/PumpService.c **** void GAP_ConnectionComplete_CB(uint8_t addr[6], uint16_t handle) {
+ 491              		.loc 1 219 66 is_stmt 1 view -0
+ 492              		.cfi_startproc
+ 493              		@ args = 0, pretend = 0, frame = 0
+ 494              		@ frame_needed = 0, uses_anonymous_args = 0
+ 220:Src/PumpService.c ****   connected = TRUE;
+ 495              		.loc 1 220 3 view .LVU159
+ 219:Src/PumpService.c ****   connected = TRUE;
+ 496              		.loc 1 219 66 is_stmt 0 view .LVU160
+ 497 0000 F8B5     		push	{r3, r4, r5, r6, r7, lr}
+ 498              	.LCFI10:
+ARM GAS  /tmp/ccThnICr.s 			page 15
+
+
+ 499              		.cfi_def_cfa_offset 24
+ 500              		.cfi_offset 3, -24
+ 501              		.cfi_offset 4, -20
+ 502              		.cfi_offset 5, -16
+ 503              		.cfi_offset 6, -12
+ 504              		.cfi_offset 7, -8
+ 505              		.cfi_offset 14, -4
+ 506              		.loc 1 220 13 view .LVU161
+ 507 0002 0C4A     		ldr	r2, .L21
+ 221:Src/PumpService.c ****   connection_handle = handle;
+ 508              		.loc 1 221 21 view .LVU162
+ 509 0004 0C4B     		ldr	r3, .L21+4
+ 510              	.LBB15:
+ 222:Src/PumpService.c **** 
+ 223:Src/PumpService.c ****   printf("[*] Connected to device:");
+ 224:Src/PumpService.c ****   for (uint32_t i = 5; i > 0; i--) {
+ 225:Src/PumpService.c ****     printf("%02X-", addr[i]);
+ 511              		.loc 1 225 5 view .LVU163
+ 512 0006 0D4E     		ldr	r6, .L21+8
+ 513              	.LBE15:
+ 219:Src/PumpService.c ****   connected = TRUE;
+ 514              		.loc 1 219 66 view .LVU164
+ 515 0008 0746     		mov	r7, r0
+ 220:Src/PumpService.c ****   connection_handle = handle;
+ 516              		.loc 1 220 13 view .LVU165
+ 517 000a 0124     		movs	r4, #1
+ 223:Src/PumpService.c ****   for (uint32_t i = 5; i > 0; i--) {
+ 518              		.loc 1 223 3 view .LVU166
+ 519 000c 0C48     		ldr	r0, .L21+12
+ 520              	.LVL21:
+ 220:Src/PumpService.c ****   connection_handle = handle;
+ 521              		.loc 1 220 13 view .LVU167
+ 522 000e 1460     		str	r4, [r2]
+ 221:Src/PumpService.c **** 
+ 523              		.loc 1 221 3 is_stmt 1 view .LVU168
+ 221:Src/PumpService.c **** 
+ 524              		.loc 1 221 21 is_stmt 0 view .LVU169
+ 525 0010 1980     		strh	r1, [r3]	@ movhi
+ 223:Src/PumpService.c ****   for (uint32_t i = 5; i > 0; i--) {
+ 526              		.loc 1 223 3 is_stmt 1 view .LVU170
+ 527 0012 FFF7FEFF 		bl	printf
+ 528              	.LVL22:
+ 224:Src/PumpService.c ****     printf("%02X-", addr[i]);
+ 529              		.loc 1 224 3 view .LVU171
+ 530              	.LBB16:
+ 224:Src/PumpService.c ****     printf("%02X-", addr[i]);
+ 531              		.loc 1 224 8 view .LVU172
+ 224:Src/PumpService.c ****     printf("%02X-", addr[i]);
+ 532              		.loc 1 224 24 view .LVU173
+ 533 0016 BC1D     		adds	r4, r7, #6
+ 534 0018 7D1C     		adds	r5, r7, #1
+ 535              	.LVL23:
+ 536              	.L18:
+ 537              		.loc 1 225 5 discriminator 3 view .LVU174
+ 538 001a 14F8011D 		ldrb	r1, [r4, #-1]!	@ zero_extendqisi2
+ 539 001e 3046     		mov	r0, r6
+ 540 0020 FFF7FEFF 		bl	printf
+ARM GAS  /tmp/ccThnICr.s 			page 16
+
+
+ 541              	.LVL24:
+ 224:Src/PumpService.c ****     printf("%02X-", addr[i]);
+ 542              		.loc 1 224 31 discriminator 3 view .LVU175
+ 224:Src/PumpService.c ****     printf("%02X-", addr[i]);
+ 543              		.loc 1 224 24 discriminator 3 view .LVU176
+ 224:Src/PumpService.c ****     printf("%02X-", addr[i]);
+ 544              		.loc 1 224 3 is_stmt 0 discriminator 3 view .LVU177
+ 545 0024 AC42     		cmp	r4, r5
+ 546 0026 F8D1     		bne	.L18
+ 547              	.LBE16:
+ 226:Src/PumpService.c ****   }
+ 227:Src/PumpService.c ****   printf("%02X\r\n", addr[0]);
+ 548              		.loc 1 227 3 is_stmt 1 view .LVU178
+ 549 0028 3978     		ldrb	r1, [r7]	@ zero_extendqisi2
+ 550 002a 0648     		ldr	r0, .L21+16
+ 228:Src/PumpService.c **** }
+ 551              		.loc 1 228 1 is_stmt 0 view .LVU179
+ 552 002c BDE8F840 		pop	{r3, r4, r5, r6, r7, lr}
+ 553              	.LCFI11:
+ 554              		.cfi_restore 14
+ 555              		.cfi_restore 7
+ 556              		.cfi_restore 6
+ 557              		.cfi_restore 5
+ 558              		.cfi_restore 4
+ 559              		.cfi_restore 3
+ 560              		.cfi_def_cfa_offset 0
+ 561              	.LVL25:
+ 227:Src/PumpService.c **** }
+ 562              		.loc 1 227 3 view .LVU180
+ 563 0030 FFF7FEBF 		b	printf
+ 564              	.LVL26:
+ 565              	.L22:
+ 566              		.align	2
+ 567              	.L21:
+ 568 0034 00000000 		.word	.LANCHOR0
+ 569 0038 00000000 		.word	.LANCHOR1
+ 570 003c 1C000000 		.word	.LC7
+ 571 0040 00000000 		.word	.LC6
+ 572 0044 24000000 		.word	.LC8
+ 573              		.cfi_endproc
+ 574              	.LFE135:
+ 576              		.section	.rodata.GAP_DisconnectionComplete_CB.str1.4,"aMS",%progbits,1
+ 577              		.align	2
+ 578              	.LC9:
+ 579 0000 5B2A5D20 		.ascii	"[*] Disconnected\015\000"
+ 579      44697363 
+ 579      6F6E6E65 
+ 579      63746564 
+ 579      0D00
+ 580              		.section	.text.GAP_DisconnectionComplete_CB,"ax",%progbits
+ 581              		.align	1
+ 582              		.p2align 2,,3
+ 583              		.global	GAP_DisconnectionComplete_CB
+ 584              		.syntax unified
+ 585              		.thumb
+ 586              		.thumb_func
+ 587              		.fpu fpv4-sp-d16
+ARM GAS  /tmp/ccThnICr.s 			page 17
+
+
+ 589              	GAP_DisconnectionComplete_CB:
+ 590              	.LFB136:
+ 229:Src/PumpService.c **** 
+ 230:Src/PumpService.c **** /**
+ 231:Src/PumpService.c ****  * @brief  This function is called when the peer device gets disconnected.
+ 232:Src/PumpService.c ****  * @param  None
+ 233:Src/PumpService.c ****  * @retval None
+ 234:Src/PumpService.c ****  */
+ 235:Src/PumpService.c **** void GAP_DisconnectionComplete_CB(void) {
+ 591              		.loc 1 235 41 is_stmt 1 view -0
+ 592              		.cfi_startproc
+ 593              		@ args = 0, pretend = 0, frame = 0
+ 594              		@ frame_needed = 0, uses_anonymous_args = 0
+ 236:Src/PumpService.c ****   connected = FALSE;
+ 595              		.loc 1 236 3 view .LVU182
+ 235:Src/PumpService.c ****   connected = FALSE;
+ 596              		.loc 1 235 41 is_stmt 0 view .LVU183
+ 597 0000 10B5     		push	{r4, lr}
+ 598              	.LCFI12:
+ 599              		.cfi_def_cfa_offset 8
+ 600              		.cfi_offset 4, -8
+ 601              		.cfi_offset 14, -4
+ 602              		.loc 1 236 13 view .LVU184
+ 603 0002 064B     		ldr	r3, .L25
+ 237:Src/PumpService.c ****   printf("[*] Disconnected\r\n");
+ 604              		.loc 1 237 3 view .LVU185
+ 605 0004 0648     		ldr	r0, .L25+4
+ 236:Src/PumpService.c ****   connected = FALSE;
+ 606              		.loc 1 236 13 view .LVU186
+ 607 0006 0024     		movs	r4, #0
+ 608 0008 1C60     		str	r4, [r3]
+ 609              		.loc 1 237 3 is_stmt 1 view .LVU187
+ 610 000a FFF7FEFF 		bl	puts
+ 611              	.LVL27:
+ 238:Src/PumpService.c ****   /* Make the device connectable again. */
+ 239:Src/PumpService.c ****   set_connectable = TRUE;
+ 612              		.loc 1 239 3 view .LVU188
+ 613              		.loc 1 239 19 is_stmt 0 view .LVU189
+ 614 000e 054A     		ldr	r2, .L25+8
+ 240:Src/PumpService.c ****   notification_enabled = FALSE;
+ 615              		.loc 1 240 24 view .LVU190
+ 616 0010 054B     		ldr	r3, .L25+12
+ 239:Src/PumpService.c ****   notification_enabled = FALSE;
+ 617              		.loc 1 239 19 view .LVU191
+ 618 0012 0121     		movs	r1, #1
+ 619 0014 1170     		strb	r1, [r2]
+ 620              		.loc 1 240 3 is_stmt 1 view .LVU192
+ 621              		.loc 1 240 24 is_stmt 0 view .LVU193
+ 622 0016 1C70     		strb	r4, [r3]
+ 241:Src/PumpService.c **** }
+ 623              		.loc 1 241 1 view .LVU194
+ 624 0018 10BD     		pop	{r4, pc}
+ 625              	.L26:
+ 626 001a 00BF     		.align	2
+ 627              	.L25:
+ 628 001c 00000000 		.word	.LANCHOR0
+ 629 0020 00000000 		.word	.LC9
+ARM GAS  /tmp/ccThnICr.s 			page 18
+
+
+ 630 0024 00000000 		.word	.LANCHOR2
+ 631 0028 00000000 		.word	.LANCHOR3
+ 632              		.cfi_endproc
+ 633              	.LFE136:
+ 635              		.section	.text.Read_Request_CB,"ax",%progbits
+ 636              		.align	1
+ 637              		.p2align 2,,3
+ 638              		.global	Read_Request_CB
+ 639              		.syntax unified
+ 640              		.thumb
+ 641              		.thumb_func
+ 642              		.fpu fpv4-sp-d16
+ 644              	Read_Request_CB:
+ 645              	.LVL28:
+ 646              	.LFB137:
+ 242:Src/PumpService.c **** 
+ 243:Src/PumpService.c **** /**
+ 244:Src/PumpService.c ****  * @brief  Read request callback.
+ 245:Src/PumpService.c ****  * @param  uint16_t Handle of the attribute
+ 246:Src/PumpService.c ****  * @retval None
+ 247:Src/PumpService.c ****  */
+ 248:Src/PumpService.c **** void Read_Request_CB(uint16_t handle) {
+ 647              		.loc 1 248 39 is_stmt 1 view -0
+ 648              		.cfi_startproc
+ 649              		@ args = 0, pretend = 0, frame = 0
+ 650              		@ frame_needed = 0, uses_anonymous_args = 0
+ 651              		@ link register save eliminated.
+ 249:Src/PumpService.c ****   if (connection_handle != 0)
+ 652              		.loc 1 249 3 view .LVU196
+ 653              		.loc 1 249 25 is_stmt 0 view .LVU197
+ 654 0000 044A     		ldr	r2, .L30
+ 655 0002 1388     		ldrh	r3, [r2]
+ 656 0004 9BB2     		uxth	r3, r3
+ 657              		.loc 1 249 6 view .LVU198
+ 658 0006 03B9     		cbnz	r3, .L29
+ 250:Src/PumpService.c ****     aci_gatt_allow_read(connection_handle);
+ 251:Src/PumpService.c **** }
+ 659              		.loc 1 251 1 view .LVU199
+ 660 0008 7047     		bx	lr
+ 661              	.L29:
+ 662              	.LBB19:
+ 663              	.LBI19:
+ 248:Src/PumpService.c ****   if (connection_handle != 0)
+ 664              		.loc 1 248 6 is_stmt 1 view .LVU200
+ 665              	.LVL29:
+ 666              	.LBB20:
+ 250:Src/PumpService.c ****     aci_gatt_allow_read(connection_handle);
+ 667              		.loc 1 250 5 view .LVU201
+ 668 000a 1088     		ldrh	r0, [r2]
+ 669              	.LVL30:
+ 250:Src/PumpService.c ****     aci_gatt_allow_read(connection_handle);
+ 670              		.loc 1 250 5 is_stmt 0 view .LVU202
+ 671 000c 80B2     		uxth	r0, r0
+ 672 000e FFF7FEBF 		b	aci_gatt_allow_read
+ 673              	.LVL31:
+ 674              	.L31:
+ 675 0012 00BF     		.align	2
+ARM GAS  /tmp/ccThnICr.s 			page 19
+
+
+ 676              	.L30:
+ 677 0014 00000000 		.word	.LANCHOR1
+ 678              	.LBE20:
+ 679              	.LBE19:
+ 680              		.cfi_endproc
+ 681              	.LFE137:
+ 683              		.section	.rodata.ProcessModeReq.str1.4,"aMS",%progbits,1
+ 684              		.align	2
+ 685              	.LC10:
+ 686 0000 5B2A5D20 		.ascii	"[*] Switching to Auto MODE\015\000"
+ 686      53776974 
+ 686      6368696E 
+ 686      6720746F 
+ 686      20417574 
+ 687              		.align	2
+ 688              	.LC11:
+ 689 001c 5B2A5D20 		.ascii	"[*] Switching to Manual MODE\015\000"
+ 689      53776974 
+ 689      6368696E 
+ 689      6720746F 
+ 689      204D616E 
+ 690 003a 0000     		.align	2
+ 691              	.LC12:
+ 692 003c 5B215D20 		.ascii	"[!] ERROR MODE\012\015\000"
+ 692      4552524F 
+ 692      52204D4F 
+ 692      44450A0D 
+ 692      00
+ 693              		.section	.text.ProcessModeReq,"ax",%progbits
+ 694              		.align	1
+ 695              		.p2align 2,,3
+ 696              		.global	ProcessModeReq
+ 697              		.syntax unified
+ 698              		.thumb
+ 699              		.thumb_func
+ 700              		.fpu fpv4-sp-d16
+ 702              	ProcessModeReq:
+ 703              	.LVL32:
+ 704              	.LFB140:
+ 252:Src/PumpService.c **** 
+ 253:Src/PumpService.c **** /**
+ 254:Src/PumpService.c ****  * @brief This function is called attribute value corresponding to
+ 255:Src/PumpService.c ****  * pumpCharHandle characteristic gets modified
+ 256:Src/PumpService.c ****  * @param handle : handle of the attribute
+ 257:Src/PumpService.c ****  * @param data_length : size of the modified attribute data
+ 258:Src/PumpService.c ****  * @param att_data : pointer to the modified attribute data
+ 259:Src/PumpService.c ****  * @retval None
+ 260:Src/PumpService.c ****  */
+ 261:Src/PumpService.c **** void Attribute_Modified_CB(uint16_t handle, uint8_t data_length,
+ 262:Src/PumpService.c ****                            uint8_t *att_data) {
+ 263:Src/PumpService.c ****   /* If GATT client has modified 'bolus characteristic' value, trigger the
+ 264:Src/PumpService.c ****    * bolus injection*/
+ 265:Src/PumpService.c ****   if (handle == modeCharHandle + 1) {
+ 266:Src/PumpService.c ****     /*place bolus code here*/
+ 267:Src/PumpService.c ****     printf("[*] MODE request\r\n");
+ 268:Src/PumpService.c ****     ProcessModeReq(att_data);
+ 269:Src/PumpService.c ****   }
+ARM GAS  /tmp/ccThnICr.s 			page 20
+
+
+ 270:Src/PumpService.c **** 
+ 271:Src/PumpService.c ****   /* If GATT client has modified 'bolus characteristic' value, trigger the
+ 272:Src/PumpService.c ****    * bolus injection*/
+ 273:Src/PumpService.c ****   if (handle == bolusCharHandle + 1) {
+ 274:Src/PumpService.c ****     /*place bolus code here*/
+ 275:Src/PumpService.c ****     printf("[*] BOLUS request\r\n");
+ 276:Src/PumpService.c ****     ProcessBolusReq(att_data);
+ 277:Src/PumpService.c ****   }
+ 278:Src/PumpService.c **** }
+ 279:Src/PumpService.c **** 
+ 280:Src/PumpService.c **** /**
+ 281:Src/PumpService.c ****  * @brief  Callback processing the ACI events.
+ 282:Src/PumpService.c ****  * @note   Inside this function each event must be identified and correctly
+ 283:Src/PumpService.c ****  *         parsed.
+ 284:Src/PumpService.c ****  * @param  void* Pointer to the ACI packet
+ 285:Src/PumpService.c ****  * @retval None
+ 286:Src/PumpService.c ****  */
+ 287:Src/PumpService.c **** void user_notify(void *pData) {
+ 288:Src/PumpService.c ****   hci_uart_pckt *hci_pckt = pData;
+ 289:Src/PumpService.c ****   /* obtain event packet */
+ 290:Src/PumpService.c ****   hci_event_pckt *event_pckt = (hci_event_pckt *)hci_pckt->data;
+ 291:Src/PumpService.c **** 
+ 292:Src/PumpService.c ****   if (hci_pckt->type != HCI_EVENT_PKT)
+ 293:Src/PumpService.c ****     return;
+ 294:Src/PumpService.c **** 
+ 295:Src/PumpService.c ****   switch (event_pckt->evt) {
+ 296:Src/PumpService.c ****   case EVT_DISCONN_COMPLETE: {
+ 297:Src/PumpService.c ****     GAP_DisconnectionComplete_CB();
+ 298:Src/PumpService.c ****   } break;
+ 299:Src/PumpService.c **** 
+ 300:Src/PumpService.c ****   case EVT_LE_META_EVENT: {
+ 301:Src/PumpService.c ****     evt_le_meta_event *evt = (void *)event_pckt->data;
+ 302:Src/PumpService.c **** 
+ 303:Src/PumpService.c ****     switch (evt->subevent) {
+ 304:Src/PumpService.c ****     case EVT_LE_CONN_COMPLETE: {
+ 305:Src/PumpService.c ****       evt_le_connection_complete *cc = (void *)evt->data;
+ 306:Src/PumpService.c ****       GAP_ConnectionComplete_CB(cc->peer_bdaddr, cc->handle);
+ 307:Src/PumpService.c ****     } break;
+ 308:Src/PumpService.c ****     }
+ 309:Src/PumpService.c ****   } break;
+ 310:Src/PumpService.c **** 
+ 311:Src/PumpService.c ****   case EVT_VENDOR: {
+ 312:Src/PumpService.c ****     evt_blue_aci *blue_evt = (void *)event_pckt->data;
+ 313:Src/PumpService.c ****     switch (blue_evt->ecode) {
+ 314:Src/PumpService.c ****     case EVT_BLUE_GATT_READ_PERMIT_REQ: {
+ 315:Src/PumpService.c ****       evt_gatt_read_permit_req *pr = (void *)blue_evt->data;
+ 316:Src/PumpService.c ****       Read_Request_CB(pr->attr_handle);
+ 317:Src/PumpService.c ****     } break;
+ 318:Src/PumpService.c **** 
+ 319:Src/PumpService.c ****     case EVT_BLUE_GATT_ATTRIBUTE_MODIFIED: {
+ 320:Src/PumpService.c ****       evt_gatt_attr_modified_IDB05A1 *evt =
+ 321:Src/PumpService.c ****           (evt_gatt_attr_modified_IDB05A1 *)blue_evt->data;
+ 322:Src/PumpService.c ****       Attribute_Modified_CB(evt->attr_handle, evt->data_length, evt->att_data);
+ 323:Src/PumpService.c ****     } break;
+ 324:Src/PumpService.c ****     }
+ 325:Src/PumpService.c ****   } break;
+ 326:Src/PumpService.c ****   }
+ARM GAS  /tmp/ccThnICr.s 			page 21
+
+
+ 327:Src/PumpService.c **** }
+ 328:Src/PumpService.c **** 
+ 329:Src/PumpService.c **** /// Required external
+ 330:Src/PumpService.c **** extern uint8_t OPERATING_MODE;
+ 331:Src/PumpService.c **** extern uint32_t T_iterator;
+ 332:Src/PumpService.c **** extern float BolusConfig;
+ 333:Src/PumpService.c **** 
+ 334:Src/PumpService.c **** /// MODE Request Handler
+ 335:Src/PumpService.c **** void ProcessModeReq(uint8_t *att_data) {
+ 705              		.loc 1 335 40 is_stmt 1 view -0
+ 706              		.cfi_startproc
+ 707              		@ args = 0, pretend = 0, frame = 0
+ 708              		@ frame_needed = 0, uses_anonymous_args = 0
+ 336:Src/PumpService.c ****   uint8_t Mode = (uint8_t)atoi((const char *)att_data);
+ 709              		.loc 1 336 3 view .LVU204
+ 335:Src/PumpService.c ****   uint8_t Mode = (uint8_t)atoi((const char *)att_data);
+ 710              		.loc 1 335 40 is_stmt 0 view .LVU205
+ 711 0000 10B5     		push	{r4, lr}
+ 712              	.LCFI13:
+ 713              		.cfi_def_cfa_offset 8
+ 714              		.cfi_offset 4, -8
+ 715              		.cfi_offset 14, -4
+ 716              		.loc 1 336 27 view .LVU206
+ 717 0002 FFF7FEFF 		bl	atoi
+ 718              	.LVL33:
+ 337:Src/PumpService.c **** 
+ 338:Src/PumpService.c ****   if (Mode == 0) {
+ 719              		.loc 1 338 3 is_stmt 1 view .LVU207
+ 720              		.loc 1 338 6 is_stmt 0 view .LVU208
+ 721 0006 10F0FF04 		ands	r4, r0, #255
+ 722 000a 0CD0     		beq	.L37
+ 339:Src/PumpService.c ****     printf("[*] Switching to Auto MODE\r\n");
+ 340:Src/PumpService.c ****     T_iterator = 0;
+ 341:Src/PumpService.c ****     ResetController();
+ 342:Src/PumpService.c ****     OPERATING_MODE = 0;
+ 343:Src/PumpService.c ****   } else if (Mode == 1) {
+ 723              		.loc 1 343 10 is_stmt 1 view .LVU209
+ 724              		.loc 1 343 13 is_stmt 0 view .LVU210
+ 725 000c 012C     		cmp	r4, #1
+ 726 000e 04D0     		beq	.L38
+ 344:Src/PumpService.c ****     printf("[*] Switching to Manual MODE\r\n");
+ 345:Src/PumpService.c ****     OPERATING_MODE = 1;
+ 346:Src/PumpService.c ****   } else {
+ 347:Src/PumpService.c ****     printf("[!] ERROR MODE\n\r");
+ 727              		.loc 1 347 5 is_stmt 1 view .LVU211
+ 348:Src/PumpService.c ****   }
+ 349:Src/PumpService.c **** }
+ 728              		.loc 1 349 1 is_stmt 0 view .LVU212
+ 729 0010 BDE81040 		pop	{r4, lr}
+ 730              	.LCFI14:
+ 731              		.cfi_remember_state
+ 732              		.cfi_restore 14
+ 733              		.cfi_restore 4
+ 734              		.cfi_def_cfa_offset 0
+ 347:Src/PumpService.c ****   }
+ 735              		.loc 1 347 5 view .LVU213
+ 736 0014 0948     		ldr	r0, .L39
+ARM GAS  /tmp/ccThnICr.s 			page 22
+
+
+ 737              	.LVL34:
+ 347:Src/PumpService.c ****   }
+ 738              		.loc 1 347 5 view .LVU214
+ 739 0016 FFF7FEBF 		b	printf
+ 740              	.LVL35:
+ 741              	.L38:
+ 742              	.LCFI15:
+ 743              		.cfi_restore_state
+ 744              	.LBB23:
+ 745              	.LBI23:
+ 335:Src/PumpService.c ****   uint8_t Mode = (uint8_t)atoi((const char *)att_data);
+ 746              		.loc 1 335 6 is_stmt 1 view .LVU215
+ 747              	.LBB24:
+ 344:Src/PumpService.c ****     OPERATING_MODE = 1;
+ 748              		.loc 1 344 5 view .LVU216
+ 749 001a 0948     		ldr	r0, .L39+4
+ 750              	.LVL36:
+ 344:Src/PumpService.c ****     OPERATING_MODE = 1;
+ 751              		.loc 1 344 5 is_stmt 0 view .LVU217
+ 752 001c FFF7FEFF 		bl	puts
+ 753              	.LVL37:
+ 345:Src/PumpService.c ****   } else {
+ 754              		.loc 1 345 5 is_stmt 1 view .LVU218
+ 345:Src/PumpService.c ****   } else {
+ 755              		.loc 1 345 20 is_stmt 0 view .LVU219
+ 756 0020 084B     		ldr	r3, .L39+8
+ 757 0022 1C70     		strb	r4, [r3]
+ 758              	.LBE24:
+ 759              	.LBE23:
+ 760              		.loc 1 349 1 view .LVU220
+ 761 0024 10BD     		pop	{r4, pc}
+ 762              	.LVL38:
+ 763              	.L37:
+ 339:Src/PumpService.c ****     T_iterator = 0;
+ 764              		.loc 1 339 5 is_stmt 1 view .LVU221
+ 765 0026 0848     		ldr	r0, .L39+12
+ 766              	.LVL39:
+ 339:Src/PumpService.c ****     T_iterator = 0;
+ 767              		.loc 1 339 5 is_stmt 0 view .LVU222
+ 768 0028 FFF7FEFF 		bl	puts
+ 769              	.LVL40:
+ 340:Src/PumpService.c ****     ResetController();
+ 770              		.loc 1 340 5 is_stmt 1 view .LVU223
+ 340:Src/PumpService.c ****     ResetController();
+ 771              		.loc 1 340 16 is_stmt 0 view .LVU224
+ 772 002c 074B     		ldr	r3, .L39+16
+ 773 002e 1C60     		str	r4, [r3]
+ 341:Src/PumpService.c ****     OPERATING_MODE = 0;
+ 774              		.loc 1 341 5 is_stmt 1 view .LVU225
+ 775 0030 FFF7FEFF 		bl	ResetController
+ 776              	.LVL41:
+ 342:Src/PumpService.c ****   } else if (Mode == 1) {
+ 777              		.loc 1 342 5 view .LVU226
+ 342:Src/PumpService.c ****   } else if (Mode == 1) {
+ 778              		.loc 1 342 20 is_stmt 0 view .LVU227
+ 779 0034 034B     		ldr	r3, .L39+8
+ 780 0036 1C70     		strb	r4, [r3]
+ARM GAS  /tmp/ccThnICr.s 			page 23
+
+
+ 781              		.loc 1 349 1 view .LVU228
+ 782 0038 10BD     		pop	{r4, pc}
+ 783              	.L40:
+ 784 003a 00BF     		.align	2
+ 785              	.L39:
+ 786 003c 3C000000 		.word	.LC12
+ 787 0040 1C000000 		.word	.LC11
+ 788 0044 00000000 		.word	OPERATING_MODE
+ 789 0048 00000000 		.word	.LC10
+ 790 004c 00000000 		.word	T_iterator
+ 791              		.cfi_endproc
+ 792              	.LFE140:
+ 794              		.section	.rodata.Attribute_Modified_CB.str1.4,"aMS",%progbits,1
+ 795              		.align	2
+ 796              	.LC13:
+ 797 0000 5B2A5D20 		.ascii	"[*] MODE request\015\000"
+ 797      4D4F4445 
+ 797      20726571 
+ 797      75657374 
+ 797      0D00
+ 798 0012 0000     		.align	2
+ 799              	.LC14:
+ 800 0014 5B2A5D20 		.ascii	"[*] BOLUS request\015\000"
+ 800      424F4C55 
+ 800      53207265 
+ 800      71756573 
+ 800      740D00
+ 801              		.global	__aeabi_d2f
+ 802              		.section	.text.Attribute_Modified_CB,"ax",%progbits
+ 803              		.align	1
+ 804              		.p2align 2,,3
+ 805              		.global	Attribute_Modified_CB
+ 806              		.syntax unified
+ 807              		.thumb
+ 808              		.thumb_func
+ 809              		.fpu fpv4-sp-d16
+ 811              	Attribute_Modified_CB:
+ 812              	.LVL42:
+ 813              	.LFB138:
+ 262:Src/PumpService.c ****   /* If GATT client has modified 'bolus characteristic' value, trigger the
+ 814              		.loc 1 262 47 is_stmt 1 view -0
+ 815              		.cfi_startproc
+ 816              		@ args = 0, pretend = 0, frame = 0
+ 817              		@ frame_needed = 0, uses_anonymous_args = 0
+ 265:Src/PumpService.c ****     /*place bolus code here*/
+ 818              		.loc 1 265 3 view .LVU230
+ 262:Src/PumpService.c ****   /* If GATT client has modified 'bolus characteristic' value, trigger the
+ 819              		.loc 1 262 47 is_stmt 0 view .LVU231
+ 820 0000 38B5     		push	{r3, r4, r5, lr}
+ 821              	.LCFI16:
+ 822              		.cfi_def_cfa_offset 16
+ 823              		.cfi_offset 3, -16
+ 824              		.cfi_offset 4, -12
+ 825              		.cfi_offset 5, -8
+ 826              		.cfi_offset 14, -4
+ 265:Src/PumpService.c ****     /*place bolus code here*/
+ 827              		.loc 1 265 32 view .LVU232
+ARM GAS  /tmp/ccThnICr.s 			page 24
+
+
+ 828 0002 104B     		ldr	r3, .L47
+ 829 0004 1B88     		ldrh	r3, [r3]
+ 830 0006 0133     		adds	r3, r3, #1
+ 265:Src/PumpService.c ****     /*place bolus code here*/
+ 831              		.loc 1 265 6 view .LVU233
+ 832 0008 9842     		cmp	r0, r3
+ 262:Src/PumpService.c ****   /* If GATT client has modified 'bolus characteristic' value, trigger the
+ 833              		.loc 1 262 47 view .LVU234
+ 834 000a 0446     		mov	r4, r0
+ 835 000c 1546     		mov	r5, r2
+ 265:Src/PumpService.c ****     /*place bolus code here*/
+ 836              		.loc 1 265 6 view .LVU235
+ 837 000e 12D0     		beq	.L45
+ 838              	.LVL43:
+ 839              	.L42:
+ 273:Src/PumpService.c ****     /*place bolus code here*/
+ 840              		.loc 1 273 3 is_stmt 1 view .LVU236
+ 273:Src/PumpService.c ****     /*place bolus code here*/
+ 841              		.loc 1 273 33 is_stmt 0 view .LVU237
+ 842 0010 0D4B     		ldr	r3, .L47+4
+ 843 0012 1B88     		ldrh	r3, [r3]
+ 844 0014 0133     		adds	r3, r3, #1
+ 273:Src/PumpService.c ****     /*place bolus code here*/
+ 845              		.loc 1 273 6 view .LVU238
+ 846 0016 9C42     		cmp	r4, r3
+ 847 0018 00D0     		beq	.L46
+ 278:Src/PumpService.c **** 
+ 848              		.loc 1 278 1 view .LVU239
+ 849 001a 38BD     		pop	{r3, r4, r5, pc}
+ 850              	.LVL44:
+ 851              	.L46:
+ 852              	.LBB29:
+ 853              	.LBI29:
+ 261:Src/PumpService.c ****                            uint8_t *att_data) {
+ 854              		.loc 1 261 6 is_stmt 1 view .LVU240
+ 855              	.LBB30:
+ 275:Src/PumpService.c ****     ProcessBolusReq(att_data);
+ 856              		.loc 1 275 5 view .LVU241
+ 857 001c 0B48     		ldr	r0, .L47+8
+ 858              	.LBB31:
+ 859              	.LBB32:
+ 350:Src/PumpService.c **** 
+ 351:Src/PumpService.c **** /// Bolus Request Handler
+ 352:Src/PumpService.c **** void ProcessBolusReq(uint8_t *att_data) {
+ 353:Src/PumpService.c ****   BolusConfig = atof((const char *)att_data);
+ 860              		.loc 1 353 15 is_stmt 0 view .LVU242
+ 861 001e 0C4C     		ldr	r4, .L47+12
+ 862              	.LVL45:
+ 863              		.loc 1 353 15 view .LVU243
+ 864              	.LBE32:
+ 865              	.LBE31:
+ 275:Src/PumpService.c ****     ProcessBolusReq(att_data);
+ 866              		.loc 1 275 5 view .LVU244
+ 867 0020 FFF7FEFF 		bl	puts
+ 868              	.LVL46:
+ 276:Src/PumpService.c ****   }
+ 869              		.loc 1 276 5 is_stmt 1 view .LVU245
+ARM GAS  /tmp/ccThnICr.s 			page 25
+
+
+ 870              	.LBB34:
+ 871              	.LBI31:
+ 352:Src/PumpService.c ****   BolusConfig = atof((const char *)att_data);
+ 872              		.loc 1 352 6 view .LVU246
+ 873              	.LBB33:
+ 874              		.loc 1 353 3 view .LVU247
+ 875              		.loc 1 353 17 is_stmt 0 view .LVU248
+ 876 0024 2846     		mov	r0, r5
+ 877 0026 FFF7FEFF 		bl	atof
+ 878              	.LVL47:
+ 879 002a 51EC100B 		vmov	r0, r1, d0
+ 880 002e FFF7FEFF 		bl	__aeabi_d2f
+ 881              	.LVL48:
+ 882 0032 2060     		str	r0, [r4]	@ float
+ 883              	.LVL49:
+ 884              		.loc 1 353 17 view .LVU249
+ 885              	.LBE33:
+ 886              	.LBE34:
+ 887              	.LBE30:
+ 888              	.LBE29:
+ 278:Src/PumpService.c **** 
+ 889              		.loc 1 278 1 view .LVU250
+ 890 0034 38BD     		pop	{r3, r4, r5, pc}
+ 891              	.LVL50:
+ 892              	.L45:
+ 267:Src/PumpService.c ****     ProcessModeReq(att_data);
+ 893              		.loc 1 267 5 is_stmt 1 view .LVU251
+ 894 0036 0748     		ldr	r0, .L47+16
+ 895              	.LVL51:
+ 267:Src/PumpService.c ****     ProcessModeReq(att_data);
+ 896              		.loc 1 267 5 is_stmt 0 view .LVU252
+ 897 0038 FFF7FEFF 		bl	puts
+ 898              	.LVL52:
+ 268:Src/PumpService.c ****   }
+ 899              		.loc 1 268 5 is_stmt 1 view .LVU253
+ 900 003c 2846     		mov	r0, r5
+ 901 003e FFF7FEFF 		bl	ProcessModeReq
+ 902              	.LVL53:
+ 903 0042 E5E7     		b	.L42
+ 904              	.L48:
+ 905              		.align	2
+ 906              	.L47:
+ 907 0044 00000000 		.word	modeCharHandle
+ 908 0048 00000000 		.word	bolusCharHandle
+ 909 004c 14000000 		.word	.LC14
+ 910 0050 00000000 		.word	BolusConfig
+ 911 0054 00000000 		.word	.LC13
+ 912              		.cfi_endproc
+ 913              	.LFE138:
+ 915              		.section	.text.user_notify,"ax",%progbits
+ 916              		.align	1
+ 917              		.p2align 2,,3
+ 918              		.global	user_notify
+ 919              		.syntax unified
+ 920              		.thumb
+ 921              		.thumb_func
+ 922              		.fpu fpv4-sp-d16
+ARM GAS  /tmp/ccThnICr.s 			page 26
+
+
+ 924              	user_notify:
+ 925              	.LVL54:
+ 926              	.LFB139:
+ 287:Src/PumpService.c ****   hci_uart_pckt *hci_pckt = pData;
+ 927              		.loc 1 287 31 view -0
+ 928              		.cfi_startproc
+ 929              		@ args = 0, pretend = 0, frame = 0
+ 930              		@ frame_needed = 0, uses_anonymous_args = 0
+ 288:Src/PumpService.c ****   /* obtain event packet */
+ 931              		.loc 1 288 3 view .LVU255
+ 290:Src/PumpService.c **** 
+ 932              		.loc 1 290 3 view .LVU256
+ 292:Src/PumpService.c ****     return;
+ 933              		.loc 1 292 3 view .LVU257
+ 292:Src/PumpService.c ****     return;
+ 934              		.loc 1 292 6 is_stmt 0 view .LVU258
+ 935 0000 0378     		ldrb	r3, [r0]	@ zero_extendqisi2
+ 936 0002 042B     		cmp	r3, #4
+ 937 0004 06D1     		bne	.L58
+ 295:Src/PumpService.c ****   case EVT_DISCONN_COMPLETE: {
+ 938              		.loc 1 295 3 is_stmt 1 view .LVU259
+ 295:Src/PumpService.c ****   case EVT_DISCONN_COMPLETE: {
+ 939              		.loc 1 295 21 is_stmt 0 view .LVU260
+ 940 0006 4378     		ldrb	r3, [r0, #1]	@ zero_extendqisi2
+ 295:Src/PumpService.c ****   case EVT_DISCONN_COMPLETE: {
+ 941              		.loc 1 295 3 view .LVU261
+ 942 0008 3E2B     		cmp	r3, #62
+ 943 000a 24D0     		beq	.L51
+ 944 000c FF2B     		cmp	r3, #255
+ 945 000e 0FD0     		beq	.L52
+ 946 0010 052B     		cmp	r3, #5
+ 947 0012 00D0     		beq	.L61
+ 948              	.L58:
+ 949 0014 7047     		bx	lr
+ 950              	.L61:
+ 297:Src/PumpService.c ****   } break;
+ 951              		.loc 1 297 5 is_stmt 1 view .LVU262
+ 952              	.LBB46:
+ 953              	.LBI46:
+ 235:Src/PumpService.c ****   connected = FALSE;
+ 954              		.loc 1 235 6 view .LVU263
+ 955              	.LBB47:
+ 236:Src/PumpService.c ****   printf("[*] Disconnected\r\n");
+ 956              		.loc 1 236 3 view .LVU264
+ 957              	.LBE47:
+ 958              	.LBE46:
+ 287:Src/PumpService.c ****   hci_uart_pckt *hci_pckt = pData;
+ 959              		.loc 1 287 31 is_stmt 0 view .LVU265
+ 960 0016 10B5     		push	{r4, lr}
+ 961              	.LCFI17:
+ 962              		.cfi_def_cfa_offset 8
+ 963              		.cfi_offset 4, -8
+ 964              		.cfi_offset 14, -4
+ 965              	.LBB49:
+ 966              	.LBB48:
+ 236:Src/PumpService.c ****   printf("[*] Disconnected\r\n");
+ 967              		.loc 1 236 13 view .LVU266
+ARM GAS  /tmp/ccThnICr.s 			page 27
+
+
+ 968 0018 164B     		ldr	r3, .L62
+ 237:Src/PumpService.c ****   /* Make the device connectable again. */
+ 969              		.loc 1 237 3 view .LVU267
+ 970 001a 1748     		ldr	r0, .L62+4
+ 971              	.LVL55:
+ 236:Src/PumpService.c ****   printf("[*] Disconnected\r\n");
+ 972              		.loc 1 236 13 view .LVU268
+ 973 001c 0024     		movs	r4, #0
+ 974 001e 1C60     		str	r4, [r3]
+ 237:Src/PumpService.c ****   /* Make the device connectable again. */
+ 975              		.loc 1 237 3 is_stmt 1 view .LVU269
+ 976 0020 FFF7FEFF 		bl	puts
+ 977              	.LVL56:
+ 239:Src/PumpService.c ****   notification_enabled = FALSE;
+ 978              		.loc 1 239 3 view .LVU270
+ 239:Src/PumpService.c ****   notification_enabled = FALSE;
+ 979              		.loc 1 239 19 is_stmt 0 view .LVU271
+ 980 0024 154A     		ldr	r2, .L62+8
+ 240:Src/PumpService.c **** }
+ 981              		.loc 1 240 24 view .LVU272
+ 982 0026 164B     		ldr	r3, .L62+12
+ 239:Src/PumpService.c ****   notification_enabled = FALSE;
+ 983              		.loc 1 239 19 view .LVU273
+ 984 0028 0121     		movs	r1, #1
+ 985 002a 1170     		strb	r1, [r2]
+ 240:Src/PumpService.c **** }
+ 986              		.loc 1 240 3 is_stmt 1 view .LVU274
+ 240:Src/PumpService.c **** }
+ 987              		.loc 1 240 24 is_stmt 0 view .LVU275
+ 988 002c 1C70     		strb	r4, [r3]
+ 989              	.LBE48:
+ 990              	.LBE49:
+ 327:Src/PumpService.c **** 
+ 991              		.loc 1 327 1 view .LVU276
+ 992 002e 10BD     		pop	{r4, pc}
+ 993              	.LVL57:
+ 994              	.L52:
+ 995              	.LCFI18:
+ 996              		.cfi_def_cfa_offset 0
+ 997              		.cfi_restore 4
+ 998              		.cfi_restore 14
+ 999              	.LBB50:
+ 312:Src/PumpService.c ****     switch (blue_evt->ecode) {
+ 1000              		.loc 1 312 5 is_stmt 1 view .LVU277
+ 313:Src/PumpService.c ****     case EVT_BLUE_GATT_READ_PERMIT_REQ: {
+ 1001              		.loc 1 313 5 view .LVU278
+ 313:Src/PumpService.c ****     case EVT_BLUE_GATT_READ_PERMIT_REQ: {
+ 1002              		.loc 1 313 21 is_stmt 0 view .LVU279
+ 1003 0030 B0F80330 		ldrh	r3, [r0, #3]	@ unaligned
+ 1004 0034 40F60142 		movw	r2, #3073
+ 1005 0038 9342     		cmp	r3, r2
+ 1006 003a 14D0     		beq	.L53
+ 1007 003c 40F61442 		movw	r2, #3092
+ 1008 0040 9342     		cmp	r3, r2
+ 1009 0042 E7D1     		bne	.L58
+ 1010              	.LBB51:
+ 315:Src/PumpService.c ****       Read_Request_CB(pr->attr_handle);
+ARM GAS  /tmp/ccThnICr.s 			page 28
+
+
+ 1011              		.loc 1 315 7 is_stmt 1 view .LVU280
+ 1012              	.LVL58:
+ 316:Src/PumpService.c ****     } break;
+ 1013              		.loc 1 316 7 view .LVU281
+ 1014              	.LBB52:
+ 1015              	.LBI52:
+ 248:Src/PumpService.c ****   if (connection_handle != 0)
+ 1016              		.loc 1 248 6 view .LVU282
+ 1017              	.LBB53:
+ 249:Src/PumpService.c ****     aci_gatt_allow_read(connection_handle);
+ 1018              		.loc 1 249 3 view .LVU283
+ 249:Src/PumpService.c ****     aci_gatt_allow_read(connection_handle);
+ 1019              		.loc 1 249 25 is_stmt 0 view .LVU284
+ 1020 0044 0F4A     		ldr	r2, .L62+16
+ 1021 0046 1388     		ldrh	r3, [r2]
+ 1022 0048 9BB2     		uxth	r3, r3
+ 249:Src/PumpService.c ****     aci_gatt_allow_read(connection_handle);
+ 1023              		.loc 1 249 6 view .LVU285
+ 1024 004a 002B     		cmp	r3, #0
+ 1025 004c E2D0     		beq	.L58
+ 1026              	.LBB54:
+ 1027              	.LBI54:
+ 248:Src/PumpService.c ****   if (connection_handle != 0)
+ 1028              		.loc 1 248 6 is_stmt 1 view .LVU286
+ 1029              	.LVL59:
+ 1030              	.LBB55:
+ 250:Src/PumpService.c **** }
+ 1031              		.loc 1 250 5 view .LVU287
+ 1032 004e 1088     		ldrh	r0, [r2]
+ 1033              	.LVL60:
+ 250:Src/PumpService.c **** }
+ 1034              		.loc 1 250 5 is_stmt 0 view .LVU288
+ 1035 0050 80B2     		uxth	r0, r0
+ 1036 0052 FFF7FEBF 		b	aci_gatt_allow_read
+ 1037              	.LVL61:
+ 1038              	.L51:
+ 250:Src/PumpService.c **** }
+ 1039              		.loc 1 250 5 view .LVU289
+ 1040              	.LBE55:
+ 1041              	.LBE54:
+ 1042              	.LBE53:
+ 1043              	.LBE52:
+ 1044              	.LBE51:
+ 1045              	.LBE50:
+ 1046              	.LBB57:
+ 301:Src/PumpService.c **** 
+ 1047              		.loc 1 301 5 is_stmt 1 view .LVU290
+ 303:Src/PumpService.c ****     case EVT_LE_CONN_COMPLETE: {
+ 1048              		.loc 1 303 5 view .LVU291
+ 1049 0056 C378     		ldrb	r3, [r0, #3]	@ zero_extendqisi2
+ 1050 0058 012B     		cmp	r3, #1
+ 1051 005a DBD1     		bne	.L58
+ 1052              	.LBB58:
+ 305:Src/PumpService.c ****       GAP_ConnectionComplete_CB(cc->peer_bdaddr, cc->handle);
+ 1053              		.loc 1 305 7 view .LVU292
+ 1054              	.LVL62:
+ 306:Src/PumpService.c ****     } break;
+ARM GAS  /tmp/ccThnICr.s 			page 29
+
+
+ 1055              		.loc 1 306 7 view .LVU293
+ 1056 005c B0F80510 		ldrh	r1, [r0, #5]	@ unaligned
+ 1057 0060 0930     		adds	r0, r0, #9
+ 1058              	.LVL63:
+ 306:Src/PumpService.c ****     } break;
+ 1059              		.loc 1 306 7 is_stmt 0 view .LVU294
+ 1060 0062 FFF7FEBF 		b	GAP_ConnectionComplete_CB
+ 1061              	.LVL64:
+ 1062              	.L53:
+ 306:Src/PumpService.c ****     } break;
+ 1063              		.loc 1 306 7 view .LVU295
+ 1064              	.LBE58:
+ 1065              	.LBE57:
+ 1066              	.LBB59:
+ 1067              	.LBB56:
+ 320:Src/PumpService.c ****           (evt_gatt_attr_modified_IDB05A1 *)blue_evt->data;
+ 1068              		.loc 1 320 7 is_stmt 1 view .LVU296
+ 322:Src/PumpService.c ****     } break;
+ 1069              		.loc 1 322 7 view .LVU297
+ 1070 0066 417A     		ldrb	r1, [r0, #9]	@ zero_extendqisi2
+ 1071 0068 00F10C02 		add	r2, r0, #12
+ 1072 006c B0F80700 		ldrh	r0, [r0, #7]	@ unaligned
+ 1073              	.LVL65:
+ 322:Src/PumpService.c ****     } break;
+ 1074              		.loc 1 322 7 is_stmt 0 view .LVU298
+ 1075 0070 FFF7FEBF 		b	Attribute_Modified_CB
+ 1076              	.LVL66:
+ 1077              	.L63:
+ 322:Src/PumpService.c ****     } break;
+ 1078              		.loc 1 322 7 view .LVU299
+ 1079              		.align	2
+ 1080              	.L62:
+ 1081 0074 00000000 		.word	.LANCHOR0
+ 1082 0078 00000000 		.word	.LC9
+ 1083 007c 00000000 		.word	.LANCHOR2
+ 1084 0080 00000000 		.word	.LANCHOR3
+ 1085 0084 00000000 		.word	.LANCHOR1
+ 1086              	.LBE56:
+ 1087              	.LBE59:
+ 1088              		.cfi_endproc
+ 1089              	.LFE139:
+ 1091              		.section	.text.ProcessBolusReq,"ax",%progbits
+ 1092              		.align	1
+ 1093              		.p2align 2,,3
+ 1094              		.global	ProcessBolusReq
+ 1095              		.syntax unified
+ 1096              		.thumb
+ 1097              		.thumb_func
+ 1098              		.fpu fpv4-sp-d16
+ 1100              	ProcessBolusReq:
+ 1101              	.LVL67:
+ 1102              	.LFB141:
+ 352:Src/PumpService.c ****   BolusConfig = atof((const char *)att_data);
+ 1103              		.loc 1 352 41 is_stmt 1 view -0
+ 1104              		.cfi_startproc
+ 1105              		@ args = 0, pretend = 0, frame = 0
+ 1106              		@ frame_needed = 0, uses_anonymous_args = 0
+ARM GAS  /tmp/ccThnICr.s 			page 30
+
+
+ 1107              		.loc 1 353 3 view .LVU301
+ 352:Src/PumpService.c ****   BolusConfig = atof((const char *)att_data);
+ 1108              		.loc 1 352 41 is_stmt 0 view .LVU302
+ 1109 0000 08B5     		push	{r3, lr}
+ 1110              	.LCFI19:
+ 1111              		.cfi_def_cfa_offset 8
+ 1112              		.cfi_offset 3, -8
+ 1113              		.cfi_offset 14, -4
+ 1114              		.loc 1 353 17 view .LVU303
+ 1115 0002 FFF7FEFF 		bl	atof
+ 1116              	.LVL68:
+ 1117              		.loc 1 353 17 view .LVU304
+ 1118 0006 51EC100B 		vmov	r0, r1, d0
+ 1119 000a FFF7FEFF 		bl	__aeabi_d2f
+ 1120              	.LVL69:
+ 1121              		.loc 1 353 15 view .LVU305
+ 1122 000e 014B     		ldr	r3, .L66
+ 1123              		.loc 1 353 17 view .LVU306
+ 1124 0010 1860     		str	r0, [r3]	@ float
+ 354:Src/PumpService.c **** }...
+ 1125              		.loc 1 354 1 view .LVU307
+ 1126 0012 08BD     		pop	{r3, pc}
+ 1127              	.L67:
+ 1128              		.align	2
+ 1129              	.L66:
+ 1130 0014 00000000 		.word	BolusConfig
+ 1131              		.cfi_endproc
+ 1132              	.LFE141:
+ 1134              		.comm	modeCharHandle,2,2
+ 1135              		.comm	bolusCharHandle,2,2
+ 1136              		.comm	pumpServHandle,2,2
+ 1137              		.global	notification_enabled
+ 1138              		.global	connection_handle
+ 1139              		.global	set_connectable
+ 1140              		.global	connected
+ 1141              		.section	.bss.connected,"aw",%nobits
+ 1142              		.align	2
+ 1143              		.set	.LANCHOR0,. + 0
+ 1146              	connected:
+ 1147 0000 00000000 		.space	4
+ 1148              		.section	.bss.connection_handle,"aw",%nobits
+ 1149              		.align	1
+ 1150              		.set	.LANCHOR1,. + 0
+ 1153              	connection_handle:
+ 1154 0000 0000     		.space	2
+ 1155              		.section	.bss.notification_enabled,"aw",%nobits
+ 1156              		.set	.LANCHOR3,. + 0
+ 1159              	notification_enabled:
+ 1160 0000 00       		.space	1
+ 1161              		.section	.data.set_connectable,"aw"
+ 1162              		.set	.LANCHOR2,. + 0
+ 1165              	set_connectable:
+ 1166 0000 01       		.byte	1
+ 1167              		.text
+ 1168              	.Letext0:
+ 1169              		.file 2 "/usr/lib/gcc/arm-none-eabi/9.2.1/include/stdint.h"
+ 1170              		.file 3 "Middlewares/ST/BlueNRG-MS/includes/bluenrg_def.h"
+ARM GAS  /tmp/ccThnICr.s 			page 31
+
+
+ 1171              		.file 4 "Middlewares/ST/BlueNRG-MS/includes/link_layer.h"
+ 1172              		.file 5 "/usr/lib/gcc/arm-none-eabi/9.2.1/include/stddef.h"
+ 1173              		.file 6 "/usr/include/newlib/sys/_types.h"
+ 1174              		.file 7 "/usr/include/newlib/sys/reent.h"
+ 1175              		.file 8 "/usr/include/newlib/sys/lock.h"
+ 1176              		.file 9 "Drivers/CMSIS/Include/core_cm4.h"
+ 1177              		.file 10 "Drivers/CMSIS/Device/ST/STM32F4xx/Include/system_stm32f4xx.h"
+ 1178              		.file 11 "Drivers/CMSIS/Device/ST/STM32F4xx/Include/stm32f446xx.h"
+ 1179              		.file 12 "Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_def.h"
+ 1180              		.file 13 "Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_exti.h"
+ 1181              		.file 14 "Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_dma.h"
+ 1182              		.file 15 "Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_spi.h"
+ 1183              		.file 16 "Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_uart.h"
+ 1184              		.file 17 "Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h"
+ 1185              		.file 18 "Inc/stm32f4xx_nucleo_bus.h"
+ 1186              		.file 19 "Inc/hci_tl_interface.h"
+ 1187              		.file 20 "Middlewares/ST/BlueNRG-MS/includes/hci_const.h"
+ 1188              		.file 21 "Middlewares/ST/BlueNRG-MS/includes/bluenrg_gatt_server.h"
+ 1189              		.file 22 "Middlewares/ST/BlueNRG-MS/includes/bluenrg_aci_const.h"
+ 1190              		.file 23 "Drivers/BSP/STM32F4xx_Nucleo/stm32f4xx_nucleo.h"
+ 1191              		.file 24 "/usr/include/newlib/stdlib.h"
+ 1192              		.file 25 "Middlewares/ST/BlueNRG-MS/includes/bluenrg_gatt_aci.h"
+ 1193              		.file 26 "/usr/include/newlib/stdio.h"
+ 1194              		.file 27 "Middlewares/ST/BlueNRG-MS/includes/hci_le.h"
+ 1195              		.file 28 "Middlewares/ST/BlueNRG-MS/includes/bluenrg_gap_aci.h"
+ 1196              		.file 29 "Inc/InsulinController.h"
+ 1197              		.file 30 "<built-in>"
+ARM GAS  /tmp/ccThnICr.s 			page 32
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 PumpService.c
+     /tmp/ccThnICr.s:18     .rodata.Add_Pump_Service.str1.4:0000000000000000 $d
+     /tmp/ccThnICr.s:29     .text.Add_Pump_Service:0000000000000000 $t
+     /tmp/ccThnICr.s:38     .text.Add_Pump_Service:0000000000000000 Add_Pump_Service
+     /tmp/ccThnICr.s:348    .text.Add_Pump_Service:000000000000015c $d
+                            *COM*:0000000000000002 pumpServHandle
+                            *COM*:0000000000000002 modeCharHandle
+                            *COM*:0000000000000002 bolusCharHandle
+     /tmp/ccThnICr.s:368    .rodata.setConnectable.str1.4:0000000000000000 $d
+     /tmp/ccThnICr.s:379    .text.setConnectable:0000000000000000 $t
+     /tmp/ccThnICr.s:387    .text.setConnectable:0000000000000000 setConnectable
+     /tmp/ccThnICr.s:463    .text.setConnectable:0000000000000050 $d
+     /tmp/ccThnICr.s:470    .rodata.GAP_ConnectionComplete_CB.str1.4:0000000000000000 $d
+     /tmp/ccThnICr.s:480    .text.GAP_ConnectionComplete_CB:0000000000000000 $t
+     /tmp/ccThnICr.s:488    .text.GAP_ConnectionComplete_CB:0000000000000000 GAP_ConnectionComplete_CB
+     /tmp/ccThnICr.s:568    .text.GAP_ConnectionComplete_CB:0000000000000034 $d
+     /tmp/ccThnICr.s:577    .rodata.GAP_DisconnectionComplete_CB.str1.4:0000000000000000 $d
+     /tmp/ccThnICr.s:581    .text.GAP_DisconnectionComplete_CB:0000000000000000 $t
+     /tmp/ccThnICr.s:589    .text.GAP_DisconnectionComplete_CB:0000000000000000 GAP_DisconnectionComplete_CB
+     /tmp/ccThnICr.s:628    .text.GAP_DisconnectionComplete_CB:000000000000001c $d
+     /tmp/ccThnICr.s:636    .text.Read_Request_CB:0000000000000000 $t
+     /tmp/ccThnICr.s:644    .text.Read_Request_CB:0000000000000000 Read_Request_CB
+     /tmp/ccThnICr.s:677    .text.Read_Request_CB:0000000000000014 $d
+     /tmp/ccThnICr.s:684    .rodata.ProcessModeReq.str1.4:0000000000000000 $d
+     /tmp/ccThnICr.s:694    .text.ProcessModeReq:0000000000000000 $t
+     /tmp/ccThnICr.s:702    .text.ProcessModeReq:0000000000000000 ProcessModeReq
+     /tmp/ccThnICr.s:786    .text.ProcessModeReq:000000000000003c $d
+     /tmp/ccThnICr.s:795    .rodata.Attribute_Modified_CB.str1.4:0000000000000000 $d
+     /tmp/ccThnICr.s:803    .text.Attribute_Modified_CB:0000000000000000 $t
+     /tmp/ccThnICr.s:811    .text.Attribute_Modified_CB:0000000000000000 Attribute_Modified_CB
+     /tmp/ccThnICr.s:907    .text.Attribute_Modified_CB:0000000000000044 $d
+     /tmp/ccThnICr.s:916    .text.user_notify:0000000000000000 $t
+     /tmp/ccThnICr.s:924    .text.user_notify:0000000000000000 user_notify
+     /tmp/ccThnICr.s:1081   .text.user_notify:0000000000000074 $d
+     /tmp/ccThnICr.s:1092   .text.ProcessBolusReq:0000000000000000 $t
+     /tmp/ccThnICr.s:1100   .text.ProcessBolusReq:0000000000000000 ProcessBolusReq
+     /tmp/ccThnICr.s:1130   .text.ProcessBolusReq:0000000000000014 $d
+     /tmp/ccThnICr.s:1159   .bss.notification_enabled:0000000000000000 notification_enabled
+     /tmp/ccThnICr.s:1153   .bss.connection_handle:0000000000000000 connection_handle
+     /tmp/ccThnICr.s:1165   .data.set_connectable:0000000000000000 set_connectable
+     /tmp/ccThnICr.s:1146   .bss.connected:0000000000000000 connected
+     /tmp/ccThnICr.s:1142   .bss.connected:0000000000000000 $d
+     /tmp/ccThnICr.s:1149   .bss.connection_handle:0000000000000000 $d
+     /tmp/ccThnICr.s:1160   .bss.notification_enabled:0000000000000000 $d
+
+UNDEFINED SYMBOLS
+aci_gatt_add_serv
+aci_gatt_add_char
+aci_gatt_add_char_desc
+printf
+puts
+hci_le_set_scan_resp_data
+aci_gap_set_discoverable
+aci_gatt_allow_read
+atoi
+ResetController
+ARM GAS  /tmp/ccThnICr.s 			page 33
+
+
+OPERATING_MODE
+T_iterator
+__aeabi_d2f
+atof
+BolusConfig
