@@ -1,5 +1,0 @@
-src/drivers/sifive_l2pf0.o: \
- /home/reglisse/Documents/Code/Github/SecPump/SecPump-RISC-V/SiFive-freedom-e-sdk/freedom-metal/src/drivers/sifive_l2pf0.c \
- metal/machine/platform.h
-
-metal/machine/platform.h:

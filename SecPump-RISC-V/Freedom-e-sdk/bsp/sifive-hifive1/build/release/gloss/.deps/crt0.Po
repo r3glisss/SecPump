@@ -1,2 +1,0 @@
-gloss/crt0.o: \
- /home/reglisse/Documents/Code/Github/SecPump/SecPump-RISC-V/SiFive-freedom-e-sdk/freedom-metal/gloss/crt0.S

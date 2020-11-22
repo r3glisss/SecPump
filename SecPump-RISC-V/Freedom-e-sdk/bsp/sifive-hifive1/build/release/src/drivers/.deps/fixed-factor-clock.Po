@@ -1,5 +1,0 @@
-src/drivers/fixed-factor-clock.o: \
- /home/reglisse/Documents/Code/Github/SecPump/SecPump-RISC-V/SiFive-freedom-e-sdk/freedom-metal/src/drivers/fixed-factor-clock.c \
- metal/machine/platform.h
-
-metal/machine/platform.h:

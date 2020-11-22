@@ -1,4 +1,4 @@
-# RISC-V SecPump :syringe:
+# SecPump RISC-V :syringe:
 
 ## Get started
 This sub-folder contains three folders: "Scripts" which contains the PC interface with the pump. "FPGA" which contains the prebuilt "bitstream" and "MCS" files for the Arty A7-35T Digilent FPGA. "Freedom-e-sdk" is a clone of the SiFive toolchain. It contains the source of the Pump in "software/secpump".

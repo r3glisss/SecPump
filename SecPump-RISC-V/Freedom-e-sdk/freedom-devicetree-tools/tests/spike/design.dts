@@ -1,8 +1,0 @@
-/include/ "core.dts"
-/ {
-	chosen {
-		metal,entry = <&{/memory@80000000} 0 0>;
-		metal,boothart = <&CPU0>;
-		stdout-path = "/htif:115200";
-	};
-};

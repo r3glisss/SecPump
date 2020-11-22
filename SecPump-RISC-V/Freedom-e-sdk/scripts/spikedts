@@ -1,7 +1,0 @@
-#!/bin/bash
-
-set -x
-
-OUTPUT=$1
-
-spike $SPIKE_OPTIONS --dump-dts /dev/null > $OUTPUT

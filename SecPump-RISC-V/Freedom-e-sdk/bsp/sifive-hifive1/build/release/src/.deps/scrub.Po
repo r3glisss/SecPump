@@ -1,2 +1,0 @@
-src/scrub.o: \
- /home/reglisse/Documents/Code/Github/SecPump/SecPump-RISC-V/SiFive-freedom-e-sdk/freedom-metal/src/scrub.S
