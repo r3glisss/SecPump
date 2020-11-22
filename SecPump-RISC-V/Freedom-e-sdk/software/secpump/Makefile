@@ -1,7 +1,7 @@
 # Copyright 2019 SiFive, Inc #
 # SPDX-License-Identifier: Apache-2.0 #
 
-PROGRAM ?= empty
+PROGRAM ?= secpump
 
 $(PROGRAM): $(wildcard *.c) $(wildcard *.h) $(wildcard *.S)
 	$(CC) $(CFLAGS) $(LDFLAGS) $(filter %.c %.S,$^) $(LOADLIBES) $(LDLIBS) -o $@

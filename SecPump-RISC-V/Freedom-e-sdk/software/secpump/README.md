@@ -1,2 +1,2 @@
-# empty
-An empty example. Use as a starting point for your own project!
+# SecPump
+The source code of the SecPump RISC-V port
