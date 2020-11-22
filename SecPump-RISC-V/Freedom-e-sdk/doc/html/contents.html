@@ -1,0 +1,250 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Contents of the SDK &#8212; Freedom E SDK v201905 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="User Guide" href="userguide.html" />
+    <link rel="prev" title="Freedom E SDK" href="index.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="contents-of-the-sdk">
+<h1>Contents of the SDK<a class="headerlink" href="#contents-of-the-sdk" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="supported-targets">
+<h2>Supported Targets<a class="headerlink" href="#supported-targets" title="Permalink to this headline">¶</a></h2>
+<p>Freedom E SDK comes packaged with the following board support packages under the
+<code class="docutils literal notranslate"><span class="pre">bsp/</span></code> directory.</p>
+<ul class="simple">
+<li><a class="reference external" href="https://www.sifive.com/boards/hifive1">SiFive HiFive 1</a><ul>
+<li>sifive-hifive1</li>
+</ul>
+</li>
+<li><a class="reference external" href="https://www.sifive.com/boards/hifive1-rev-b">SiFive HiFive 1 Rev B</a><ul>
+<li>sifive-hifive1-revb</li>
+</ul>
+</li>
+<li><a class="reference external" href="https://www.sifive.com/boards/hifive-unleashed">SiFive HiFive Unleashed</a><ul>
+<li>sifive-hifive-unleashed</li>
+</ul>
+</li>
+<li><a class="reference external" href="https://github.com/sifive/freedom">SiFive Freedom E310 Arty</a><ul>
+<li>freedom-e310-arty</li>
+</ul>
+</li>
+<li><a class="reference external" href="https://github.com/sifive/riscv-qemu/tree/riscv-qemu-3.1">QEMU Emulation of the SiFive E31</a><ul>
+<li>qemu-sifive-e31</li>
+</ul>
+</li>
+<li><a class="reference external" href="https://github.com/sifive/riscv-qemu/tree/riscv-qemu-3.1">QEMU Emulation of the SiFive S51</a><ul>
+<li>qemu-sifive-s51</li>
+</ul>
+</li>
+</ul>
+<p>The board support files for the Freedom Metal library are located entirely
+within a single target directory in <code class="docutils literal notranslate"><span class="pre">bsp/&lt;target&gt;/</span></code>. For example, the HiFive 1
+board support files for Freedom Metal are entirely within <code class="docutils literal notranslate"><span class="pre">bsp/sifive-hifive1/</span></code>
+and consist of the following:</p>
+<ul class="simple">
+<li><code class="docutils literal notranslate"><span class="pre">design.dts</span></code><ul>
+<li>The DeviceTree description of the target. This file is used to parameterize
+the Freedom Metal library to the target device. It is included as reference
+so that users of Freedom Metal are aware of what features and peripherals
+are available on the target.</li>
+</ul>
+</li>
+<li><code class="docutils literal notranslate"><span class="pre">metal.h</span></code><ul>
+<li>The Freedom Metal machine header which is used internally to Freedom Metal
+to instantiate structures to support the target device.</li>
+</ul>
+</li>
+<li><code class="docutils literal notranslate"><span class="pre">metal-platform.h</span></code><ul>
+<li>The Freedom Metal platform header which is used internally to Freedom Metal
+as the source for each device’s memory-mapped base address, memory-mapped
+size, properties, and memory-mapped register offsets.</li>
+</ul>
+</li>
+<li><code class="docutils literal notranslate"><span class="pre">metal.%.lds</span></code><ul>
+<li>Linker scripts for the target device. Scripts other than <code class="docutils literal notranslate"><span class="pre">metal.default.lds</span></code>
+are used for alternative memory layouts.</li>
+</ul>
+</li>
+<li><code class="docutils literal notranslate"><span class="pre">openocd.cfg</span></code> (for development board and FPGA targets)<ul>
+<li>Used to configure OpenOCD for flashing and debugging the target device.</li>
+</ul>
+</li>
+<li><code class="docutils literal notranslate"><span class="pre">settings.mk</span></code><ul>
+<li>Used to set <code class="docutils literal notranslate"><span class="pre">-march</span></code> and <code class="docutils literal notranslate"><span class="pre">-mabi</span></code> arguments to the RISC-V GNU Toolchain
+as well as configure target-specific build steps.</li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="freedom-metal">
+<h2>Freedom Metal<a class="headerlink" href="#freedom-metal" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="https://github.com/sifive/freedom-metal">Freedom Metal</a>
+(<a class="reference external" href="https://sifive.github.io/freedom-metal-docs/index.html">Documentation</a>)
+is a library developed by SiFive for writing portable software for all of SiFive’s
+RISC-V IP, RISC-V FPGA evaluation images, and development boards. Programs written
+against the Freedom Metal API are intended to build and run for all SiFive RISC-V
+targets. This makes Freedom Metal suitable for writing portable tests, bare metal
+application programming, and as a hardware abstraction layer for porting
+operating systems to RISC-V.</p>
+<p>Freedom E SDK is a consumer of the Freedom Metal library. Freedom Metal allows the
+SDK examples to be portable to all supported SiFive targets.</p>
+</div>
+<div class="section" id="example-programs">
+<h2>Example Programs<a class="headerlink" href="#example-programs" title="Permalink to this headline">¶</a></h2>
+<p>The example programs can be found under the <code class="docutils literal notranslate"><span class="pre">software/</span></code> directory.</p>
+<ul class="simple">
+<li>empty<ul>
+<li>An empty project. Serves as a good starting point for your own program.</li>
+</ul>
+</li>
+<li>hello<ul>
+<li>Prints “Hello, World!” to stdout, if a serial device is present on the target.</li>
+</ul>
+</li>
+<li>sifive-welcome<ul>
+<li>Prints a welcome message and interacts with the LEDs.</li>
+</ul>
+</li>
+<li>return-pass<ul>
+<li>Returns status code 0 indicating program success.</li>
+</ul>
+</li>
+<li>return-fail<ul>
+<li>Returns status code 1 indicating program failure.</li>
+</ul>
+</li>
+<li>example-itim<ul>
+<li>Demonstrates how to statically link application code into the Instruction
+Tightly Integrated Memory (ITIM) if an ITIM is present on the target.</li>
+</ul>
+</li>
+<li>software-interrupt<ul>
+<li>Demonstrates how to register a handler for and trigger a software interrupt</li>
+</ul>
+</li>
+<li>timer-interrupt<ul>
+<li>Demonstrates how to register a handler for and trigger a timer interrupt</li>
+</ul>
+</li>
+<li>local-interrupt<ul>
+<li>Demonstrates how to register a handler for and trigger a local interrupt</li>
+</ul>
+</li>
+<li>example-pmp<ul>
+<li>Demonstrates how to configure a Physical Memory Protection (PMP) region</li>
+</ul>
+</li>
+<li>example-spi<ul>
+<li>Demonstrates how to use the SPI API to transfer bytes to a peripheral</li>
+</ul>
+</li>
+<li>dhrystone<ul>
+<li>“Dhrystone” Benchmark Program by Reinhold P. Weicker</li>
+</ul>
+</li>
+<li>coremark<ul>
+<li>“CoreMark” Benchmark Program that measures the performance of embedded
+microcrontrollers (MCU)</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">Freedom E SDK</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Contents of the SDK</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#supported-targets">Supported Targets</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#freedom-metal">Freedom Metal</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#example-programs">Example Programs</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="userguide.html">User Guide</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="index.html" title="previous chapter">Freedom E SDK</a></li>
+      <li>Next: <a href="userguide.html" title="next chapter">User Guide</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2019, SiFive Inc..
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.5</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.11</a>
+      
+      |
+      <a href="_sources/contents.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

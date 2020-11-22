@@ -1,0 +1,30 @@
+name: wake-api-test
+
+on:
+  push:
+    path-ignore:
+      - '**.md'
+      - 'LICENSE'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Workspace init
+        uses: sifive/wit/actions/init@v0.13.2
+
+      - name: Run Wake API Test
+        uses: sifive/environment-blockci-sifive/actions/shell@0.7.1
+        with:
+          command: devicetree-overlay-generator/tests/test-wake-api.sh
+
+      - name: Run generator install test
+        uses: sifive/environment-blockci-sifive/actions/shell@0.7.1
+        with:
+          command: devicetree-overlay-generator/tests/test-wake-install.sh
+
+      - name: Run Custom Overlay Wake API Test
+        uses: sifive/environment-blockci-sifive/actions/shell@0.7.1
+        with:
+          command: devicetree-overlay-generator/tests/test-custom-overlay.sh
