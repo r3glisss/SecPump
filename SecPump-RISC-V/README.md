@@ -22,7 +22,7 @@ Assuming you were able to flash the FPGA and properly connect the Olimex cable t
 ~~~bash
 cd Freedom-e-sdk
 # You can adjust the following command according to the version you want
-make PROGRAM=secpump TARGET=sifive-hifive1 CONFIGURATION=Release upload
+make PROGRAM=secpump TARGET=sifive-hifive1 CONFIGURATION=release upload
 ~~~
 
 The FPGA is supposed to be flashed with the SecPump software. You can check it through the serial interface:
@@ -37,12 +37,13 @@ If everything went well you be able to observe the Firmware booting:
 
 At this point, the pump is waiting to be connected to the insulin kinetic Simulator (based on the extended Bergman's model). This simulator uses the UART to communicate with the standby pump. Therefore, the UART console must first be closed:
 ~~~bash
-ctrl+A+k # screen command
+ctrl+a+k # screen command
 ~~~
 
 ### Running a simulation
 
 **WARNING: Always reset the pump before running a simulation !** 
+
 To connect the simulator with the pump everything operates as the ARM version of the system:
 ~~~bash
 cd Scripts
