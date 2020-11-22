@@ -1,6 +1,6 @@
 # SecPump :syringe: 
 
-SecPump is an open wireless insulin pump system workbench that models the insulin kinetics based on the modified Bergman's minimal model. The system workbench is primarily tailored for security assessments and countermeasures development against the numerous security flaws related to wearable medical devices. The platform is open-source and free from commercials constraints making it a suitable target to perform both hardware and software security demonstrations. SecPump aims at being straightforward to use, it only requires an inexpensive Nucleo F446-RE STM32 board with the BlueNRG extension.
+SecPump is an open wireless insulin pump system workbench that models the insulin kinetics based on the modified Bergman's minimal model. The system workbench is primarily tailored for security assessments and countermeasures development against the numerous security flaws related to wearable medical devices. The platform is open-source and free from commercials constraints making it a suitable target to perform both hardware and software security demonstrations. SecPump aims at being straightforward to use, it only requires an inexpensive Nucleo F446-RE STM32 board with the BlueNRG extension or an Arty A7-35T Digilent FPGA.
 
 <p align="center">
     <img src="https://github.com/r3glisss/SecPump/blob/master/Img/SecPump_Overview.JPG">
@@ -20,15 +20,16 @@ Wireless insulin pumps are considered life-critical embedded systems. While thes
 
 ## General description
 
-SecPump is a wireless insulin pump and insulin kinetics simulator. The vanilla version of the system workbench (version without any security issue) requires an STM32 board with the BlueNRG extension and a computer or a Raspberry Pi running Python. The computer/Raspberry Pi models the human body kinetics over time based on Bergman's differential equations. In other words, it models how blood glucose reacts based on the insulin level in the human body. In our case, the computer/Raspberry Pi models the blood glucose of a diabetic. As diabetic does not produce insulin, the latter should be injected thanks to an artificial pancreas such as an insulin pump. The STM32 is only the insulin pump of the whole system. To represent the physical link between a theoretical diabetic and the wireless pump, the STM32 is connected via the serial port to the computer/Raspberry Pi. Over time, the computer/Rasperry Pi sends the amount of glucose of the diabetic to the STM32 that computes the amount of insulin to inject accordingly. The amount of insulin to inject by the pump is computed thanks to an integrated PID. SecPump is then a closed-loop regulation system. As a note, SecPump can also be programmed as an open-loop system when the amount of insulin to inject can be manually configured using a BLE interface (smartphone or BLE python script).
+SecPump is a wireless insulin pump and insulin kinetics simulator. The vanilla version of the system workbench (version without any security issue) requires an STM32 board with the BlueNRG extension and a computer or a Raspberry Pi running Python. A simplified version of the system workbench can also be executed on a RISC-V-based FPGA. The computer/Raspberry Pi models the human body kinetics over time based on Bergman's differential equations. In other words, it models how blood glucose reacts based on the insulin level in the human body. In our case, the computer/Raspberry Pi models the blood glucose of a diabetic. As a diabetic does not produce insulin, the latter should be injected thanks to an artificial pancreas such as an insulin pump. The STM32 or FPGA is only the insulin pump of the whole system. To represent the physical link between a theoretical diabetic and the wireless pump, the STM32 or FPGA is connected via the serial port to the computer/Raspberry Pi. Over time, the computer/Rasperry Pi sends the amount of glucose of the diabetic to the STM32 or FPGA that computes the amount of insulin to inject accordingly. The amount of insulin to inject by the pump is computed thanks to an integrated PID. SecPump is then a closed-loop regulation system. As a note, SecPump can also be programmed as an open-loop system when the amount of insulin to inject can be manually configured using a BLE interface (smartphone or BLE python script).
+i
 
 ## Get started
 
-The repository contains three folders: "Scripts" contains the human body simulation scripts, the PC interface with the pump, and a BLE communication script. "SecPump-Vanilla" contains the model of the functional pump, and finally, "SecPump-Security-Demo" is a deliberately vulnerable modified version of the pump.
+The repository contains three folders: "Scripts" contains the human body simulation scripts, the PC interface with the pump, and a BLE communication script. "SecPump-Vanilla" contains the model of the functional pump, "SecPump-Security-Demo" is a deliberately vulnerable modified version of the pump, and finally, "SecPump-RISC-V" contains the RISC-V version of the model.
 
 ### Requirements
 
-To run the vanilla system it is mandatory to have a Nucleo F446-RE STM32 board with the BlueNRG extension, a Linux computer with a BLE connection (if possible). 
+To run the vanilla system it is mandatory to have a Nucleo F446-RE STM32 board with the BlueNRG extension, a Linux computer with a BLE connection (if possible). See the "SecPump-RISC-V" folder for the FPGA version. 
 
 To replay the attack it is preferable to have two computers available both based on Linux, one of which should include a functional BLE stack.
 
@@ -42,7 +43,7 @@ echo "export PATH=\$PATH:$(pwd)"\/gcc-arm-none-eabi-8-2018-q4-major-linux\/bin >
 source ~/.bashrc
 ~~~
 
-Install the python dependencies, it is recommanded to use a dedicated new python environment: 
+Install the python dependencies, it is recommended to use a dedicated new python environment: 
 
 ~~~bash
 pip install -r Scripts/requirements.txt
@@ -226,7 +227,7 @@ After a couple of seconds, the amount of insulin injected by the pump should rai
 
 ## License
 
-This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by   the Free Software Foundation, in version 3. This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, in version 3. This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 
 ## Attribution
 
@@ -248,7 +249,7 @@ C. Bresch, D. Hély, S. Chollet, and R. Lysecky, *“SecPump: A Connected Open S
 
 This work is carried out under the SERENE-IoT project, a project labeled within the framework of PENTA, the EUREKA Cluster for Application and Technology Research in Europe on NanoElectronics.
 
-This work is supported by the French National Research Agency in the framework of the “investissement d’avenir” program (ANR-16-IDEX-02)
+This work is supported by the French National Research Agency in the framework of the “Investissement d’avenir” program (ANR-16-IDEX-02)
 
 This research was partially supported by the National Science Foundation under Grant CNS-1615891.
 
