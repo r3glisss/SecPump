@@ -1,0 +1,5 @@
+src/drivers/sifive_gpio-buttons.o: \
+ /home/reglisse/Documents/Code/Github/SecPump/SecPump-RISC-V/SiFive-freedom-e-sdk/freedom-metal/src/drivers/sifive_gpio-buttons.c \
+ metal/machine/platform.h
+
+metal/machine/platform.h:

@@ -1,0 +1,14 @@
+{
+    "files.associations": {
+        "cstdio": "cpp",
+        "*.h++": "c",
+        "*.tcc": "c",
+        "fstream": "c",
+        "iosfwd": "c",
+        "istream": "c",
+        "limits": "c",
+        "shared_mutex": "c",
+        "sstream": "c",
+        "streambuf": "c"
+    }
+}

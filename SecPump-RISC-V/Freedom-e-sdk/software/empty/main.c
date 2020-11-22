@@ -1,0 +1,2 @@
+/// Empty project
+int main(){}

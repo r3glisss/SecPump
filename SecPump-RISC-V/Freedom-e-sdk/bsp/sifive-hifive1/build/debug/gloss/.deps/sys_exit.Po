@@ -1,0 +1,5 @@
+gloss/sys_exit.o: \
+ /home/reglisse/Documents/Code/Github/SecPump/SecPump-RISC-V/SiFive-freedom-e-sdk/freedom-metal/gloss/sys_exit.c \
+ /home/reglisse/Documents/Code/Github/SecPump/SecPump-RISC-V/SiFive-freedom-e-sdk/freedom-metal/metal/shutdown.h
+
+/home/reglisse/Documents/Code/Github/SecPump/SecPump-RISC-V/SiFive-freedom-e-sdk/freedom-metal/metal/shutdown.h:

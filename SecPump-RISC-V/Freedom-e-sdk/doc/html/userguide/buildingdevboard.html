@@ -1,0 +1,157 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Building for a Dev Board or FPGA &#8212; Freedom E SDK v201905 documentation</title>
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Creating a Standalone Project" href="standalone.html" />
+    <link rel="prev" title="Installing Freedom E SDK" href="installing.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="building-for-a-dev-board-or-fpga">
+<h1>Building for a Dev Board or FPGA<a class="headerlink" href="#building-for-a-dev-board-or-fpga" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="building-an-example">
+<h2>Building an Example<a class="headerlink" href="#building-an-example" title="Permalink to this headline">¶</a></h2>
+<p>To compile a bare-metal RISC-V program:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>make <span class="o">[</span><span class="nv">PROGRAM</span><span class="o">=</span>hello<span class="o">]</span> <span class="o">[</span><span class="nv">TARGET</span><span class="o">=</span>sifive-hifive1<span class="o">]</span> <span class="o">[</span><span class="nv">CONFIGURATION</span><span class="o">=</span>debug<span class="o">]</span> software
+</pre></div>
+</div>
+<p>The square brackets in the above command indicate optional parameters for the
+Make invocation. As you can see, the default values of these parameters tell
+the build script to build the <code class="docutils literal notranslate"><span class="pre">hello</span></code> example for the <code class="docutils literal notranslate"><span class="pre">sifive-hifive1</span></code> target
+using the <code class="docutils literal notranslate"><span class="pre">debug</span></code> build configuration. If, for example, you wished to build
+the <code class="docutils literal notranslate"><span class="pre">timer-interrupt</span></code> example for the Freedom E310 Arty FPGA Evaluation target using
+the <code class="docutils literal notranslate"><span class="pre">release</span></code> build configuration, you would instead run the command</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>make <span class="nv">PROGRAM</span><span class="o">=</span>timer-interrupt <span class="nv">TARGET</span><span class="o">=</span>freedom-e310-arty <span class="nv">CONFIGURATION</span><span class="o">=</span>release software
+</pre></div>
+</div>
+</div>
+<div class="section" id="uploading-to-the-target-board">
+<h2>Uploading to the Target Board<a class="headerlink" href="#uploading-to-the-target-board" title="Permalink to this headline">¶</a></h2>
+<p>Uploading a program to the target development or FPGA board depends on having both
+the RISC-V GNU Toolchain and RISC-V OpenOCD installed on your development system.
+See <a class="reference internal" href="installing.html"><span class="doc">Installing Freedom E SDK</span></a> for more information on installing OpenOCD.</p>
+<p>With the toolchain and OpenOCD installed, uploading a program is as simple as plugging
+the development board into your computer and running the following command:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>make <span class="o">[</span><span class="nv">PROGRAM</span><span class="o">=</span>hello<span class="o">]</span> <span class="o">[</span><span class="nv">TARGET</span><span class="o">=</span>sifive-hifive1<span class="o">]</span> <span class="o">[</span><span class="nv">CONFIGURATION</span><span class="o">=</span>debug<span class="o">]</span> upload
+</pre></div>
+</div>
+</div>
+<div class="section" id="debugging-a-target-program">
+<h2>Debugging a Target Program<a class="headerlink" href="#debugging-a-target-program" title="Permalink to this headline">¶</a></h2>
+<p>Debugging a program on a target development or FPGA board depends on having both
+the RISC-V GNU Toolchain and RISC-V OpenOCD installed on your development system.
+See <a class="reference internal" href="installing.html"><span class="doc">Installing Freedom E SDK</span></a> for more information on installing OpenOCD.</p>
+<p>Debugging with Freedom E SDK also assumes that the program has already been uploaded to
+the target board.</p>
+<p>With the toolchain and OpenOCD installed, debugging a program is as simple as plugging
+the development board into your computer and running the following command:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>make <span class="o">[</span><span class="nv">PROGRAM</span><span class="o">=</span>hello<span class="o">]</span> <span class="o">[</span><span class="nv">TARGET</span><span class="o">=</span>sifive-hifive1<span class="o">]</span> <span class="o">[</span><span class="nv">CONFIGURATION</span><span class="o">=</span>debug<span class="o">]</span> debug
+</pre></div>
+</div>
+</div>
+<div class="section" id="cleaning-a-target-program-build-directory">
+<h2>Cleaning a Target Program Build Directory<a class="headerlink" href="#cleaning-a-target-program-build-directory" title="Permalink to this headline">¶</a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">clean</span></code> target can be used to restore a target program’s directory to a clean state.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>make <span class="o">[</span><span class="nv">PROGRAM</span><span class="o">=</span>hello<span class="o">]</span> <span class="o">[</span><span class="nv">TARGET</span><span class="o">=</span>sifive-hifive1<span class="o">]</span> <span class="o">[</span><span class="nv">CONFIGURATION</span><span class="o">=</span>debug<span class="o">]</span> clean
+</pre></div>
+</div>
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../index.html">Freedom E SDK</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../contents.html">Contents of the SDK</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../userguide.html">User Guide</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="installing.html">Installing Freedom E SDK</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Building for a Dev Board or FPGA</a></li>
+<li class="toctree-l2"><a class="reference internal" href="standalone.html">Creating a Standalone Project</a></li>
+</ul>
+</li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  <li><a href="../userguide.html">User Guide</a><ul>
+      <li>Previous: <a href="installing.html" title="previous chapter">Installing Freedom E SDK</a></li>
+      <li>Next: <a href="standalone.html" title="next chapter">Creating a Standalone Project</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2019, SiFive Inc..
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.5</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.11</a>
+      
+      |
+      <a href="../_sources/userguide/buildingdevboard.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
