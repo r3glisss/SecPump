@@ -1,3 +1,0 @@
-[submodule "SecPump-RISC-V/freedom-e-sdk"]
-	path = SecPump-RISC-V/freedom-e-sdk
-	url = https://github.com/sifive/freedom-e-sdk
