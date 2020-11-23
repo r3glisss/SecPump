@@ -13,7 +13,7 @@ To be able to run the SecPump model on the Arty A7-35T Digilent FPGA. You should
 
 ### Building the bitstream
 
-SecPump is based on RocketChip, to build the core and run it on the FPGA, you should follow the regular flow provided by [SiFive](https://github.com/sifive/freedom). Also, the tutorial provided by [Digilent](https://github.com/sifive/freedom) might help to get you the proper environment and the bitstream/MCS file. Please read and understand both tutorials before doing anything. Keep in mind that to further flash a program on the FPGA you will also need an Olimex cable!
+SecPump is based on RocketChip, to build the core and run it on the FPGA, you should follow the regular flow provided by [SiFive](https://github.com/sifive/freedom). Also, the tutorial provided by [Digilent](https://github.com/sifive/freedom) might help to get you the proper environment and the bitstream/MCS files. Please read and understand both tutorials before doing anything. Keep in mind that to further flash a program on the FPGA you will also need an Olimex cable!
 
 ### Compiling the SecPump software and flashing the FPGA
 

@@ -1,0 +1,5 @@
+src/drivers/ucb_htif0.o: \
+ /home/reglisse/Documents/Code/Github/SecPump/SecPump-RISC-V/Freedom-e-sdk/freedom-metal/src/drivers/ucb_htif0.c \
+ metal/machine/platform.h
+
+metal/machine/platform.h:

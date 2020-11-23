@@ -1,0 +1,5 @@
+src/drivers/sifive_ccache0.o: \
+ /home/reglisse/Documents/Code/Github/SecPump/SecPump-RISC-V/Freedom-e-sdk/freedom-metal/src/drivers/sifive_ccache0.c \
+ metal/machine/platform.h
+
+metal/machine/platform.h:

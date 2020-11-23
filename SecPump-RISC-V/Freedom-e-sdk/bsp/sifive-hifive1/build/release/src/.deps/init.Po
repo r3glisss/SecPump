@@ -1,0 +1,5 @@
+src/init.o: \
+ /home/reglisse/Documents/Code/Github/SecPump/SecPump-RISC-V/Freedom-e-sdk/freedom-metal/src/init.c \
+ /home/reglisse/Documents/Code/Github/SecPump/SecPump-RISC-V/Freedom-e-sdk/freedom-metal/metal/init.h
+
+/home/reglisse/Documents/Code/Github/SecPump/SecPump-RISC-V/Freedom-e-sdk/freedom-metal/metal/init.h:

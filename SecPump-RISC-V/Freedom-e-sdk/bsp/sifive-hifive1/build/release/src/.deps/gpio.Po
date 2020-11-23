@@ -1,0 +1,124 @@
+src/gpio.o: \
+ /home/reglisse/Documents/Code/Github/SecPump/SecPump-RISC-V/Freedom-e-sdk/freedom-metal/src/gpio.c \
+ /home/reglisse/Documents/Code/Github/SecPump/SecPump-RISC-V/Freedom-e-sdk/freedom-metal/metal/gpio.h \
+ /home/reglisse/Documents/Code/Github/SecPump/SecPump-RISC-V/Freedom-e-sdk/freedom-metal/metal/compiler.h \
+ /home/reglisse/Documents/Code/Github/SecPump/SecPump-RISC-V/Freedom-e-sdk/freedom-metal/metal/interrupt.h \
+ /home/reglisse/Opt/riscv64-unknown-elf-gcc-8.3.0-2020.04.0-x86_64-linux-ubuntu14/lib/gcc/riscv64-unknown-elf/8.3.0/include/stddef.h \
+ metal/machine.h metal/machine/platform.h \
+ /home/reglisse/Documents/Code/Github/SecPump/SecPump-RISC-V/Freedom-e-sdk/freedom-metal/metal/drivers/fixed-clock.h \
+ /home/reglisse/Documents/Code/Github/SecPump/SecPump-RISC-V/Freedom-e-sdk/freedom-metal/metal/clock.h \
+ /home/reglisse/Documents/Code/Github/SecPump/SecPump-RISC-V/Freedom-e-sdk/freedom-metal/metal/memory.h \
+ /home/reglisse/Opt/riscv64-unknown-elf-gcc-8.3.0-2020.04.0-x86_64-linux-ubuntu14/lib/gcc/riscv64-unknown-elf/8.3.0/include/stdint.h \
+ /home/reglisse/Opt/riscv64-unknown-elf-gcc-8.3.0-2020.04.0-x86_64-linux-ubuntu14/riscv64-unknown-elf/include/stdint.h \
+ /home/reglisse/Opt/riscv64-unknown-elf-gcc-8.3.0-2020.04.0-x86_64-linux-ubuntu14/riscv64-unknown-elf/include/machine/_default_types.h \
+ /home/reglisse/Opt/riscv64-unknown-elf-gcc-8.3.0-2020.04.0-x86_64-linux-ubuntu14/riscv64-unknown-elf/include/sys/features.h \
+ /home/reglisse/Opt/riscv64-unknown-elf-gcc-8.3.0-2020.04.0-x86_64-linux-ubuntu14/riscv64-unknown-elf/include/_newlib_version.h \
+ /home/reglisse/Opt/riscv64-unknown-elf-gcc-8.3.0-2020.04.0-x86_64-linux-ubuntu14/riscv64-unknown-elf/include/sys/_intsup.h \
+ /home/reglisse/Opt/riscv64-unknown-elf-gcc-8.3.0-2020.04.0-x86_64-linux-ubuntu14/riscv64-unknown-elf/include/sys/_stdint.h \
+ /home/reglisse/Documents/Code/Github/SecPump/SecPump-RISC-V/Freedom-e-sdk/freedom-metal/metal/drivers/riscv_clint0.h \
+ /home/reglisse/Documents/Code/Github/SecPump/SecPump-RISC-V/Freedom-e-sdk/freedom-metal/metal/drivers/riscv_cpu.h \
+ /home/reglisse/Documents/Code/Github/SecPump/SecPump-RISC-V/Freedom-e-sdk/freedom-metal/metal/cpu.h \
+ /home/reglisse/Documents/Code/Github/SecPump/SecPump-RISC-V/Freedom-e-sdk/freedom-metal/metal/drivers/riscv_plic0.h \
+ /home/reglisse/Documents/Code/Github/SecPump/SecPump-RISC-V/Freedom-e-sdk/freedom-metal/metal/pmp.h \
+ /home/reglisse/Documents/Code/Github/SecPump/SecPump-RISC-V/Freedom-e-sdk/freedom-metal/metal/drivers/sifive_local-external-interrupts0.h \
+ /home/reglisse/Documents/Code/Github/SecPump/SecPump-RISC-V/Freedom-e-sdk/freedom-metal/metal/drivers/sifive_gpio0.h \
+ /home/reglisse/Documents/Code/Github/SecPump/SecPump-RISC-V/Freedom-e-sdk/freedom-metal/metal/drivers/sifive_gpio-leds.h \
+ /home/reglisse/Documents/Code/Github/SecPump/SecPump-RISC-V/Freedom-e-sdk/freedom-metal/metal/led.h \
+ /home/reglisse/Documents/Code/Github/SecPump/SecPump-RISC-V/Freedom-e-sdk/freedom-metal/metal/drivers/sifive_pwm0.h \
+ /home/reglisse/Documents/Code/Github/SecPump/SecPump-RISC-V/Freedom-e-sdk/freedom-metal/metal/pwm.h \
+ /home/reglisse/Documents/Code/Github/SecPump/SecPump-RISC-V/Freedom-e-sdk/freedom-metal/metal/drivers/sifive_rtc0.h \
+ /home/reglisse/Documents/Code/Github/SecPump/SecPump-RISC-V/Freedom-e-sdk/freedom-metal/metal/io.h \
+ /home/reglisse/Documents/Code/Github/SecPump/SecPump-RISC-V/Freedom-e-sdk/freedom-metal/metal/rtc.h \
+ /home/reglisse/Documents/Code/Github/SecPump/SecPump-RISC-V/Freedom-e-sdk/freedom-metal/metal/drivers/sifive_spi0.h \
+ /home/reglisse/Documents/Code/Github/SecPump/SecPump-RISC-V/Freedom-e-sdk/freedom-metal/metal/spi.h \
+ /home/reglisse/Documents/Code/Github/SecPump/SecPump-RISC-V/Freedom-e-sdk/freedom-metal/metal/drivers/sifive_uart0.h \
+ /home/reglisse/Documents/Code/Github/SecPump/SecPump-RISC-V/Freedom-e-sdk/freedom-metal/metal/uart.h \
+ /home/reglisse/Documents/Code/Github/SecPump/SecPump-RISC-V/Freedom-e-sdk/freedom-metal/metal/drivers/sifive_wdog0.h \
+ /home/reglisse/Documents/Code/Github/SecPump/SecPump-RISC-V/Freedom-e-sdk/freedom-metal/metal/watchdog.h \
+ /home/reglisse/Documents/Code/Github/SecPump/SecPump-RISC-V/Freedom-e-sdk/freedom-metal/metal/drivers/sifive_fe310-g000_hfrosc.h \
+ /home/reglisse/Documents/Code/Github/SecPump/SecPump-RISC-V/Freedom-e-sdk/freedom-metal/metal/drivers/sifive_fe310-g000_prci.h \
+ /home/reglisse/Documents/Code/Github/SecPump/SecPump-RISC-V/Freedom-e-sdk/freedom-metal/metal/drivers/sifive_fe310-g000_hfxosc.h \
+ /home/reglisse/Documents/Code/Github/SecPump/SecPump-RISC-V/Freedom-e-sdk/freedom-metal/metal/drivers/sifive_fe310-g000_lfrosc.h \
+ /home/reglisse/Documents/Code/Github/SecPump/SecPump-RISC-V/Freedom-e-sdk/freedom-metal/metal/drivers/sifive_fe310-g000_pll.h
+
+/home/reglisse/Documents/Code/Github/SecPump/SecPump-RISC-V/Freedom-e-sdk/freedom-metal/metal/gpio.h:
+
+/home/reglisse/Documents/Code/Github/SecPump/SecPump-RISC-V/Freedom-e-sdk/freedom-metal/metal/compiler.h:
+
+/home/reglisse/Documents/Code/Github/SecPump/SecPump-RISC-V/Freedom-e-sdk/freedom-metal/metal/interrupt.h:
+
+/home/reglisse/Opt/riscv64-unknown-elf-gcc-8.3.0-2020.04.0-x86_64-linux-ubuntu14/lib/gcc/riscv64-unknown-elf/8.3.0/include/stddef.h:
+
+metal/machine.h:
+
+metal/machine/platform.h:
+
+/home/reglisse/Documents/Code/Github/SecPump/SecPump-RISC-V/Freedom-e-sdk/freedom-metal/metal/drivers/fixed-clock.h:
+
+/home/reglisse/Documents/Code/Github/SecPump/SecPump-RISC-V/Freedom-e-sdk/freedom-metal/metal/clock.h:
+
+/home/reglisse/Documents/Code/Github/SecPump/SecPump-RISC-V/Freedom-e-sdk/freedom-metal/metal/memory.h:
+
+/home/reglisse/Opt/riscv64-unknown-elf-gcc-8.3.0-2020.04.0-x86_64-linux-ubuntu14/lib/gcc/riscv64-unknown-elf/8.3.0/include/stdint.h:
+
+/home/reglisse/Opt/riscv64-unknown-elf-gcc-8.3.0-2020.04.0-x86_64-linux-ubuntu14/riscv64-unknown-elf/include/stdint.h:
+
+/home/reglisse/Opt/riscv64-unknown-elf-gcc-8.3.0-2020.04.0-x86_64-linux-ubuntu14/riscv64-unknown-elf/include/machine/_default_types.h:
+
+/home/reglisse/Opt/riscv64-unknown-elf-gcc-8.3.0-2020.04.0-x86_64-linux-ubuntu14/riscv64-unknown-elf/include/sys/features.h:
+
+/home/reglisse/Opt/riscv64-unknown-elf-gcc-8.3.0-2020.04.0-x86_64-linux-ubuntu14/riscv64-unknown-elf/include/_newlib_version.h:
+
+/home/reglisse/Opt/riscv64-unknown-elf-gcc-8.3.0-2020.04.0-x86_64-linux-ubuntu14/riscv64-unknown-elf/include/sys/_intsup.h:
+
+/home/reglisse/Opt/riscv64-unknown-elf-gcc-8.3.0-2020.04.0-x86_64-linux-ubuntu14/riscv64-unknown-elf/include/sys/_stdint.h:
+
+/home/reglisse/Documents/Code/Github/SecPump/SecPump-RISC-V/Freedom-e-sdk/freedom-metal/metal/drivers/riscv_clint0.h:
+
+/home/reglisse/Documents/Code/Github/SecPump/SecPump-RISC-V/Freedom-e-sdk/freedom-metal/metal/drivers/riscv_cpu.h:
+
+/home/reglisse/Documents/Code/Github/SecPump/SecPump-RISC-V/Freedom-e-sdk/freedom-metal/metal/cpu.h:
+
+/home/reglisse/Documents/Code/Github/SecPump/SecPump-RISC-V/Freedom-e-sdk/freedom-metal/metal/drivers/riscv_plic0.h:
+
+/home/reglisse/Documents/Code/Github/SecPump/SecPump-RISC-V/Freedom-e-sdk/freedom-metal/metal/pmp.h:
+
+/home/reglisse/Documents/Code/Github/SecPump/SecPump-RISC-V/Freedom-e-sdk/freedom-metal/metal/drivers/sifive_local-external-interrupts0.h:
+
+/home/reglisse/Documents/Code/Github/SecPump/SecPump-RISC-V/Freedom-e-sdk/freedom-metal/metal/drivers/sifive_gpio0.h:
+
+/home/reglisse/Documents/Code/Github/SecPump/SecPump-RISC-V/Freedom-e-sdk/freedom-metal/metal/drivers/sifive_gpio-leds.h:
+
+/home/reglisse/Documents/Code/Github/SecPump/SecPump-RISC-V/Freedom-e-sdk/freedom-metal/metal/led.h:
+
+/home/reglisse/Documents/Code/Github/SecPump/SecPump-RISC-V/Freedom-e-sdk/freedom-metal/metal/drivers/sifive_pwm0.h:
+
+/home/reglisse/Documents/Code/Github/SecPump/SecPump-RISC-V/Freedom-e-sdk/freedom-metal/metal/pwm.h:
+
+/home/reglisse/Documents/Code/Github/SecPump/SecPump-RISC-V/Freedom-e-sdk/freedom-metal/metal/drivers/sifive_rtc0.h:
+
+/home/reglisse/Documents/Code/Github/SecPump/SecPump-RISC-V/Freedom-e-sdk/freedom-metal/metal/io.h:
+
+/home/reglisse/Documents/Code/Github/SecPump/SecPump-RISC-V/Freedom-e-sdk/freedom-metal/metal/rtc.h:
+
+/home/reglisse/Documents/Code/Github/SecPump/SecPump-RISC-V/Freedom-e-sdk/freedom-metal/metal/drivers/sifive_spi0.h:
+
+/home/reglisse/Documents/Code/Github/SecPump/SecPump-RISC-V/Freedom-e-sdk/freedom-metal/metal/spi.h:
+
+/home/reglisse/Documents/Code/Github/SecPump/SecPump-RISC-V/Freedom-e-sdk/freedom-metal/metal/drivers/sifive_uart0.h:
+
+/home/reglisse/Documents/Code/Github/SecPump/SecPump-RISC-V/Freedom-e-sdk/freedom-metal/metal/uart.h:
+
+/home/reglisse/Documents/Code/Github/SecPump/SecPump-RISC-V/Freedom-e-sdk/freedom-metal/metal/drivers/sifive_wdog0.h:
+
+/home/reglisse/Documents/Code/Github/SecPump/SecPump-RISC-V/Freedom-e-sdk/freedom-metal/metal/watchdog.h:
+
+/home/reglisse/Documents/Code/Github/SecPump/SecPump-RISC-V/Freedom-e-sdk/freedom-metal/metal/drivers/sifive_fe310-g000_hfrosc.h:
+
+/home/reglisse/Documents/Code/Github/SecPump/SecPump-RISC-V/Freedom-e-sdk/freedom-metal/metal/drivers/sifive_fe310-g000_prci.h:
+
+/home/reglisse/Documents/Code/Github/SecPump/SecPump-RISC-V/Freedom-e-sdk/freedom-metal/metal/drivers/sifive_fe310-g000_hfxosc.h:
+
+/home/reglisse/Documents/Code/Github/SecPump/SecPump-RISC-V/Freedom-e-sdk/freedom-metal/metal/drivers/sifive_fe310-g000_lfrosc.h:
+
+/home/reglisse/Documents/Code/Github/SecPump/SecPump-RISC-V/Freedom-e-sdk/freedom-metal/metal/drivers/sifive_fe310-g000_pll.h:
