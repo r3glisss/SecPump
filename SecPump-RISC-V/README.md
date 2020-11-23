@@ -22,7 +22,7 @@ Assuming you were able to flash the FPGA and properly connect the Olimex cable t
 ~~~bash
 cd Freedom-e-sdk
 # You can adjust the following command according to the version you want
-make PROGRAM=secpump TARGET=sifive-hifive1 CONFIGURATION=release upload
+make PROGRAM=secpump TARGET=freedom-e310-arty CONFIGURATION=release upload
 ~~~
 
 The FPGA is supposed to be flashed with the SecPump software. You can check it through the serial interface:
